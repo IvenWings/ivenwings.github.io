@@ -4,7 +4,6 @@
     <title>WUST-CTF 2020 官方 Writeup</title>
     <url>/2020/03/30/wctf2020_official_wp/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>去年12月份左右，突然彼得一激灵，想弄个萌新赛给大一大二的打打，不然大家平时都没啥机会打比赛（毕竟现在比赛都是把萌新骗进来杀，一点不友好）。然后开始想赛制，奖励，策划，出题… 经过了各种申请和修改，终于申请成功了，也就有了学校的第一个CTF。一开始没有想到会有那么多外校的师傅来打，所以在环境，题目设置上会出现一些大大小小的问题，加上题目可能对很多师傅来说太简单了，希望师傅们见谅。感谢各位师傅的捧场，你们认真做就是对出题人最好的评价。感谢各路师傅投稿的 writeup，这篇 writeup 作为官方 writeup，就以出题人的角度来写。</p>
-<p>ps：因为腾讯域名只让我解析到腾讯的 vps，而我的博客是托管在 GitHub 的，所以以后博客地址先用回 <code>https://ivenwings.github.io</code>，如果有师傅有解决方法，欢迎滴滴我。</p>
 <h1 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h1><h2 id="getshell-33-solves"><a href="#getshell-33-solves" class="headerlink" title="getshell - 33 solves"></a>getshell - 33 solves</h2><blockquote>
 <p>Author: ColdShield</p>
 </blockquote>
