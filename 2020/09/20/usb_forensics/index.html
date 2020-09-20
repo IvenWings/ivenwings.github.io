@@ -76,7 +76,7 @@ function activateLightMode(){
 <p>每个数据包的数据区有四个字节。第一个字节代表按钮。取0x00时，表示没有按钮。为0x01时，表示左键。当它是0x02时，表示当前按钮是右键。第二个字节可以被认为是带符号的字节类型，最高位是符号位。当该值为正时，表示鼠标水平向右移动多少像素。当它为负数时，表示向左移动了多少像素。第三个字节类似于第二个字节，代表垂直向上和向下移动的偏移量。</p>
 </blockquote>
 <p>当获取了这些点的信息之后，我们就可以恢复鼠标的轨迹。</p>
-<p>要想有流量包，必须先得想办法抓包，USB流量的捕获可以使用wireshark或者usbpcap来进行，最新版本的wireshark已经支持USB接口的捕获，且在安装时会提示usbpcap的安装，当前网上已有相关中文资料对wireshark抓取usb数据包的方法进行讲解，感兴趣的读者可阅读参考链接，在此我们使用一种相对简单的方式，即直接采用usbpcap捕获USB流量。该软件的下载地址为<a href="http://desowin.org/usbpcap/，可支持32位以及64位的winxp至win10操作系统，安装完成后须重启机器或者按照提示选择重启所有USB设备。" target="_blank" rel="noopener">http://desowin.org/usbpcap/，可支持32位以及64位的winxp至win10操作系统，安装完成后须重启机器或者按照提示选择重启所有USB设备。</a></p>
+<p>要想有流量包，必须先得想办法抓包，USB流量的捕获可以使用wireshark或者usbpcap来进行，最新版本的wireshark已经支持USB接口的捕获，且在安装时会提示usbpcap的安装，当前网上已有相关中文资料对wireshark抓取usb数据包的方法进行讲解，感兴趣的读者可阅读参考链接，在此我们使用一种相对简单的方式，即直接采用usbpcap捕获USB流量。该软件的下载地址为 <code>http://desowin.org/usbpcap/</code>，可支持32位以及64位的winxp至win10操作系统，安装完成后须重启机器或者按照提示选择重启所有USB设备。</p>
 </li>
 </ul>
 <p>  我们以自己鼠标为例，打开wireshark，选取我们usb的监听</p>
