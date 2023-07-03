@@ -23,7 +23,7 @@
 <meta property="og:site_name" content="42">
 <meta property="og:description" content="有关USB协议的详细信息，请参见wikishark wiki：https : &#x2F;&#x2F;wiki.wireshark.org&#x2F;USB  鼠标流量取证  每个数据包的数据区有四个字节。第一个字节代表按钮。取0x00时，表示没有按钮。为0x01时，表示左键。当它是0x02时，表示当前按钮是右键。第二个字节可以被认为是带符号的字节类型，最高位是符号位。当该值为正时，表示鼠标水平向">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://s2.loli.net/2022/11/06/gQXWwMVPOfDGoTE.png">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/7f8b39853abac3ce3fea89f588dfcd9b">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/fc664c22a3ffdd7cf9b66354f85f64b8">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/38974d13205a371f2e669e850be2db1f">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/f60388b58ee8022c1e8ff9dfc662f08e">
@@ -48,12 +48,12 @@
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/8d9c3a7de4eb3887c0e915e4a199a2da">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/a9cd84cd6f7be2de83e879fc0bd42923">
 <meta property="article:published_time" content="2020-09-20T15:45:12.000Z">
-<meta property="article:modified_time" content="2023-07-03T03:00:29.672Z">
+<meta property="article:modified_time" content="2023-07-03T06:43:26.554Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="CTF">
 <meta property="article:tag" content="Forensics">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://s2.loli.net/2022/11/06/gQXWwMVPOfDGoTE.png">
+<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/7f8b39853abac3ce3fea89f588dfcd9b">
   
   
   
@@ -308,7 +308,7 @@
 <p>当获取了这些点的信息之后，我们就可以恢复鼠标的轨迹。</p>
 <p>要想有流量包，必须先得想办法抓包，USB流量的捕获可以使用wireshark或者usbpcap来进行，最新版本的wireshark已经支持USB接口的捕获，且在安装时会提示usbpcap的安装，当前网上已有相关中文资料对wireshark抓取usb数据包的方法进行讲解，感兴趣的可以阅读参考链接。该软件的下载地址为 <code>http://desowin.org/usbpcap/</code>，可支持32位以及64位的winxp至win10操作系统，安装完成后须重启机器或者按照提示选择重启所有USB设备。</p>
 <p>我们以自己鼠标为例，打开wireshark，选取我们usb的监听</p>
-<p><img src="https://s2.loli.net/2022/11/06/gQXWwMVPOfDGoTE.png" srcset="/img/loading.gif" lazyload alt="image-20200920223057765"></p>
+<p><img src="https://img.tucang.cc/api/image/show/7f8b39853abac3ce3fea89f588dfcd9b" srcset="/img/loading.gif" lazyload alt="image-20200920223057765"></p>
 <p>然后用鼠标进行滑动等操作，当然点击左键和右键都是有不一样的数据。</p>
 <p><img src="https://img.tucang.cc/api/image/show/fc664c22a3ffdd7cf9b66354f85f64b8" srcset="/img/loading.gif" lazyload alt="image-20200920222857520"></p>
 <p>抓取到后我们保存流量包，这里保存为 <code>mice.pcapng</code>，我们先来分析一下这个流量包。</p>
