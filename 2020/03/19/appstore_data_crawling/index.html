@@ -1,0 +1,735 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言今天在看着 phar，一个朋友(工管类)突然问了我想爬取 App Store 上 App 的评论信息，问我有没有什么想法，看了一下手机端好像暂时没什么思路，毕竟没接触过移动端的，但是我发现 App Store 上 PC 端的网页就有，每个 App 都会有一个详细的页面，于是百度了一下 QQ，网易云什么的，注意到 url 上有 id 关键字，那猜测就是每个 app 都会有一个唯一的 id，测了一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于App Store的App评论爬取">
+<meta property="og:url" content="http://example.com/2020/03/19/appstore_data_crawling/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言今天在看着 phar，一个朋友(工管类)突然问了我想爬取 App Store 上 App 的评论信息，问我有没有什么想法，看了一下手机端好像暂时没什么思路，毕竟没接触过移动端的，但是我发现 App Store 上 PC 端的网页就有，每个 App 都会有一个详细的页面，于是百度了一下 QQ，网易云什么的，注意到 url 上有 id 关键字，那猜测就是每个 app 都会有一个唯一的 id，测了一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wViV.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wmzF.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wZGT.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wAI0.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86weRU.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wuM4.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wML9.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86wlZR.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/03/20/86w1d1.png">
+<meta property="article:published_time" content="2020-03-19T15:58:12.000Z">
+<meta property="article:modified_time" content="2020-03-23T11:29:06.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/03/20/86wViV.png">
+  
+  
+  
+  <title>基于App Store的App评论爬取 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于App Store的App评论爬取"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-03-19 23:58" pubdate>
+          2020年3月19日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">基于App Store的App评论爬取</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天在看着 <code>phar</code>，一个朋友(工管类)突然问了我想爬取 <code>App Store</code> 上 App 的评论信息，问我有没有什么想法，看了一下手机端好像暂时没什么思路，毕竟没接触过移动端的，但是我发现 App Store 上 PC 端的网页就有，每个 App 都会有一个详细的页面，于是百度了一下 QQ，网易云什么的，注意到 url 上有 id 关键字，那猜测就是每个 app 都会有一个唯一的 id，测了一下，果真如此，那把它转化成网页就跟普通爬虫一样处理 HTML 的数据了。本来把思路摸清楚告诉朋友就算了，但我搜着搜着，突然发现苹果贴心地提供了 App 信息的接口！返回的是 <code>json</code> 格式的数据，这样就非常友好了，打算自己动手也试一试。</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>首先当然分析的是 <code>url</code> 了，用 QQ 做例子：<code>https://apps.apple.com/cn/app/qq/id444934666</code>，后面的 id 换成指定 app 的 id，就会跳转到 app 的信息页面，有截屏，更新信息，介绍，评分和评论等。</p>
+<p>然后我找到了这个友好的接口：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">https://itunes.apple.com/rss/customerreviews/page=页码/id=app的id/sortby=mostrecent/json?l=en&amp;&amp;cc=cn<br></code></pre></td></tr></table></figure>
+
+<p>这里参数 <code>page</code> 就是第一页、第二页之类的，测试了一下发现只能看见前10页，网页做出了限制：</p>
+<blockquote>
+<p>CustomerReviews RSS page depth is limited to 10</p>
+</blockquote>
+<p>一页大概 50 条左右，那就是只能爬取 500 条，不知道直接在详情页能刷出几条评论，没有去测。</p>
+<p>参数 <code>id</code> 就是 app 的 id 了，获取 id方法大概有几种：</p>
+<ol>
+<li><p>这个百度就有很多，不详细说了，贴一个参考博客：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/229fae5434eb">获取应用在AppStore的链接地址，从App中跳转到AppStore</a></p>
+</li>
+<li><p>直接在百度搜索 <code>‎App Store 上的 &quot;QQ&quot;</code>，就能找到网页了</p>
+</li>
+<li><p>我又发现了苹果提供了一个搜索的接口：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//i</span>tunes.apple.com/search?term=app名称&amp;entity=software<br></code></pre></td></tr></table></figure>
+
+<p>非常方便，返回的也是 <code>json</code> 数据，所有的搜索结果都在里面了，但有时候有一些返回的结果不够精确，比如搜 <code>网易云音乐</code> 在搜索结果里面并没有网易云音乐这个 app，只有一些相关的，这里只能做一个简单的参考，还是以方法1、2为精确查找。</p>
+</li>
+</ol>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>当然我们要写程序首先得确定需求：</p>
+<ul>
+<li>获取 app id</li>
+<li>获取 app 评论</li>
+<li>对 json 数据进行操作</li>
+<li>为了方便保存，可以保存在一个 excel 表里</li>
+</ul>
+<p>所以大致需要的模块有：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> openpyxl<br></code></pre></td></tr></table></figure>
+
+<p>因为给了接口，所以实现也不难（不然我才不会去写）。</p>
+<p>只有 <code>openpyxl</code> 不是内置模块，因此使用前先</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">pip install openpyxl<br></code></pre></td></tr></table></figure>
+
+<p>具体怎么使用百度或者谷歌看看文档就可以了。</p>
+<h1 id="编写"><a href="#编写" class="headerlink" title="编写"></a>编写</h1><h2 id="获取-App-ID"><a href="#获取-App-ID" class="headerlink" title="获取 App ID"></a>获取 App ID</h2><p>为了方便使用，做了一点交互，输入名字来搜索，它返回的是毫无格式的 <code>json</code> 数据，放到 <code>www.json.cn</code> 美化一下格式看看，可以看到有 <code>resultCount</code> ，搜索的结果数量：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wViV.png" srcset="/img/loading.gif" lazyload alt="86wViV.png"></p>
+<p>然后找到最关键的有 id 和 name：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wmzF.png" srcset="/img/loading.gif" lazyload alt="86wmzF.png"></p>
+<p>有就够了，把解析到的数据用 <code>json.loads</code> 处理一下，用 <code>type(data)</code> 可以看到是字典类型，那么取 <code>key</code> 为 <code>trackId</code> 和 <code>trackName</code> 出来。</p>
+<p>效果：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wZGT.png" srcset="/img/loading.gif" lazyload alt="86wZGT.png"></p>
+<p>如果搜索不到的话就直接精确搜索，主要逻辑代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">SearchAppId</span>(<span class="hljs-params">app</span>):<br>	url = <span class="hljs-string">&quot;http://itunes.apple.com/search?term=&quot;</span> + app + <span class="hljs-string">&quot;&amp;entity=software&quot;</span><br>	r = requests.get(url)<br>	html = r.content<br>	html_doc = <span class="hljs-built_in">str</span>(html, <span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>	data = json.loads(html_doc)<br>	resultCount = data[<span class="hljs-string">&#x27;resultCount&#x27;</span>]<br>	results = data[<span class="hljs-string">&#x27;results&#x27;</span>]<br>	<span class="hljs-built_in">print</span>(app + <span class="hljs-string">&quot; Find &quot;</span> + <span class="hljs-built_in">str</span>(resultCount) + <span class="hljs-string">&quot; result(s)&quot;</span>)<br>	<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(resultCount):<br>		name = results[i][<span class="hljs-string">&#x27;trackName&#x27;</span>]<br>		app_id = results[i][<span class="hljs-string">&#x27;trackId&#x27;</span>]<br>		<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;name：&quot;</span> + name, <span class="hljs-string">&quot;id：&quot;</span> + <span class="hljs-built_in">str</span>(app_id))<br></code></pre></td></tr></table></figure>
+
+<h2 id="建立表格"><a href="#建立表格" class="headerlink" title="建立表格"></a>建立表格</h2><p>我们得用 <code>openpyxl</code> 模块初始化好表格再往里写数据，初始化代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Workbook init</span><br>wb = openpyxl.Workbook()<br>ws = wb.active<br>ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">1</span>, value=<span class="hljs-string">&quot;昵称&quot;</span>)<br>ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">2</span>, value=<span class="hljs-string">&quot;评分&quot;</span>)<br>ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">3</span>, value=<span class="hljs-string">&quot;用户id&quot;</span>)<br>ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">4</span>, value=<span class="hljs-string">&quot;评论&quot;</span>)<br><span class="hljs-comment"># 我们这里提取昵称，评分，用户id和评论</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="获取-App-评论"><a href="#获取-App-评论" class="headerlink" title="获取 App 评论"></a>获取 App 评论</h2><p>我们同样在接口拿到数据后美化一下格式，分析一下数据的结构：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wAI0.png" srcset="/img/loading.gif" lazyload alt="86wAI0.png"></p>
+<p>可以看到在字典的 <code>feed</code> 里的 <code>entry</code>，里面是一个 <code>list</code>，里面就是每个人的信息了。</p>
+<p>继续分析，我们看到需要提取的数据：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86weRU.png" srcset="/img/loading.gif" lazyload alt="86weRU.png"></p>
+<ul>
+<li>昵称在 <code>author</code> 中 <code>name</code> 的 <code>label</code> 中</li>
+<li>评分在 <code>im:rating</code> 的 <code>label</code> 中</li>
+<li>id 在 <code>id</code> 的 <code>label</code> 中</li>
+<li>评论在 <code>content</code>  的 <code>label</code> 中</li>
+</ul>
+<p>于是就可以处理并写入表格了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">SaveContent</span>(<span class="hljs-params"><span class="hljs-built_in">id</span>, wb, ws</span>):<br>	row = <span class="hljs-number">2</span> <span class="hljs-comment"># 表格的row，简单粗暴</span><br><br>	<span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">11</span>): <span class="hljs-comment"># 只能爬取前十页</span><br>		url = <span class="hljs-string">&quot;https://itunes.apple.com/rss/customerreviews/page=&quot;</span> + <span class="hljs-built_in">str</span>(j) + <span class="hljs-string">&quot;/id=&quot;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">id</span>) + <span class="hljs-string">&quot;/sortby=mostrecent/json?l=en&amp;&amp;cc=cn&quot;</span><br>		r = requests.get(url)<br><br>		<span class="hljs-keyword">if</span> r.status_code == <span class="hljs-number">200</span>: <span class="hljs-comment"># 每个app评论数不一样，如果没有数据就直接return了</span><br>			html = r.content<br>			html_doc = <span class="hljs-built_in">str</span>(html, <span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>			data = json.loads(html_doc)[<span class="hljs-string">&quot;feed&quot;</span>][<span class="hljs-string">&quot;entry&quot;</span>]<br>			<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> data:<br>				name = i[<span class="hljs-string">&#x27;author&#x27;</span>][<span class="hljs-string">&#x27;name&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				rate = i[<span class="hljs-string">&#x27;im:rating&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				user_id = i[<span class="hljs-string">&#x27;id&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				content = i[<span class="hljs-string">&#x27;content&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>                <span class="hljs-comment"># 写入数据</span><br>				ws.cell(row=row, column=<span class="hljs-number">1</span>, value=name)<br>				ws.cell(row=row, column=<span class="hljs-number">2</span>, value=rate)<br>				ws.cell(row=row, column=<span class="hljs-number">3</span>, value=user_id)<br>				ws.cell(row=row, column=<span class="hljs-number">4</span>, value=content)<br>				row = row + <span class="hljs-number">1</span><br>				<span class="hljs-built_in">print</span>(name, rate, user_id, content)<br>                <span class="hljs-comment"># 可打印可不打印，打印还是会影响一下速度的</span><br>		<span class="hljs-keyword">else</span>:<br>			<span class="hljs-keyword">return</span><br>		<span class="hljs-comment"># 每一页爬取延迟2秒，以防过于频繁</span><br>		time.sleep(<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><p>封装一下，在 main 调用函数，传个参进去，最后再保存一下 <code>xlsx</code> 文件即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#encoding=utf-8</span><br><span class="hljs-comment">#!/usr/bin/env</span><br><br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> openpyxl<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">SearchAppId</span>(<span class="hljs-params">app</span>):<br>	url = <span class="hljs-string">&quot;http://itunes.apple.com/search?term=&quot;</span> + app + <span class="hljs-string">&quot;&amp;entity=software&quot;</span><br>	r = requests.get(url)<br>	html = r.content<br>	html_doc = <span class="hljs-built_in">str</span>(html, <span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>	data = json.loads(html_doc)<br>	resultCount = data[<span class="hljs-string">&#x27;resultCount&#x27;</span>]<br>	results = data[<span class="hljs-string">&#x27;results&#x27;</span>]<br>	<span class="hljs-built_in">print</span>(app + <span class="hljs-string">&quot; Find &quot;</span> + <span class="hljs-built_in">str</span>(resultCount) + <span class="hljs-string">&quot; result(s)&quot;</span>)<br>	<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(resultCount):<br>		name = results[i][<span class="hljs-string">&#x27;trackName&#x27;</span>]<br>		app_id = results[i][<span class="hljs-string">&#x27;trackId&#x27;</span>]<br>		<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;name：&quot;</span> + name, <span class="hljs-string">&quot;id：&quot;</span> + <span class="hljs-built_in">str</span>(app_id))<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">SaveContent</span>(<span class="hljs-params"><span class="hljs-built_in">id</span>, wb, ws</span>):<br>	row = <span class="hljs-number">2</span><br><br>	<span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">11</span>): <span class="hljs-comment"># 只能爬取前十页</span><br>		url = <span class="hljs-string">&quot;https://itunes.apple.com/rss/customerreviews/page=&quot;</span> + <span class="hljs-built_in">str</span>(j) + <span class="hljs-string">&quot;/id=&quot;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">id</span>) + <span class="hljs-string">&quot;/sortby=mostrecent/json?l=en&amp;&amp;cc=cn&quot;</span><br>		r = requests.get(url)<br><br>		<span class="hljs-keyword">if</span> r.status_code == <span class="hljs-number">200</span>:<br>			html = r.content<br>			html_doc = <span class="hljs-built_in">str</span>(html, <span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>			data = json.loads(html_doc)[<span class="hljs-string">&quot;feed&quot;</span>][<span class="hljs-string">&quot;entry&quot;</span>]<br>			<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> data:<br>				name = i[<span class="hljs-string">&#x27;author&#x27;</span>][<span class="hljs-string">&#x27;name&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				rate = i[<span class="hljs-string">&#x27;im:rating&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				user_id = i[<span class="hljs-string">&#x27;id&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				content = i[<span class="hljs-string">&#x27;content&#x27;</span>][<span class="hljs-string">&#x27;label&#x27;</span>]<br>				ws.cell(row=row, column=<span class="hljs-number">1</span>, value=name)<br>				ws.cell(row=row, column=<span class="hljs-number">2</span>, value=rate)<br>				ws.cell(row=row, column=<span class="hljs-number">3</span>, value=user_id)<br>				ws.cell(row=row, column=<span class="hljs-number">4</span>, value=content)<br>				row = row + <span class="hljs-number">1</span><br>				<span class="hljs-built_in">print</span>(name, rate, user_id, content)<br>		<span class="hljs-keyword">else</span>:<br>			<span class="hljs-keyword">return</span><br>		<span class="hljs-comment"># 每一页爬取延迟2秒，以防过于频繁</span><br>		time.sleep(<span class="hljs-number">2</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br><br>	app = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;app:\n&quot;</span>)<br>	SearchAppId(app)<br><br>	<span class="hljs-comment"># Workbook init</span><br>	wb = openpyxl.Workbook()<br>	ws = wb.active<br>	ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">1</span>, value=<span class="hljs-string">&quot;昵称&quot;</span>)<br>	ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">2</span>, value=<span class="hljs-string">&quot;评分&quot;</span>)<br>	ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">3</span>, value=<span class="hljs-string">&quot;用户id&quot;</span>)<br>	ws.cell(row=<span class="hljs-number">1</span>, column=<span class="hljs-number">4</span>, value=<span class="hljs-string">&quot;评论&quot;</span>)<br><br>	<span class="hljs-built_in">id</span> = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;input app&#x27;s id:\n&quot;</span>)<br>	SaveContent(<span class="hljs-built_in">id</span>, wb, ws)<br><br>	wb.save(app + <span class="hljs-string">&quot;.xlsx&quot;</span>) <span class="hljs-comment"># 默认保存在当前目录</span><br>	<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Done!&quot;</span>)<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>	main()<br></code></pre></td></tr></table></figure>
+
+<p>效果图：</p>
+<p>搜 id：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wuM4.png" srcset="/img/loading.gif" lazyload alt="86wuM4.png"></p>
+<p>爬取评论并保存：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wML9.png" srcset="/img/loading.gif" lazyload alt="86wML9.png"></p>
+<p>Done!</p>
+<p>我们可以看到当前目录生成了文件：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86wlZR.png" srcset="/img/loading.gif" lazyload alt="86wlZR.png"></p>
+<p>数据效果图：</p>
+<p><img src="https://s1.ax1x.com/2020/03/20/86w1d1.png" srcset="/img/loading.gif" lazyload alt="86w1d1.png"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web-Crawler/" class="category-chain-item">Web Crawler</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web/" class="print-no-link">#Web</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于App Store的App评论爬取</div>
+      <div>http://example.com/2020/03/19/appstore_data_crawling/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年3月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/03/21/ip_trace/" title="ip定位获取及反向地址解析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ip定位获取及反向地址解析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/03/18/file_inclusion/" title="File Inclusion(Base on PHP)">
+                        <span class="hidden-mobile">File Inclusion(Base on PHP)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

