@@ -13,14 +13,14 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="Iven Huang">
+  <meta name="author" content="Ustin1an">
   <meta name="keywords" content="">
   
     <meta name="description" content="Wust闲得蛋疼春节瞎欢乐赛 官方WriteUp前言因为疫情的原因，大家在家闲着(大家内心：并不)也是闲着，不如就搭建一个平台，找一些签到题来训练一下新人，至少让新人知道比赛的流程还有一些注意事项，一些基本的操作等，题目来源于各种开源代码，包括南邮的校赛和suctf的题目。 WebWeb签到题顾名思义，就是Web的签到题，但我没有想到比隔壁稍微复杂一点的签到题更少人解出来，有点出乎意料。以后这种就">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Wust闲得蛋疼春节瞎欢乐赛_官方WriteUp">
-<meta property="og:url" content="http://example.com/2020/02/08/wust_funnyctf_WriteUp/index.html">
-<meta property="og:site_name" content="52Hertz&#39;s Blog">
+<meta property="og:url" content="https://52hertz.tech/2020/02/08/wust_funnyctf_WriteUp/index.html">
+<meta property="og:site_name" content="Ustin1an&#39;s Blog">
 <meta property="og:description" content="Wust闲得蛋疼春节瞎欢乐赛 官方WriteUp前言因为疫情的原因，大家在家闲着(大家内心：并不)也是闲着，不如就搭建一个平台，找一些签到题来训练一下新人，至少让新人知道比赛的流程还有一些注意事项，一些基本的操作等，题目来源于各种开源代码，包括南邮的校赛和suctf的题目。 WebWeb签到题顾名思义，就是Web的签到题，但我没有想到比隔壁稍微复杂一点的签到题更少人解出来，有点出乎意料。以后这种就">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.ax1x.com/2020/02/08/1RD1r4.png">
@@ -73,7 +73,7 @@
 <meta property="og:image" content="https://s2.ax1x.com/2020/02/08/1W9qNF.png">
 <meta property="article:published_time" content="2020-02-08T07:45:38.000Z">
 <meta property="article:modified_time" content="2020-02-09T07:02:10.000Z">
-<meta property="article:author" content="Iven Huang">
+<meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="CTF">
 <meta property="article:tag" content="WriteUps">
 <meta name="twitter:card" content="summary_large_image">
@@ -81,7 +81,7 @@
   
   
   
-  <title>Wust闲得蛋疼春节瞎欢乐赛_官方WriteUp - 52Hertz&#39;s Blog</title>
+  <title>Wust闲得蛋疼春节瞎欢乐赛_官方WriteUp - Ustin1an&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -119,7 +119,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"52hertz.tech","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -524,13 +524,13 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Wust闲得蛋疼春节瞎欢乐赛_官方WriteUp</div>
-      <div>http://example.com/2020/02/08/wust_funnyctf_WriteUp/</div>
+      <div>https://52hertz.tech/2020/02/08/wust_funnyctf_WriteUp/</div>
     </div>
     <div class="license-meta">
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>Iven Huang</div>
+          <div>Ustin1an</div>
         </div>
       
       
