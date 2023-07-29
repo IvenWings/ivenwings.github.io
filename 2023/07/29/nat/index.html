@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ava.jpg">
+  <link rel="icon" href="/img/ava.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Ustin1an">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Frp根据对应的操作系统及架构，从 Release 页面下载最新版本的程序。将 frps 及 frps.ini 放到具有公网 IP 的机器上。( s - server )将 frpc 及 frpc.ini 放到处于内网环境的机器上。( c - client ) 访问路径：攻击机 -&gt; VPS(跑frps的) -&gt; 内网中转机(跑frpc的) -&gt; 访问内网其它环境 配置 frps">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内网穿透">
+<meta property="og:url" content="https://52hertz.tech/2023/07/29/nat/index.html">
+<meta property="og:site_name" content="42">
+<meta property="og:description" content="Frp根据对应的操作系统及架构，从 Release 页面下载最新版本的程序。将 frps 及 frps.ini 放到具有公网 IP 的机器上。( s - server )将 frpc 及 frpc.ini 放到处于内网环境的机器上。( c - client ) 访问路径：攻击机 -&gt; VPS(跑frps的) -&gt; 内网中转机(跑frpc的) -&gt; 访问内网其它环境 配置 frps">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690632595041-f8e37013-342e-4c34-9c8a-b0c030f535a0.png#averageHue=%23121010&clientId=ucbac2fec-0275-4&from=paste&height=298&id=u5dbd4181&originHeight=596&originWidth=1142&originalType=binary&ratio=2&rotation=0&showTitle=false&size=108385&status=done&style=none&taskId=ub6f43a51-9d5a-4555-8130-49d51140d84&title=&width=571">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634635765-6549cbde-5279-44f8-8121-d1827f6e7588.png#averageHue=%23212326&clientId=ucbac2fec-0275-4&from=paste&height=674&id=u6929ba5f&originHeight=1348&originWidth=2080&originalType=binary&ratio=2&rotation=0&showTitle=false&size=128739&status=done&style=none&taskId=ub49168ff-6630-47b6-a8bf-1a60527141a&title=&width=1040">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633630877-88db63d1-cc05-4973-b509-1f4b0bb41761.png#averageHue=%232b3038&clientId=ucbac2fec-0275-4&from=paste&height=78&id=ubef7b6b2&originHeight=140&originWidth=1090&originalType=binary&ratio=2&rotation=0&showTitle=false&size=31182&status=done&style=none&taskId=u32ffade5-910d-4aed-b1c5-34db53baf35&title=&width=607">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633640174-b08977d5-c539-4cc8-a155-a01db8523a94.png#averageHue=%2338404e&clientId=ucbac2fec-0275-4&from=paste&height=89&id=u7b7d1e20&originHeight=176&originWidth=1194&originalType=binary&ratio=2&rotation=0&showTitle=false&size=66069&status=done&style=none&taskId=ud00c24a1-19fc-4449-b64e-2f370887319&title=&width=603">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633923526-be136b36-287b-4f42-b857-5d1081ebe0e9.png#averageHue=%23fefefe&clientId=ucbac2fec-0275-4&from=paste&height=186&id=ufc24fb53&originHeight=372&originWidth=540&originalType=binary&ratio=2&rotation=0&showTitle=false&size=48880&status=done&style=none&taskId=u13b92b31-8d39-488d-b7c2-f340081d25c&title=&width=270">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634008723-b2ef55bc-2c66-499b-a71e-eb614a589153.png#averageHue=%23171717&clientId=ucbac2fec-0275-4&from=paste&height=108&id=u731fe7c9&originHeight=216&originWidth=1832&originalType=binary&ratio=2&rotation=0&showTitle=false&size=60816&status=done&style=none&taskId=u30a4a37b-84df-4809-8f17-cb279b34fb0&title=&width=916">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633995014-59710187-d635-4caf-af29-8fd3e227e096.png#averageHue=%232c3544&clientId=ucbac2fec-0275-4&from=paste&height=76&id=u141f91b6&originHeight=152&originWidth=2236&originalType=binary&ratio=2&rotation=0&showTitle=false&size=60761&status=done&style=none&taskId=ua75e44a9-adbb-4718-8719-ca9c304ec20&title=&width=1118">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634964154-45fee137-73f2-43f5-aae8-677c00203870.png#averageHue=%232d2b2a&clientId=ucbac2fec-0275-4&from=paste&height=525&id=uadf31377&originHeight=1050&originWidth=1942&originalType=binary&ratio=2&rotation=0&showTitle=false&size=330976&status=done&style=none&taskId=u93fda4be-adc5-42bd-9261-c10dfa0a673&title=&width=971">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690635003982-df743f7f-2c6f-4cc8-bb07-c78847921d01.png#averageHue=%23272625&clientId=ucbac2fec-0275-4&from=paste&height=237&id=ub18f4334&originHeight=474&originWidth=1630&originalType=binary&ratio=2&rotation=0&showTitle=false&size=141796&status=done&style=none&taskId=ub103930d-d411-4cd7-a4b1-942c348cfc8&title=&width=815">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690635121417-3ba43dfb-46d0-4e92-94a4-590ed048e630.png#averageHue=%232e4736&clientId=ucbac2fec-0275-4&from=paste&height=360&id=u5edba409&originHeight=720&originWidth=2068&originalType=binary&ratio=2&rotation=0&showTitle=false&size=313881&status=done&style=none&taskId=uc297060f-f3f3-4af5-83cb-3f95e2e97a6&title=&width=1034">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634169846-7f6572a9-f924-4273-ba2a-a151303ea16c.png#averageHue=%23fbfbfb&clientId=ucbac2fec-0275-4&from=paste&height=471&id=u909899ef&originHeight=942&originWidth=2282&originalType=binary&ratio=2&rotation=0&showTitle=false&size=136958&status=done&style=none&taskId=ue59b0c9d-826d-44e0-add2-7f817c0222e&title=&width=1141">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634197932-8bc0fa4f-5d90-4d46-8f6a-df8c1998813e.png#averageHue=%23faf6f5&clientId=ucbac2fec-0275-4&from=paste&height=415&id=u8e01b90f&originHeight=830&originWidth=440&originalType=binary&ratio=2&rotation=0&showTitle=false&size=58082&status=done&style=none&taskId=u3f957511-61fe-486a-b8f2-dd9e45b7de1&title=&width=220">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634440609-2d441d13-bcb2-4489-975b-fd64c2ca3bc9.png#averageHue=%23838484&clientId=ucbac2fec-0275-4&from=paste&height=704&id=uf7b1204e&originHeight=1408&originWidth=2166&originalType=binary&ratio=2&rotation=0&showTitle=false&size=383021&status=done&style=none&taskId=u91412610-61a0-4f77-9023-cb500891122&title=&width=1083">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634499538-f95e74b8-2b3d-4e5f-acc7-a4d39300596d.png#averageHue=%23292c30&clientId=ucbac2fec-0275-4&from=paste&height=419&id=u90b6c075&originHeight=838&originWidth=1336&originalType=binary&ratio=2&rotation=0&showTitle=false&size=140823&status=done&style=none&taskId=u8e47d2cf-eb66-45eb-849d-62b3b885607&title=&width=668">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690636473292-d46f1176-94e8-4cd5-9763-d9ca580aaf1b.png#averageHue=%23efefef&clientId=ucbac2fec-0275-4&from=paste&height=192&id=u7866b381&originHeight=384&originWidth=960&originalType=binary&ratio=2&rotation=0&showTitle=false&size=50441&status=done&style=none&taskId=u2bc47bce-4839-403f-934d-e04a2fdf6af&title=&width=480">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690637135848-0f7f971b-f062-4776-be7f-a914187e3e99.png#averageHue=%23191919&clientId=ucbac2fec-0275-4&from=paste&height=160&id=uaf5704a3&originHeight=280&originWidth=938&originalType=binary&ratio=2&rotation=0&showTitle=false&size=50510&status=done&style=none&taskId=u643c432b-0a5c-4a7b-9e81-a604cc76955&title=&width=536">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638105483-0226a579-3eea-452d-85ad-a32c40e62129.png#averageHue=%232c0f28&clientId=ucbac2fec-0275-4&from=paste&height=103&id=u60ed7ef4&originHeight=206&originWidth=1358&originalType=binary&ratio=2&rotation=0&showTitle=false&size=286458&status=done&style=none&taskId=u1ceb11e8-d4fd-49db-8889-fd5e38a3ace&title=&width=679">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638000810-b8eaccc2-e8ca-4419-9c6d-b70cf72101b9.png#averageHue=%23131313&clientId=ucbac2fec-0275-4&from=paste&height=94&id=u534256eb&originHeight=188&originWidth=2210&originalType=binary&ratio=2&rotation=0&showTitle=false&size=53966&status=done&style=none&taskId=u4c50e9ed-180a-454a-9ad2-1a54133fedd&title=&width=1105">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638721553-00396903-f3cd-434a-abb8-da4f0b6ecd8d.png#averageHue=%232f2d2c&clientId=ucbac2fec-0275-4&from=paste&height=625&id=ud197a230&originHeight=1250&originWidth=1094&originalType=binary&ratio=2&rotation=0&showTitle=false&size=177113&status=done&style=none&taskId=u8613af51-952e-4d87-93be-b4e1e0eaab4&title=&width=547">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638641127-fac0cedf-f1c7-4896-9116-4df420bc1c0d.png#averageHue=%23ababaa&clientId=ucbac2fec-0275-4&from=paste&height=714&id=u9fb340f7&originHeight=1428&originWidth=1930&originalType=binary&ratio=2&rotation=0&showTitle=false&size=614642&status=done&style=none&taskId=ue00004ad-3b5d-4401-b0db-a3716dc59e2&title=&width=965">
+<meta property="article:published_time" content="2023-07-29T14:02:13.000Z">
+<meta property="article:modified_time" content="2023-07-29T14:02:17.631Z">
+<meta property="article:author" content="Ustin1an">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690632595041-f8e37013-342e-4c34-9c8a-b0c030f535a0.png#averageHue=%23121010&clientId=ucbac2fec-0275-4&from=paste&height=298&id=u5dbd4181&originHeight=596&originWidth=1142&originalType=binary&ratio=2&rotation=0&showTitle=false&size=108385&status=done&style=none&taskId=ub6f43a51-9d5a-4555-8130-49d51140d84&title=&width=571">
+  
+  
+  
+  <title>内网穿透 - 42</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"52hertz.tech","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Jerusalem</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="内网穿透"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-29 22:02" pubdate>
+          2023年7月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">内网穿透</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Frp"><a href="#Frp" class="headerlink" title="Frp"></a>Frp</h1><p>根据对应的操作系统及架构，从 <a target="_blank" rel="noopener" href="https://github.com/tnodir/fort">Release</a> 页面下载最新版本的程序。<br>将 <strong>frps</strong> 及 <strong>frps.ini</strong> 放到具有<strong>公网</strong> IP 的机器上。( s - server )<br>将 <strong>frpc</strong> 及 <strong>frpc.ini</strong> 放到处于<strong>内网</strong>环境的机器上。( c - client )</p>
+<p>访问路径：<br><code>攻击机</code> -&gt; <code>VPS(跑frps的)</code> -&gt; <code>内网中转机(跑frpc的)</code> -&gt; <code>访问内网其它环境</code></p>
+<h2 id="配置-frps"><a href="#配置-frps" class="headerlink" title="配置 frps"></a>配置 frps</h2><p>修改 <code>frps.ini</code> 文件，这里使用了最简化的配置</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># frps.ini</span><br><span class="hljs-section">[common]</span><br><span class="hljs-attr">bind_port</span> = <span class="hljs-number">1000</span><br></code></pre></td></tr></table></figure>
+<p>启动 <code>frps</code></p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle">.<span class="hljs-regexp">/frps -c ./</span>frps.ini<br>如果需要后台运行：<br>nohup frps -c frps.ini &gt;<span class="hljs-regexp">/dev/</span><span class="hljs-keyword">null</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br></code></pre></td></tr></table></figure>
+<h2 id="配置-frpc"><a href="#配置-frpc" class="headerlink" title="配置 frpc"></a>配置 frpc</h2><p>修改 frpc.ini 文件，假设 frps 所在服务器的公网 IP 为 <code>x.x.x.x</code></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># frpc.ini</span><br>[common]<br>server_addr = IP <span class="hljs-comment">#vps地址 </span><br>server_port = 10808 <span class="hljs-comment">#vps监听端口 </span><br><br>[plugin_socks]<br>type = tcp<br>remote_port = 12345 <span class="hljs-comment">#代理端口 </span><br>plugin = socks5<br>plugin_user =<br>plugin_passwd = <span class="hljs-comment">#代理密码</span><br></code></pre></td></tr></table></figure>
+<p>启动 <code>frpc</code></p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle">.<span class="hljs-regexp">/frpc -c ./</span>frpc.ini<br>如果需要后台运行：<br>nohup frpc -c frpc.ini &gt;<span class="hljs-regexp">/dev/</span><span class="hljs-keyword">null</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br></code></pre></td></tr></table></figure>
+<h2 id="连接代理"><a href="#连接代理" class="headerlink" title="连接代理"></a>连接代理</h2><p>假设我们已经控制了一台内网机器，内网中存在另一个主机开启了 Web 服务。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690632595041-f8e37013-342e-4c34-9c8a-b0c030f535a0.png#averageHue=%23121010&clientId=ucbac2fec-0275-4&from=paste&height=298&id=u5dbd4181&originHeight=596&originWidth=1142&originalType=binary&ratio=2&rotation=0&showTitle=false&size=108385&status=done&style=none&taskId=ub6f43a51-9d5a-4555-8130-49d51140d84&title=&width=571" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>网络为 <code>192.168.174.0/24</code> 段<br>存在 Web 服务的主机 IP 为 <code>192.168.174.128</code>，我们正常是访问不了的</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634635765-6549cbde-5279-44f8-8121-d1827f6e7588.png#averageHue=%23212326&clientId=ucbac2fec-0275-4&from=paste&height=674&id=u6929ba5f&originHeight=1348&originWidth=2080&originalType=binary&ratio=2&rotation=0&showTitle=false&size=128739&status=done&style=none&taskId=ub49168ff-6630-47b6-a8bf-1a60527141a&title=&width=1040" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>写好 <code>frps</code> 配置文件</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633630877-88db63d1-cc05-4973-b509-1f4b0bb41761.png#averageHue=%232b3038&clientId=ucbac2fec-0275-4&from=paste&height=78&id=ubef7b6b2&originHeight=140&originWidth=1090&originalType=binary&ratio=2&rotation=0&showTitle=false&size=31182&status=done&style=none&taskId=u32ffade5-910d-4aed-b1c5-34db53baf35&title=&width=607" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>启动 <code>frps</code></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633640174-b08977d5-c539-4cc8-a155-a01db8523a94.png#averageHue=%2338404e&clientId=ucbac2fec-0275-4&from=paste&height=89&id=u7b7d1e20&originHeight=176&originWidth=1194&originalType=binary&ratio=2&rotation=0&showTitle=false&size=66069&status=done&style=none&taskId=ud00c24a1-19fc-4449-b64e-2f370887319&title=&width=603" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>在 <code>192.168.174.132</code>上配置 <code>frpc.ini</code></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633923526-be136b36-287b-4f42-b857-5d1081ebe0e9.png#averageHue=%23fefefe&clientId=ucbac2fec-0275-4&from=paste&height=186&id=ufc24fb53&originHeight=372&originWidth=540&originalType=binary&ratio=2&rotation=0&showTitle=false&size=48880&status=done&style=none&taskId=u13b92b31-8d39-488d-b7c2-f340081d25c&title=&width=270" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>启动 <code>frpc</code></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634008723-b2ef55bc-2c66-499b-a71e-eb614a589153.png#averageHue=%23171717&clientId=ucbac2fec-0275-4&from=paste&height=108&id=u731fe7c9&originHeight=216&originWidth=1832&originalType=binary&ratio=2&rotation=0&showTitle=false&size=60816&status=done&style=none&taskId=u30a4a37b-84df-4809-8f17-cb279b34fb0&title=&width=916" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>Server 端接收到连接，连接成功</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690633995014-59710187-d635-4caf-af29-8fd3e227e096.png#averageHue=%232c3544&clientId=ucbac2fec-0275-4&from=paste&height=76&id=u141f91b6&originHeight=152&originWidth=2236&originalType=binary&ratio=2&rotation=0&showTitle=false&size=60761&status=done&style=none&taskId=ua75e44a9-adbb-4718-8719-ca9c304ec20&title=&width=1118" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<ol>
+<li>使用 <code>Proxifier</code></li>
+</ol>
+<p>添加代理</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634964154-45fee137-73f2-43f5-aae8-677c00203870.png#averageHue=%232d2b2a&clientId=ucbac2fec-0275-4&from=paste&height=525&id=uadf31377&originHeight=1050&originWidth=1942&originalType=binary&ratio=2&rotation=0&showTitle=false&size=330976&status=done&style=none&taskId=u93fda4be-adc5-42bd-9261-c10dfa0a673&title=&width=971" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>设置规则</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690635003982-df743f7f-2c6f-4cc8-bb07-c78847921d01.png#averageHue=%23272625&clientId=ucbac2fec-0275-4&from=paste&height=237&id=ub18f4334&originHeight=474&originWidth=1630&originalType=binary&ratio=2&rotation=0&showTitle=false&size=141796&status=done&style=none&taskId=ub103930d-d411-4cd7-a4b1-942c348cfc8&title=&width=815" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>访问成功</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690635121417-3ba43dfb-46d0-4e92-94a4-590ed048e630.png#averageHue=%232e4736&clientId=ucbac2fec-0275-4&from=paste&height=360&id=u5edba409&originHeight=720&originWidth=2068&originalType=binary&ratio=2&rotation=0&showTitle=false&size=313881&status=done&style=none&taskId=uc297060f-f3f3-4af5-83cb-3f95e2e97a6&title=&width=1034" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<ol start="2">
+<li>使用浏览器插件&#x2F;配置系统代理</li>
+</ol>
+<p>使用 <code>SwitchyOmega</code> 插件配置代理</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634169846-7f6572a9-f924-4273-ba2a-a151303ea16c.png#averageHue=%23fbfbfb&clientId=ucbac2fec-0275-4&from=paste&height=471&id=u909899ef&originHeight=942&originWidth=2282&originalType=binary&ratio=2&rotation=0&showTitle=false&size=136958&status=done&style=none&taskId=ue59b0c9d-826d-44e0-add2-7f817c0222e&title=&width=1141" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>选择代理</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634197932-8bc0fa4f-5d90-4d46-8f6a-df8c1998813e.png#averageHue=%23faf6f5&clientId=ucbac2fec-0275-4&from=paste&height=415&id=u8e01b90f&originHeight=830&originWidth=440&originalType=binary&ratio=2&rotation=0&showTitle=false&size=58082&status=done&style=none&taskId=u3f957511-61fe-486a-b8f2-dd9e45b7de1&title=&width=220" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>访问成功</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634440609-2d441d13-bcb2-4489-975b-fd64c2ca3bc9.png#averageHue=%23838484&clientId=ucbac2fec-0275-4&from=paste&height=704&id=uf7b1204e&originHeight=1408&originWidth=2166&originalType=binary&ratio=2&rotation=0&showTitle=false&size=383021&status=done&style=none&taskId=u91412610-61a0-4f77-9023-cb500891122&title=&width=1083" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>系统代理同理，在 socks proxy 填上 server ip &amp; port 即可：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690634499538-f95e74b8-2b3d-4e5f-acc7-a4d39300596d.png#averageHue=%23292c30&clientId=ucbac2fec-0275-4&from=paste&height=419&id=u90b6c075&originHeight=838&originWidth=1336&originalType=binary&ratio=2&rotation=0&showTitle=false&size=140823&status=done&style=none&taskId=u8e47d2cf-eb66-45eb-849d-62b3b885607&title=&width=668" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="二层代理"><a href="#二层代理" class="headerlink" title="二层代理"></a>二层代理</h2><p>为了简便(懒)，不开那么多容器&#x2F;主机，直接在配置文件限制 Web 服务仅本机登录，正常访问是这样的：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690636473292-d46f1176-94e8-4cd5-9763-d9ca580aaf1b.png#averageHue=%23efefef&clientId=ucbac2fec-0275-4&from=paste&height=192&id=u7866b381&originHeight=384&originWidth=960&originalType=binary&ratio=2&rotation=0&showTitle=false&size=50441&status=done&style=none&taskId=u2bc47bce-4839-403f-934d-e04a2fdf6af&title=&width=480" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>单纯为了学习搭建代理，就不配置漏洞环境了(懒)，这里假设我们通过 <code>192.168.174.132</code> 打进了 <code>192.168.174.128</code>，需要用 <code>192.168.174.128</code>，继续搭建代理中转来渗透另一个网段。</p>
+<p><strong>访问路径：</strong><br><code>攻击机</code> -&gt; <code>VPS(跑frps的)</code> -&gt; <code>一层内网中转机(192.168.174.132)</code> -&gt; <code>二层内网中转机(192.168.174.128)</code> -&gt; <code>访问内网其它环境</code></p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>放在二层内网里的主机：<code>frpc.ini</code>，如 <code>192.168.174.128</code></p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs abnf">//frpc.ini<br><br>[common]<br>server_addr <span class="hljs-operator">=</span> <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span>  //一层内网主机地址<br>server_port <span class="hljs-operator">=</span> <span class="hljs-number">10809</span>  //一层内网主机监听端口<br><br>[socks5]<br><span class="hljs-attribute">type</span><span class="hljs-operator">=</span>tcp<br>remote_port <span class="hljs-operator">=</span> <span class="hljs-number">12346</span><br><span class="hljs-attribute">plugin</span> <span class="hljs-operator">=</span> socks5<br></code></pre></td></tr></table></figure>
+<p>放在一层内网里的主机：<code>frps.ini</code>，如  <code>192.168.174.132</code></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-comment">//frps.ini</span><br><span class="hljs-string"></span><br><span class="hljs-string">[common]</span><br>bind_port = <span class="hljs-number">10809</span><br></code></pre></td></tr></table></figure>
+<p><code>frps</code>:</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690637135848-0f7f971b-f062-4776-be7f-a914187e3e99.png#averageHue=%23191919&clientId=ucbac2fec-0275-4&from=paste&height=160&id=uaf5704a3&originHeight=280&originWidth=938&originalType=binary&ratio=2&rotation=0&showTitle=false&size=50510&status=done&style=none&taskId=u643c432b-0a5c-4a7b-9e81-a604cc76955&title=&width=536" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><code>frpc</code>:</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638105483-0226a579-3eea-452d-85ad-a32c40e62129.png#averageHue=%232c0f28&clientId=ucbac2fec-0275-4&from=paste&height=103&id=u60ed7ef4&originHeight=206&originWidth=1358&originalType=binary&ratio=2&rotation=0&showTitle=false&size=286458&status=done&style=none&taskId=u1ceb11e8-d4fd-49db-8889-fd5e38a3ace&title=&width=679" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>接收到了信号</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638000810-b8eaccc2-e8ca-4419-9c6d-b70cf72101b9.png#averageHue=%23131313&clientId=ucbac2fec-0275-4&from=paste&height=94&id=u534256eb&originHeight=188&originWidth=2210&originalType=binary&ratio=2&rotation=0&showTitle=false&size=53966&status=done&style=none&taskId=u4c50e9ed-180a-454a-9ad2-1a54133fedd&title=&width=1105" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="配置-Proxychains"><a href="#配置-Proxychains" class="headerlink" title="配置 Proxychains"></a>配置 Proxychains</h3><p>创建一个 Chains，并按顺序拖入代理，顺序从上到下</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638721553-00396903-f3cd-434a-abb8-da4f0b6ecd8d.png#averageHue=%232f2d2c&clientId=ucbac2fec-0275-4&from=paste&height=625&id=ud197a230&originHeight=1250&originWidth=1094&originalType=binary&ratio=2&rotation=0&showTitle=false&size=177113&status=done&style=none&taskId=u8613af51-952e-4d87-93be-b4e1e0eaab4&title=&width=547" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>配置后成功访问</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690638641127-fac0cedf-f1c7-4896-9116-4df420bc1c0d.png#averageHue=%23ababaa&clientId=ucbac2fec-0275-4&from=paste&height=714&id=u9fb340f7&originHeight=1428&originWidth=1930&originalType=binary&ratio=2&rotation=0&showTitle=false&size=614642&status=done&style=none&taskId=ue00004ad-3b5d-4401-b0db-a3716dc59e2&title=&width=965" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>多层代理的原理是一样的，上层代理（如一层）运行 <code>frps</code>，下一层（如二层）运行 <code>frpc</code>时的 <code>server</code>地址为一层的地址，端口为上层代理的监听端口 <code>(bind_port)</code>，设置代理时所填的 IP 为一层主机的 IP，端口填二层主机里的 <code>remote_port</code></p>
+<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued"></a>To be continued</h1><p>先整理了 frp，更多代理工具挖坑待填。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web/" class="print-no-link">#Web</a>
+      
+        <a href="/tags/Network/" class="print-no-link">#Network</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>内网穿透</div>
+      <div>https://52hertz.tech/2023/07/29/nat/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Ustin1an</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年7月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/20/WebSearching/" title="Web信息收集">
+                        <span class="hidden-mobile">Web信息收集</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://52hertz.tech/2023/07/29/nat/';
+          this.page.identifier = '/2023/07/29/nat/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
