@@ -43,8 +43,24 @@
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/639e7c8da84d066eb71cb9cd51889772">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/26bd547fe709f04e66ea148faf428542">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/8851042f2e5d2f4175d6741912e5ceeb">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/524069ee3316300650fd645fb29bea4a">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/be705e6c9ae39c5490590f51905a84cb">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/35af87acfe9e48f789e66c92196029af">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/00574c2960b8fb17a2cf954a8daadb0e">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/19e6d2ac53acccd565d4492519a10816">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/306c4b46e8283096d3e90fd9f77526b1">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/17122e2829121500aa84197db50c1a51">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/c28994af0616e4a4e62a4cb8926997ae">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/88ac5e58e178ecc1bed16625fd945b00">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/3df322bf1c7b6f6d35c894c5e1ae81a1">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/db4a4dd070da6b3b59b12b986bf1ef4f">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/1ccdd38b6a951670e661d0fe6a30d6b8">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/5e08673717ab06b1185397ff1c07a49c">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/80a649ef1cc60b5598c67a4e31bad8b3">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/dc1251c2e765e5d0d68972fb6adeb411">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/06ba78317dbe8465354ef75eb5ccfd01">
 <meta property="article:published_time" content="2023-07-29T14:02:13.000Z">
-<meta property="article:modified_time" content="2023-07-29T14:11:07.349Z">
+<meta property="article:modified_time" content="2023-07-30T06:28:06.470Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="Network">
@@ -242,7 +258,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          3.1k 字
         
       </span>
     
@@ -253,7 +269,7 @@
         
         
         
-          14 分钟
+          27 分钟
         
       </span>
     
@@ -358,6 +374,51 @@
 <p>配置后成功访问</p>
 <p><img src="https://img.tucang.cc/api/image/show/8851042f2e5d2f4175d6741912e5ceeb" srcset="/img/loading.gif" lazyload alt="image.png"></p>
 <h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>多层代理的原理是一样的，上层代理（如一层）运行 <code>frps</code>，下一层（如二层）运行 <code>frpc</code>时的 <code>server</code>地址为一层的地址，端口为上层代理的监听端口 <code>(bind_port)</code>，设置代理时所填的 IP 为一层主机的 IP，端口填二层主机里的 <code>remote_port</code></p>
+<h1 id="IOX"><a href="#IOX" class="headerlink" title="IOX"></a>IOX</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>端口转发 &amp; 内网代理工具，功能类似于 <code>lcx/ew</code>，但是比它们更好</p>
+<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><h3 id="fwd"><a href="#fwd" class="headerlink" title="fwd"></a>fwd</h3><p>监听 <code>0.0.0.0:8888</code> 和 <code>0.0.0.0:9999</code>，将两个连接间的流量转发</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./iox fwd -l 8888 -l 9999<br></code></pre></td></tr></table></figure>
+
+<p>监听 <code>0.0.0.0:8888</code>，把流量转发到 <code>1.1.1.1:9999</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./iox fwd -l 8888 -r 1.1.1.1:9999<br></code></pre></td></tr></table></figure>
+
+<p>连接 <code>1.1.1.1:8888</code> 和 <code>1.1.1.1:9999</code>, 在两个连接间转发</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dns">./iox fwd -r <span class="hljs-number">1.1.1.1</span>:<span class="hljs-number">8888</span> -r <span class="hljs-number">1.1.1.1</span>:<span class="hljs-number">9999</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="proxy"><a href="#proxy" class="headerlink" title="proxy"></a>proxy</h3><p>在本地 <code>0.0.0.0:1080</code>启动 Socks5 服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./iox proxy -l 1080<br></code></pre></td></tr></table></figure>
+
+<p>在被控机开启 Socks5 服务，将服务转发到公网 VPS<br>在 VPS 上转发 <code>0.0.0.0:9999</code> 到 <code>0.0.0.0:1080</code><br>你必须将两条命令成对使用，因为它内部包含了一个简单的协议来控制回连</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">./iox</span> proxy -r 1.1.1.1<span class="hljs-function">:9999</span><br><span class="hljs-string">./iox</span> proxy -l 9999 -l 1080       <span class="hljs-string">//</span> 注意，这两个端口是有顺序的<br></code></pre></td></tr></table></figure>
+
+<p>接着连接内网主机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># proxychains.conf</span><br><span class="hljs-comment"># socks5://1.1.1.1:1080</span><br><br>$ proxychains rdesktop 192.168.0.100:3389<br></code></pre></td></tr></table></figure>
+
+<p>详细可浏览 <a target="_blank" rel="noopener" href="https://github.com/EddieIvan01/iox/blob/master/README.md">官方文档</a></p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>所有的参数都是统一的。<code>-l/--local</code>意为监听本地端口；<code>-r/--remote</code> 意为连接远端主机<br>注意: <code>v0.4</code> 版本之后，<code>-l/--local</code>参数可以指定监听哪个 IP。如果只指定了端口，则默认是 <code>0.0.0.0:PORT</code></p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dns">-l <span class="hljs-number">127.0.0.1</span>:<span class="hljs-number">9999</span>      -l *<span class="hljs-number">127.0.0.1</span>:<span class="hljs-number">9999</span>      # <span class="hljs-number">127.0.0.1</span>:<span class="hljs-number">9999</span><br>-l <span class="hljs-number">9999</span>                -l *<span class="hljs-number">9999</span>                # <span class="hljs-number">0.0.0.0</span>:<span class="hljs-number">9999</span><br><br>`-l :<span class="hljs-number">9999</span>`也是可以的，但并不推荐。因为`-l *:<span class="hljs-number">9999</span>`(监听<span class="hljs-number">0.0.0.0</span>:<span class="hljs-number">9999</span>，开启加密)会有歧义<br></code></pre></td></tr></table></figure>
+
+<h2 id="开搞"><a href="#开搞" class="headerlink" title="开搞"></a>开搞</h2><p>搞了 docker 靶场（终于）</p>
+<ul>
+<li><code>192.168.100.10</code> 是跳板机，开启了 Shiro 服务，外网可访问</li>
+<li><code>192.168.100.11</code> 是内网服务器，开启了 st2，外网不可访问</li>
+</ul>
+<p><img src="https://img.tucang.cc/api/image/show/524069ee3316300650fd645fb29bea4a" srcset="/img/loading.gif" lazyload alt="image.png"><br>修改 <code>/etc/proxychains.conf</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">socks5  0.0.0.0 10888<br></code></pre></td></tr></table></figure>
+
+<p>监听并映射端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./iox proxy -l 22222 -l 10888<br></code></pre></td></tr></table></figure>
+
+<p>利用过程不多说，写入🐎后上传 iox<br><img src="https://img.tucang.cc/api/image/show/be705e6c9ae39c5490590f51905a84cb" srcset="/img/loading.gif" lazyload alt="image.png"><br>在目标机器上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./iox proxy -r x.x.x.x:22222<br></code></pre></td></tr></table></figure>
+
+<p>接收到连接<br><img src="https://img.tucang.cc/api/image/show/35af87acfe9e48f789e66c92196029af" srcset="/img/loading.gif" lazyload alt="image.png"><br>配置 <code>Proxifier</code> 或浏览器插件都可以，代理地址为 <code>x.x.x.x:10888</code>，<code>22222</code> 是客户端连接的端口，<code>10888</code> 是我们代理连接的端口，<code>iox</code> 会对 <code>22222</code> 端口和 <code>10888</code> 端口的流量进行转发，注意顺序，<code>22222</code> 和 <code>10888</code> 不能互换。</p>
+<p>可用内网地址访问 Shiro<br><img src="https://img.tucang.cc/api/image/show/00574c2960b8fb17a2cf954a8daadb0e" srcset="/img/loading.gif" lazyload alt="image.png"><br>访问 st2 的机子 <code>192.168.100.11:8080</code><br>Docker 中有 struts2 全版本的漏洞平台，需要检测哪一个漏洞就直接更改地址即可，这里以 <code>S2-001</code>为例：<br><code>192.168.100.11:8080/S2-001/</code><br><img src="https://img.tucang.cc/api/image/show/19e6d2ac53acccd565d4492519a10816" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>至此内网转发成功</p>
+<p><img src="https://img.tucang.cc/api/image/show/306c4b46e8283096d3e90fd9f77526b1" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>地址也确认是 <code>192.168.100.11</code></p>
+<p><img src="https://img.tucang.cc/api/image/show/17122e2829121500aa84197db50c1a51" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>进接着添加新网络，st2 有两个网卡，IP 为 <code>192.168.1.2</code><br><img src="https://img.tucang.cc/api/image/show/c28994af0616e4a4e62a4cb8926997ae" srcset="/img/loading.gif" lazyload alt="image.png"><br>这个网段内存在 <code>192.168.1.3</code>，开启了 <code>thinkphp5</code> 服务<br><code>Shiro1 192.168.100.10</code> 的主机只在一个网络内，因此与 tk5 是不通的<br><img src="https://img.tucang.cc/api/image/show/88ac5e58e178ecc1bed16625fd945b00" srcset="/img/loading.gif" lazyload alt="image.png"><br>在 <code>st2 192.168.100.11</code>里可以通<br><img src="https://img.tucang.cc/api/image/show/3df322bf1c7b6f6d35c894c5e1ae81a1" srcset="/img/loading.gif" lazyload alt="image.png"><br>现在为双网卡<br><img src="https://img.tucang.cc/api/image/show/db4a4dd070da6b3b59b12b986bf1ef4f" srcset="/img/loading.gif" lazyload alt="image.png"><br>上传小马<br><img src="https://img.tucang.cc/api/image/show/1ccdd38b6a951670e661d0fe6a30d6b8" srcset="/img/loading.gif" lazyload alt="image.png"><br>上传大马<br><img src="https://img.tucang.cc/api/image/show/5e08673717ab06b1185397ff1c07a49c" srcset="/img/loading.gif" lazyload alt="image.png"><br>连接上去后开始上传 iox 建立代理<br><img src="https://img.tucang.cc/api/image/show/80a649ef1cc60b5598c67a4e31bad8b3" srcset="/img/loading.gif" lazyload alt="image.png"><br>在 <code>192.168.100.10</code> 上开启监听 <code>2222</code> 和 <code>1080</code>，<code>192.168.100.11</code> 上连接 <code>2222</code><br><img src="https://img.tucang.cc/api/image/show/dc1251c2e765e5d0d68972fb6adeb411" srcset="/img/loading.gif" lazyload alt="image.png"><br>设置 <code>chains</code>，连接成功<br><img src="https://img.tucang.cc/api/image/show/06ba78317dbe8465354ef75eb5ccfd01" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="Summary-1"><a href="#Summary-1" class="headerlink" title="Summary"></a>Summary</h2><p>iox 相比起 frp 是更加的简便，iox yyds！</p>
 <h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued"></a>To be continued</h1><p>先整理了 frp，更多代理工具挖坑待填。</p>
 
                 
