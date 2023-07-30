@@ -16,44 +16,46 @@
   <meta name="author" content="Ustin1an">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Frp根据对应的操作系统及架构，从 Release 页面下载最新版本的程序。将 frps 及 frps.ini 放到具有公网 IP 的机器上。( s - server )将 frpc 及 frpc.ini 放到处于内网环境的机器上。( c - client ) 访问路径：攻击机 -&gt; VPS(跑frps的) -&gt; 内网中转机(跑frpc的) -&gt; 访问内网其它环境 配置 frps">
+    <meta name="description" content="简介创建一个自定义网络12docker network create net1docker network create --subnet&#x3D;192.168.1.0&#x2F;24 --gateway&#x3D;192.168.1.1 mynetwork 在创建容器时指定网络123docker run --name container1 --net net1 -d image1docker run --name con">
 <meta property="og:type" content="article">
-<meta property="og:title" content="内网穿透">
-<meta property="og:url" content="https://52hertz.tech/2023/07/29/nat/index.html">
+<meta property="og:title" content="Docker 搭建多层内网靶场环境">
+<meta property="og:url" content="https://52hertz.tech/2023/07/30/Docker_vuln/index.html">
 <meta property="og:site_name" content="42">
-<meta property="og:description" content="Frp根据对应的操作系统及架构，从 Release 页面下载最新版本的程序。将 frps 及 frps.ini 放到具有公网 IP 的机器上。( s - server )将 frpc 及 frpc.ini 放到处于内网环境的机器上。( c - client ) 访问路径：攻击机 -&gt; VPS(跑frps的) -&gt; 内网中转机(跑frpc的) -&gt; 访问内网其它环境 配置 frps">
+<meta property="og:description" content="简介创建一个自定义网络12docker network create net1docker network create --subnet&#x3D;192.168.1.0&#x2F;24 --gateway&#x3D;192.168.1.1 mynetwork 在创建容器时指定网络123docker run --name container1 --net net1 -d image1docker run --name con">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/0545d9a0cd6ae6c5aa3ac3ede78f6b3f">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/aeb9e24cc1e3c68a33e3df94970be24e">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/473fd78b3f112b5a1f8169eb514737d1">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/6da6f3dff4c6d53e116aa015bd76dcd0">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/8f34820b0ed6da08a21e837cbebc628d">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/c52e5ec63468366a860c99ff57be729d">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/0e38addc73002f10fb5163bcc8fedea5">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/78c0c375936bee50f6a222950ab13939">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/f49d7f233b9af27aaeca20abe65a2a4b">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/506aaa46205c4d4d0d1cff98a97ce32b">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/a45074f92f61e3550a28fdc6e4e5babd">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/ad2aff088ee0df89fb1ecc44ae4dc70b">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/87e923a2cb0f13c67251ee8b577060e6">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/487d27c526ebd1c9d101205f7c22a25e">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/c648787bfe55e205a4ec7c463be64029">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/9ba64eb2d5016d853b47560c278cb3b4">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/9093f04dbadaaa212d308f8257c9dc7a">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/639e7c8da84d066eb71cb9cd51889772">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/26bd547fe709f04e66ea148faf428542">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/8851042f2e5d2f4175d6741912e5ceeb">
-<meta property="article:published_time" content="2023-07-29T14:02:13.000Z">
-<meta property="article:modified_time" content="2023-07-29T14:11:07.349Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690686945272-c1169e4b-94f7-4a1b-a893-84c0e22241b3.png#averageHue=%23484d52&clientId=u61598f1f-da41-4&from=paste&height=56&id=kgblh&originHeight=112&originWidth=1470&originalType=binary&ratio=2&rotation=0&showTitle=false&size=47830&status=done&style=none&taskId=ubc4a93c1-f96f-49a0-ba3d-fef46dcd999&title=&width=735">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/aa7cb89a7618d43851ee5f4942bd0b85">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/2de591d2a9661a23b0fa03b765327dce">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/a46c99c7123d364829264d3fb4d848cc">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/524069ee3316300650fd645fb29bea4a">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/1b7c0e0831c730466219f7571afb2a1e">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/bac78fb700ca9319204d2b2aca8eb7c9">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/54531772102872403302d6e056e7da6b">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/6d076bf08981bb9290a185b9560f5f04">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/60275548d070f14557a7e10bba3637cf">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/d888233ac7117032124fbb293c3db9a7">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/c521aa03ae33f66f5e7ab82e53ce90eb">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/3f15eaed2786da33a09f04d7c7db2587">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/660fa412a234403ffd292e4ba45b6433">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/11dcb3a6378c34c95dddce373982201f">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/9ebb53a9e4958c0411f6dd0ab4a165da">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/88ac5e58e178ecc1bed16625fd945b00">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/3df322bf1c7b6f6d35c894c5e1ae81a1">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/bee46fee34cfd52be156716fc1ee96bf">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/1c6329d388b62fdd703ae6fd7174fc53">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/06ba78317dbe8465354ef75eb5ccfd01">
+<meta property="article:published_time" content="2023-07-30T06:15:36.000Z">
+<meta property="article:modified_time" content="2023-07-30T06:15:42.108Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="Network">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/0545d9a0cd6ae6c5aa3ac3ede78f6b3f">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690686945272-c1169e4b-94f7-4a1b-a893-84c0e22241b3.png#averageHue=%23484d52&clientId=u61598f1f-da41-4&from=paste&height=56&id=kgblh&originHeight=112&originWidth=1470&originalType=binary&ratio=2&rotation=0&showTitle=false&size=47830&status=done&style=none&taskId=ubc4a93c1-f96f-49a0-ba3d-fef46dcd999&title=&width=735">
   
   
   
-  <title>内网穿透 - 42</title>
+  <title>Docker 搭建多层内网靶场环境 - 42</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -219,7 +221,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="内网穿透"></span>
+            <span id="subtitle" data-typed-text="Docker 搭建多层内网靶场环境"></span>
           
         </div>
 
@@ -230,8 +232,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-07-29 22:02" pubdate>
-          2023年7月29日 晚上
+        <time datetime="2023-07-30 14:15" pubdate>
+          2023年7月30日 下午
         </time>
       </span>
     
@@ -242,7 +244,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          1.4k 字
         
       </span>
     
@@ -253,7 +255,7 @@
         
         
         
-          14 分钟
+          12 分钟
         
       </span>
     
@@ -290,75 +292,32 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">内网穿透</h1>
+            <h1 id="seo-header">Docker 搭建多层内网靶场环境</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Frp"><a href="#Frp" class="headerlink" title="Frp"></a>Frp</h1><p>根据对应的操作系统及架构，从 <a target="_blank" rel="noopener" href="https://github.com/tnodir/fort">Release</a> 页面下载最新版本的程序。<br>将 <strong>frps</strong> 及 <strong>frps.ini</strong> 放到具有<strong>公网</strong> IP 的机器上。( s - server )<br>将 <strong>frpc</strong> 及 <strong>frpc.ini</strong> 放到处于<strong>内网</strong>环境的机器上。( c - client )</p>
-<p>访问路径：<br><code>攻击机</code> -&gt; <code>VPS(跑frps的)</code> -&gt; <code>内网中转机(跑frpc的)</code> -&gt; <code>访问内网其它环境</code></p>
-<h2 id="配置-frps"><a href="#配置-frps" class="headerlink" title="配置 frps"></a>配置 frps</h2><p>修改 <code>frps.ini</code> 文件，这里使用了最简化的配置</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># frps.ini</span><br><span class="hljs-section">[common]</span><br><span class="hljs-attr">bind_port</span> = <span class="hljs-number">1000</span><br></code></pre></td></tr></table></figure>
-<p>启动 <code>frps</code></p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle">.<span class="hljs-regexp">/frps -c ./</span>frps.ini<br>如果需要后台运行：<br>nohup frps -c frps.ini &gt;<span class="hljs-regexp">/dev/</span><span class="hljs-keyword">null</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br></code></pre></td></tr></table></figure>
-<h2 id="配置-frpc"><a href="#配置-frpc" class="headerlink" title="配置 frpc"></a>配置 frpc</h2><p>修改 frpc.ini 文件，假设 frps 所在服务器的公网 IP 为 <code>x.x.x.x</code></p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># frpc.ini</span><br>[common]<br>server_addr = IP <span class="hljs-comment">#vps地址 </span><br>server_port = 10808 <span class="hljs-comment">#vps监听端口 </span><br><br>[plugin_socks]<br>type = tcp<br>remote_port = 12345 <span class="hljs-comment">#代理端口 </span><br>plugin = socks5<br>plugin_user =<br>plugin_passwd = <span class="hljs-comment">#代理密码</span><br></code></pre></td></tr></table></figure>
-<p>启动 <code>frpc</code></p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle">.<span class="hljs-regexp">/frpc -c ./</span>frpc.ini<br>如果需要后台运行：<br>nohup frpc -c frpc.ini &gt;<span class="hljs-regexp">/dev/</span><span class="hljs-keyword">null</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br></code></pre></td></tr></table></figure>
-<h2 id="连接代理"><a href="#连接代理" class="headerlink" title="连接代理"></a>连接代理</h2><p>假设我们已经控制了一台内网机器，内网中存在另一个主机开启了 Web 服务。</p>
-<p><img src="https://img.tucang.cc/api/image/show/0545d9a0cd6ae6c5aa3ac3ede78f6b3f" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>网络为 <code>192.168.174.0/24</code> 段<br>存在 Web 服务的主机 IP 为 <code>192.168.174.128</code>，我们正常是访问不了的</p>
-<p><img src="https://img.tucang.cc/api/image/show/aeb9e24cc1e3c68a33e3df94970be24e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>写好 <code>frps</code> 配置文件</p>
-<p><img src="https://img.tucang.cc/api/image/show/473fd78b3f112b5a1f8169eb514737d1" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>启动 <code>frps</code></p>
-<p><img src="https://img.tucang.cc/api/image/show/6da6f3dff4c6d53e116aa015bd76dcd0" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>在 <code>192.168.174.132</code>上配置 <code>frpc.ini</code></p>
-<p><img src="https://img.tucang.cc/api/image/show/8f34820b0ed6da08a21e837cbebc628d" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>启动 <code>frpc</code></p>
-<p><img src="https://img.tucang.cc/api/image/show/c52e5ec63468366a860c99ff57be729d" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>Server 端接收到连接，连接成功</p>
-<p><img src="https://img.tucang.cc/api/image/show/0e38addc73002f10fb5163bcc8fedea5" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<ol>
-<li>使用 <code>Proxifier</code></li>
-</ol>
-<p>添加代理</p>
-<p><img src="https://img.tucang.cc/api/image/show/78c0c375936bee50f6a222950ab13939" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>设置规则</p>
-<p><img src="https://img.tucang.cc/api/image/show/f49d7f233b9af27aaeca20abe65a2a4b" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>访问成功</p>
-<p><img src="https://img.tucang.cc/api/image/show/506aaa46205c4d4d0d1cff98a97ce32b" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<ol start="2">
-<li>使用浏览器插件&#x2F;配置系统代理</li>
-</ol>
-<p>使用 <code>SwitchyOmega</code> 插件配置代理</p>
-<p><img src="https://img.tucang.cc/api/image/show/a45074f92f61e3550a28fdc6e4e5babd" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>选择代理</p>
-<p><img src="https://img.tucang.cc/api/image/show/ad2aff088ee0df89fb1ecc44ae4dc70b" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>访问成功</p>
-<p><img src="https://img.tucang.cc/api/image/show/87e923a2cb0f13c67251ee8b577060e6" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>系统代理同理，在 socks proxy 填上 server ip &amp; port 即可：</p>
-<p><img src="https://img.tucang.cc/api/image/show/487d27c526ebd1c9d101205f7c22a25e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="二层代理"><a href="#二层代理" class="headerlink" title="二层代理"></a>二层代理</h2><p>为了简便(懒)，不开那么多容器&#x2F;主机，直接在配置文件限制 Web 服务仅本机登录，正常访问是这样的：</p>
-<p><img src="https://img.tucang.cc/api/image/show/c648787bfe55e205a4ec7c463be64029" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>单纯为了学习搭建代理，就不配置漏洞环境了(懒)，这里假设我们通过 <code>192.168.174.132</code> 打进了 <code>192.168.174.128</code>，需要用 <code>192.168.174.128</code>，继续搭建代理中转来渗透另一个网段。</p>
-<p><strong>访问路径：</strong><br><code>攻击机</code> -&gt; <code>VPS(跑frps的)</code> -&gt; <code>一层内网中转机(192.168.174.132)</code> -&gt; <code>二层内网中转机(192.168.174.128)</code> -&gt; <code>访问内网其它环境</code></p>
-<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>放在二层内网里的主机：<code>frpc.ini</code>，如 <code>192.168.174.128</code></p>
-<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs abnf">//frpc.ini<br><br>[common]<br>server_addr <span class="hljs-operator">=</span> <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span>  //一层内网主机地址<br>server_port <span class="hljs-operator">=</span> <span class="hljs-number">10809</span>  //一层内网主机监听端口<br><br>[socks5]<br><span class="hljs-attribute">type</span><span class="hljs-operator">=</span>tcp<br>remote_port <span class="hljs-operator">=</span> <span class="hljs-number">12346</span><br><span class="hljs-attribute">plugin</span> <span class="hljs-operator">=</span> socks5<br></code></pre></td></tr></table></figure>
-<p>放在一层内网里的主机：<code>frps.ini</code>，如  <code>192.168.174.132</code></p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-comment">//frps.ini</span><br><span class="hljs-string"></span><br><span class="hljs-string">[common]</span><br>bind_port = <span class="hljs-number">10809</span><br></code></pre></td></tr></table></figure>
-<p><code>frps</code>:</p>
-<p><img src="https://img.tucang.cc/api/image/show/9ba64eb2d5016d853b47560c278cb3b4" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p><code>frpc</code>:</p>
-<p><img src="https://img.tucang.cc/api/image/show/9093f04dbadaaa212d308f8257c9dc7a" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>接收到了信号</p>
-<p><img src="https://img.tucang.cc/api/image/show/639e7c8da84d066eb71cb9cd51889772" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h3 id="配置-Proxychains"><a href="#配置-Proxychains" class="headerlink" title="配置 Proxychains"></a>配置 Proxychains</h3><p>创建一个 Chains，并按顺序拖入代理，顺序从上到下</p>
-<p><img src="https://img.tucang.cc/api/image/show/26bd547fe709f04e66ea148faf428542" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>配置后成功访问</p>
-<p><img src="https://img.tucang.cc/api/image/show/8851042f2e5d2f4175d6741912e5ceeb" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>多层代理的原理是一样的，上层代理（如一层）运行 <code>frps</code>，下一层（如二层）运行 <code>frpc</code>时的 <code>server</code>地址为一层的地址，端口为上层代理的监听端口 <code>(bind_port)</code>，设置代理时所填的 IP 为一层主机的 IP，端口填二层主机里的 <code>remote_port</code></p>
-<h1 id="To-be-continued"><a href="#To-be-continued" class="headerlink" title="To be continued"></a>To be continued</h1><p>先整理了 frp，更多代理工具挖坑待填。</p>
+                <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><h2 id="创建一个自定义网络"><a href="#创建一个自定义网络" class="headerlink" title="创建一个自定义网络"></a>创建一个自定义网络</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network create net1<br>docker network create --subnet=192.168.1.0/24 --gateway=192.168.1.1 mynetwork<br></code></pre></td></tr></table></figure>
+<h2 id="在创建容器时指定网络"><a href="#在创建容器时指定网络" class="headerlink" title="在创建容器时指定网络"></a>在创建容器时指定网络</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run --name container1 --net net1 -d image1<br>docker run --name container2 --net net1 -d image2<br>docker run -itd --name mycontainer --network mynetwork --ip 192.168.1.10 busybox<br></code></pre></td></tr></table></figure>
+<h2 id="在容器已运行的情况下加入网络"><a href="#在容器已运行的情况下加入网络" class="headerlink" title="在容器已运行的情况下加入网络"></a>在容器已运行的情况下加入网络</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network connect 网络名 容器名<br>docker network connect net1 container1<br></code></pre></td></tr></table></figure>
+<h2 id="启动容器并测试"><a href="#启动容器并测试" class="headerlink" title="启动容器并测试"></a>启动容器并测试</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker start container1<br>docker start container2<br></code></pre></td></tr></table></figure>
+<h2 id="测试容器之间的连接"><a href="#测试容器之间的连接" class="headerlink" title="测试容器之间的连接"></a>测试容器之间的连接</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> -it container1 ping container2<br></code></pre></td></tr></table></figure>
+<h1 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h1><p>首先创建一个靶场网络，命名为 <code>vuln_network</code>，设置 IP 段为 <code>192.168.100.0/24</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker network create --subnet=192.168.100.0/24 vuln_network<br></code></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/26429680/1690686945272-c1169e4b-94f7-4a1b-a893-84c0e22241b3.png#averageHue=%23484d52&clientId=u61598f1f-da41-4&from=paste&height=56&id=kgblh&originHeight=112&originWidth=1470&originalType=binary&ratio=2&rotation=0&showTitle=false&size=47830&status=done&style=none&taskId=ubc4a93c1-f96f-49a0-ba3d-fef46dcd999&title=&width=735" srcset="/img/loading.gif" lazyload alt="image.png"><br>先搭建一个 <code>Shiro</code>来助助兴</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker pull vulfocus/shiro-cve_2016_4437:latest<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/aa7cb89a7618d43851ee5f4942bd0b85" srcset="/img/loading.gif" lazyload alt="image.png"><br><code>medicean/vulapps:s_shiro_1</code> 也可以<br><img src="https://img.tucang.cc/api/image/show/2de591d2a9661a23b0fa03b765327dce" srcset="/img/loading.gif" lazyload alt="image.png"><br>在运行容器的时候将它分配到我们新建的网络并给他分配一个 IP 地址，因为需要一个服务外网可访问作为跳板，因此 <code>-p</code> 转发一下端口，以后的机子可以不用映射到外网。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker run --name=shiro1 --net=vuln_network --ip=192.168.100.10 -itd -p23333:8080 vulfocus/shiro-cve_2016_4437:latest<br><span class="hljs-comment"># --name 命名</span><br><span class="hljs-comment"># --net 加入到某网络</span><br><span class="hljs-comment"># --ip 指定ip</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/a46c99c7123d364829264d3fb4d848cc" srcset="/img/loading.gif" lazyload alt="image.png"><br>访问主机的 23333 端口<br><img src="https://img.tucang.cc/api/image/show/524069ee3316300650fd645fb29bea4a" srcset="/img/loading.gif" lazyload alt="image.png"><br>尝试利用一波<br><img src="https://img.tucang.cc/api/image/show/1b7c0e0831c730466219f7571afb2a1e" srcset="/img/loading.gif" lazyload alt="image.png"><br><strong>注</strong>：靶场里环境可能比较纯净，<code>ifconfig</code> 的命令都没有<br>可以用 <code>ip addr</code><br>如果需要用到其它命令，自己进容器安装下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo docker <span class="hljs-built_in">exec</span> -it shiro1 bash<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/bac78fb700ca9319204d2b2aca8eb7c9" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">apt-get install net-tools<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/54531772102872403302d6e056e7da6b" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://img.tucang.cc/api/image/show/6d076bf08981bb9290a185b9560f5f04" srcset="/img/loading.gif" lazyload alt="image.png"><br>接下来再安装一个st2<br><img src="https://img.tucang.cc/api/image/show/60275548d070f14557a7e10bba3637cf" srcset="/img/loading.gif" lazyload alt="image.png"><br>外部没有途径访问到，因此 <code>192.168.100.10</code> 便是跳板机<br><img src="https://img.tucang.cc/api/image/show/d888233ac7117032124fbb293c3db9a7" srcset="/img/loading.gif" lazyload alt="image.png"><br>现在两个机子都配好了<br><img src="https://img.tucang.cc/api/image/show/c521aa03ae33f66f5e7ab82e53ce90eb" srcset="/img/loading.gif" lazyload alt="image.png"><br>当然还可以用命令加入网络</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network connect 网络名 容器名<br></code></pre></td></tr></table></figure>
+<p>创建一个新网络，地址为 <code>192.168.1.0/24</code><br><img src="https://img.tucang.cc/api/image/show/3f15eaed2786da33a09f04d7c7db2587" srcset="/img/loading.gif" lazyload alt="image.png"><br>将 st2 的容器加入到网络中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network connect vuln_network2 st2<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/660fa412a234403ffd292e4ba45b6433" srcset="/img/loading.gif" lazyload alt="image.png"><br>现在为双网卡，<code>ip addr</code>：<br><img src="https://img.tucang.cc/api/image/show/11dcb3a6378c34c95dddce373982201f" srcset="/img/loading.gif" lazyload alt="image.png"><br>同时添加一台 <code>thinkphp5</code>的机子，添加进 <code>vuln_network2</code><br><img src="https://img.tucang.cc/api/image/show/9ebb53a9e4958c0411f6dd0ab4a165da" srcset="/img/loading.gif" lazyload alt="image.png"><br><code>Shiro1 192.168.100.10</code> 的主机只在一个网络内，因此与 tk5 是不通的<br><img src="https://img.tucang.cc/api/image/show/88ac5e58e178ecc1bed16625fd945b00" srcset="/img/loading.gif" lazyload alt="image.png"><br>在 <code>st2 192.168.100.11</code>里可以通<br><img src="https://img.tucang.cc/api/image/show/3df322bf1c7b6f6d35c894c5e1ae81a1" srcset="/img/loading.gif" lazyload alt="image.png"><br>现在就有了两个网络 <code>vuln_network</code> 和 <code>vuln_network2</code><br><img src="https://img.tucang.cc/api/image/show/bee46fee34cfd52be156716fc1ee96bf" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://img.tucang.cc/api/image/show/1c6329d388b62fdd703ae6fd7174fc53" srcset="/img/loading.gif" lazyload alt="image.png"><br>其中只有 <code>192.168.100.10</code>映射到外网，可以通过此主机进行多层渗透训练。<br>做了二层代理后访问 <code>192.168.1.3</code>：<br><img src="https://img.tucang.cc/api/image/show/06ba78317dbe8465354ef75eb5ccfd01" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>原理就是<code>创建网络</code>，<code>将容器加进网络</code>，还可以用 <code>docker swarm</code> 进行集群管理，以后再探索。</p>
 
                 
               </div>
@@ -377,7 +336,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  <a href="/categories/Docker/" class="category-chain-item">Docker</a>
   
   
 
@@ -396,6 +355,8 @@
       
         <a href="/tags/Network/" class="print-no-link">#Network</a>
       
+        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
+      
     </div>
   
 </div>
@@ -406,8 +367,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>内网穿透</div>
-      <div>https://52hertz.tech/2023/07/29/nat/</div>
+      <div>Docker 搭建多层内网靶场环境</div>
+      <div>https://52hertz.tech/2023/07/30/Docker_vuln/</div>
     </div>
     <div class="license-meta">
       
@@ -419,7 +380,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年7月29日</div>
+          <div>2023年7月30日</div>
         </div>
       
       
@@ -451,18 +412,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/30/Docker_vuln/" title="Docker 搭建多层内网靶场环境">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Docker 搭建多层内网靶场环境</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/07/20/WebSearching/" title="Web信息收集">
-                        <span class="hidden-mobile">Web信息收集</span>
+                      <a href="/2023/07/29/nat/" title="内网穿透">
+                        <span class="hidden-mobile">内网穿透</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -482,8 +437,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://52hertz.tech/2023/07/29/nat/';
-          this.page.identifier = '/2023/07/29/nat/';
+          this.page.url = 'https://52hertz.tech/2023/07/30/Docker_vuln/';
+          this.page.identifier = '/2023/07/30/Docker_vuln/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');
