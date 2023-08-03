@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ava.jpg">
+  <link rel="icon" href="/img/ava.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Ustin1an">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="验证码获取测试接口：https:&#x2F;&#x2F;data.gdcic.net&#x2F;Dop&#x2F;CheckCode.aspx?codemark&#x3D;408.15173910730016 BurpSuite插件-CaptchaKiller原 GitHub 项目地址：https:&#x2F;&#x2F;github.com&#x2F;c0ny1&#x2F;captcha-killer 修改版 GitHub 项目地址：https:&#x2F;&#x2F;github.com&#x2F;f0ng&#x2F;c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OCR-验证码自动识别">
+<meta property="og:url" content="https://52hertz.tech/2023/08/03/OCR_Captcha/index.html">
+<meta property="og:site_name" content="42">
+<meta property="og:description" content="验证码获取测试接口：https:&#x2F;&#x2F;data.gdcic.net&#x2F;Dop&#x2F;CheckCode.aspx?codemark&#x3D;408.15173910730016 BurpSuite插件-CaptchaKiller原 GitHub 项目地址：https:&#x2F;&#x2F;github.com&#x2F;c0ny1&#x2F;captcha-killer 修改版 GitHub 项目地址：https:&#x2F;&#x2F;github.com&#x2F;f0ng&#x2F;c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/f9961757767e711bc80fe11cc5ff1ab6">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/9abd4bb26272c6aea51c5a8ba86ed47b">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/e54f497608ab49ea334975c9f88b52b4">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/79c7a2463358abd3fecfa3c6dc61a711">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/cdb56f356eef6b51a632db2755821df0">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/8b000c6dd8010f19b8101d226d4ae4ec">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/cf6eb70e155a4798dfc6996ac036dcad">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/459083197cd9e9ff258b060e982591df">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/c4e315c5b1c4449763105df3e22a2e2f">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/77437bfa8af63307c1a785e3aa35de5d">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/9cb952cb61a50799feaee78a4bea3ded">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/4dc2a3f1ba37abf3d1a2c6b75525f84b">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/df3e618e084a02d1050071e5a1b4efad">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/ee3cb3bf428479460d88ec565abd5016">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/493a073394c0686ce528ed88e897b129">
+<meta property="article:published_time" content="2023-08-03T08:22:33.000Z">
+<meta property="article:modified_time" content="2023-08-03T08:22:23.787Z">
+<meta property="article:author" content="Ustin1an">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="OCR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/f9961757767e711bc80fe11cc5ff1ab6">
+  
+  
+  
+  <title>OCR-验证码自动识别 - 42</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"52hertz.tech","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Jerusalem</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="OCR-验证码自动识别"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-03 16:22" pubdate>
+          2023年8月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">OCR-验证码自动识别</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>验证码获取测试接口：<code>https://data.gdcic.net/Dop/CheckCode.aspx?codemark=408.15173910730016</code></p>
+<h1 id="BurpSuite插件-CaptchaKiller"><a href="#BurpSuite插件-CaptchaKiller" class="headerlink" title="BurpSuite插件-CaptchaKiller"></a>BurpSuite插件-CaptchaKiller</h1><p>原 GitHub 项目地址：<code>https://github.com/c0ny1/captcha-killer </code><br>修改版 GitHub 项目地址：<code>https://github.com/f0ng/captcha-killer-modified </code></p>
+<p><img src="https://img.tucang.cc/api/image/show/f9961757767e711bc80fe11cc5ff1ab6" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://img.tucang.cc/api/image/show/9abd4bb26272c6aea51c5a8ba86ed47b" srcset="/img/loading.gif" lazyload alt="image.png">使用说明：<code>https://gv7.me/articles/2019/burp-captcha-killer-usage/</code></p>
+<ul>
+<li>将获取验证码的数据包发送到插件</li>
+</ul>
+<p>使用burp抓取获取验证码数据包，然后右键 <code>captcha-killer</code> -&gt; <code>send to captcha panel</code>发送数据包到插件的验证码请求面板。<img src="https://img.tucang.cc/api/image/show/e54f497608ab49ea334975c9f88b52b4" srcset="/img/loading.gif" lazyload alt="image.png"><br> 然后到切换到插件面板，点击获取即可拿到要识别的验证码图片内容。<br><img src="https://img.tucang.cc/api/image/show/79c7a2463358abd3fecfa3c6dc61a711" srcset="/img/loading.gif" lazyload alt="image.png"><br>注意：获取验证码的 cookie 一定要和 intruder 发送的 cookie 相同！</p>
+<ul>
+<li>配置识别接口的地址和请求包</li>
+</ul>
+<p>拿到验证码之后，就要设置接口来进行识别了。我们可以使用网上寻找免费的接口，也可以本地起一个验证码识别的服务。</p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p><img src="https://img.tucang.cc/api/image/show/cdb56f356eef6b51a632db2755821df0" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>数据包：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/reg</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:8888<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>max-age=0<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36<br><span class="hljs-attribute">Sec-Fetch-Mode</span><span class="hljs-punctuation">: </span>navigate<br><span class="hljs-attribute">Sec-Fetch-User</span><span class="hljs-punctuation">: </span>?1<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>none<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.9<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>55<br><br><span class="language-typescript">&lt;<span class="hljs-meta">@BASE64</span>&gt;&lt;<span class="hljs-meta">@IMG_RAW</span>&gt;&lt;<span class="hljs-regexp">/@IMG_RAW&gt;&lt;/</span><span class="hljs-meta">@BASE64</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>然后我们把图片内容的位置用标签来代替。比如该例子使用的接口是post提交image参数，参数的值为图片二进制数据的 base64 编码后的 url 编码。那么 <code>Request template</code>(请求模版)面板应该填写如下：<br><img src="https://img.tucang.cc/api/image/show/8b000c6dd8010f19b8101d226d4ae4ec" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>标签</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>&lt;@IMG_RAW&gt;&lt;&#x2F;@IMG_RAW&gt;</td>
+<td>代表验证码图片原二进制内容</td>
+</tr>
+<tr>
+<td>2</td>
+<td>&lt;@URLENCODE&gt;&lt;&#x2F;@URLENCODE&gt;</td>
+<td>对标签内的内容进行url编码</td>
+</tr>
+<tr>
+<td>3</td>
+<td>&lt;@BASE64&gt;&lt;&#x2F;@BASE64&gt;</td>
+<td>对标签内的内容进行base64编码</td>
+</tr>
+</tbody></table>
+<p>后点击“识别”即可获取到接口返回的数据包，同时在 <code>request raw</code> 可以看到调用接口最终发送的请求包。<br><img src="https://img.tucang.cc/api/image/show/cf6eb70e155a4798dfc6996ac036dcad" srcset="/img/loading.gif" lazyload alt="image.png"><br>勉强够用<br><img src="https://img.tucang.cc/api/image/show/459083197cd9e9ff258b060e982591df" srcset="/img/loading.gif" lazyload alt="image.png"><br>若返回包是 json，使用 <code>Regular expression</code> (正则表达式)来匹配，然后选择 <code>匹配结果</code> 右键标记为识别结果 ，系统会自动生成正则表达式规则。<br><img src="https://img.tucang.cc/api/image/show/c4e315c5b1c4449763105df3e22a2e2f" srcset="/img/loading.gif" lazyload alt="image.png"><br>将模版保存<br><img src="https://img.tucang.cc/api/image/show/77437bfa8af63307c1a785e3aa35de5d" srcset="/img/loading.gif" lazyload alt="image.png"><br>在 <code>Intruder</code> 模块调用<br><img src="https://img.tucang.cc/api/image/show/9cb952cb61a50799feaee78a4bea3ded" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h1 id="ddddocr"><a href="#ddddocr" class="headerlink" title="ddddocr"></a>ddddocr</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>项目地址：<code>[https://github.com/sml2h3/ddddocr](https://github.com/sml2h3/ddddocr)</code><br>使用 <code>ocr_api_server</code> 一键启动识别服务：<code>https://github.com/sml2h3/ocr_api_server</code></p>
+<ul>
+<li><p>最简单运行方式</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs http"># 安装依赖<br>pip install -r requirements.txt -i https://pypi.douban.com/simple<br># 运行 可选参数如下<br># --port 9898 指定端口,默认为9898<br># --ocr 开启ocr模块 默认开启<br># --old 只有ocr模块开启的情况下生效 默认不开启 <br># --det 开启目标检测模式<br><br># 最简单运行方式，只开启ocr模块并以新模型计算 <br>python ocr_server.py --port 9898 --ocr<br># 开启ocr模块并使用旧模型计算<br>python ocr_server.py --port 9898 --ocr --old<br># 只开启目标检测模块<br>python ocr_server.py --port 9898 --det<br># 同时开启ocr模块以及目标检测模块<br>python ocr_server.py --port 9898 --ocr --det<br># 同时开启ocr模块并使用旧模型计算以及目标检测模块<br>python ocr_server.py --port 9898 --ocr --old --det<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>docker 运行方式(目测只能在 Linux 下部署)</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs http">git clone https://github.com/sml2h3/ocr_api_server.git <br>cd ocr_api_server<br># 修改entrypoint.sh中的参数，具体参数往上翻，默认9898端口，同时开启ocr模块以及目标检测<br>模块<br># 编译镜像<br>docker build -t ocr_server:v1 .<br># 运行镜像<br>docker run -p 9898:9898 -d ocr_server:v1<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>接口</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs http"># 1、测试是否启动成功，可以通过直接GET访问http://&#123;host&#125;:&#123;port&#125;/ping来测试，如果返回 pong则启动成功<br># 2、OCR/目标检测请求接口格式:<br># http://&#123;host&#125;:&#123;port&#125;/&#123;opt&#125;/&#123;img_type&#125;/&#123;ret_type&#125;<br># opt:操作类型 ocr=OCR det=目标检测 slide=滑块(match和compare两种算法，默认为 compare)<br># img_type: 数据类型 file=文件上传方式 b64=base64(imgbyte)方式 默认为file方式<br># ret_type: 返回类型 json=返回json(识别出错会在msg里返回错误信息) text=返回文本格式 (识别出错时回直接返回空文本)<br># 例子:<br># OCR请求<br># resp = requests.post(&quot;http://&#123;host&#125;:&#123;port&#125;/ocr/file&quot;, files=&#123;&#x27;image&#x27;: image_bytes&#125;)<br># resp = requests.post(&quot;http://&#123;host&#125;:&#123;port&#125;/ocr/b64/text&quot;, data=base64.b64encode(file).decode())<br># 目标检测请求<br># resp = requests.post(&quot;http://&#123;host&#125;:&#123;port&#125;/det/file&quot;, files=&#123;&#x27;image&#x27;: image_bytes&#125;)<br># resp = requests.post(&quot;http://&#123;host&#125;:&#123;port&#125;/ocr/b64/json&quot;, data=base64.b64encode(file).decode())<br># 滑块识别请求<br># resp = requests.post(&quot;http://&#123;host&#125;:&#123;port&#125;/slide/match/file&quot;, files= &#123;&#x27;target_img&#x27;: target_bytes, &#x27;bg_img&#x27;: bg_bytes&#125;)<br># jsonstr = json.dumps(&#123;&#x27;target_img&#x27;: target_b64str, &#x27;bg_img&#x27;: bg_b64str&#125;) # resp = requests.post(&quot;http://&#123;host&#125;:&#123;port&#125;/slide/compare/b64&quot;, files=base64.b64encode(jsonstr.encode()).decode())<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="部署-1"><a href="#部署-1" class="headerlink" title="部署"></a>部署</h2><ol>
+<li><p>安装下载项目依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/sml2h3/ocr_api_server.git<br>python3 -m pip install -r requirements.txt -i https://pypi.douban.com/simple<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>运行开启</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 最简单运行方式，只开启ocr模块并以新模型计算 </span><br>python3 ocr_server.py --port 9898 --ocr<br><span class="hljs-comment"># 开启ocr模块并使用旧模型计算</span><br>python3 ocr_server.py --port 9898 --ocr --old<br><span class="hljs-comment"># 只开启目标检测模块</span><br>python3 ocr_server.py --port 9898 --det<br><span class="hljs-comment"># 同时开启ocr模块以及目标检测模块</span><br>python3 ocr_server.py --port 9898 --ocr --det<br><span class="hljs-comment"># 同时开启ocr模块并使用旧模型计算以及目标检测模块</span><br>python3 ocr_server.py --port 9898 --ocr --old --det<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/4dc2a3f1ba37abf3d1a2c6b75525f84b" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://img.tucang.cc/api/image/show/df3e618e084a02d1050071e5a1b4efad" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://img.tucang.cc/api/image/show/ee3cb3bf428479460d88ec565abd5016" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+</li>
+<li><p>接口格式类型</p>
+</li>
+</ol>
+<p>常用请求模版：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/ocr/b64/text</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1:9898<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Cache-Control</span><span class="hljs-punctuation">: </span>max-age=0<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)<br>AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36<br><span class="hljs-attribute">Accept</span>:<br>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,<br>*/*;q=0.8,application/signed-exchange;v=b3<br><span class="hljs-attribute">Sec-Fetch-Site</span><span class="hljs-punctuation">: </span>none<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.9<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>113<br>&lt;@BASE64&gt;&lt;@IMG_RAW&gt;&lt;/@IMG_RAW&gt;&lt;/@BASE64&gt;<br></code></pre></td></tr></table></figure>
+<p>识别准确率还是可以的<br><img src="https://img.tucang.cc/api/image/show/493a073394c0686ce528ed88e897b129" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web/" class="print-no-link">#Web</a>
+      
+        <a href="/tags/OCR/" class="print-no-link">#OCR</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>OCR-验证码自动识别</div>
+      <div>https://52hertz.tech/2023/08/03/OCR_Captcha/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Ustin1an</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/30/Docker_vuln/" title="Docker 搭建多层内网靶场环境">
+                        <span class="hidden-mobile">Docker 搭建多层内网靶场环境</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://52hertz.tech/2023/08/03/OCR_Captcha/';
+          this.page.identifier = '/2023/08/03/OCR_Captcha/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
