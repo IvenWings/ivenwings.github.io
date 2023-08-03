@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/ee3cb3bf428479460d88ec565abd5016">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/493a073394c0686ce528ed88e897b129">
 <meta property="article:published_time" content="2023-08-03T08:22:33.000Z">
-<meta property="article:modified_time" content="2023-08-03T08:22:23.787Z">
+<meta property="article:modified_time" content="2023-08-03T08:26:45.642Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="OCR">
@@ -330,7 +330,7 @@
 </tr>
 </tbody></table>
 <p>后点击“识别”即可获取到接口返回的数据包，同时在 <code>request raw</code> 可以看到调用接口最终发送的请求包。<br><img src="https://img.tucang.cc/api/image/show/cf6eb70e155a4798dfc6996ac036dcad" srcset="/img/loading.gif" lazyload alt="image.png"><br>勉强够用<br><img src="https://img.tucang.cc/api/image/show/459083197cd9e9ff258b060e982591df" srcset="/img/loading.gif" lazyload alt="image.png"><br>若返回包是 json，使用 <code>Regular expression</code> (正则表达式)来匹配，然后选择 <code>匹配结果</code> 右键标记为识别结果 ，系统会自动生成正则表达式规则。<br><img src="https://img.tucang.cc/api/image/show/c4e315c5b1c4449763105df3e22a2e2f" srcset="/img/loading.gif" lazyload alt="image.png"><br>将模版保存<br><img src="https://img.tucang.cc/api/image/show/77437bfa8af63307c1a785e3aa35de5d" srcset="/img/loading.gif" lazyload alt="image.png"><br>在 <code>Intruder</code> 模块调用<br><img src="https://img.tucang.cc/api/image/show/9cb952cb61a50799feaee78a4bea3ded" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h1 id="ddddocr"><a href="#ddddocr" class="headerlink" title="ddddocr"></a>ddddocr</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>项目地址：<code>[https://github.com/sml2h3/ddddocr](https://github.com/sml2h3/ddddocr)</code><br>使用 <code>ocr_api_server</code> 一键启动识别服务：<code>https://github.com/sml2h3/ocr_api_server</code></p>
+<h1 id="ddddocr"><a href="#ddddocr" class="headerlink" title="ddddocr"></a>ddddocr</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>项目地址：<code>https://github.com/sml2h3/ddddocr</code><br>使用 <code>ocr_api_server</code> 一键启动识别服务：<code>https://github.com/sml2h3/ocr_api_server</code></p>
 <ul>
 <li><p>最简单运行方式</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs http"># 安装依赖<br>pip install -r requirements.txt -i https://pypi.douban.com/simple<br># 运行 可选参数如下<br># --port 9898 指定端口,默认为9898<br># --ocr 开启ocr模块 默认开启<br># --old 只有ocr模块开启的情况下生效 默认不开启 <br># --det 开启目标检测模式<br><br># 最简单运行方式，只开启ocr模块并以新模型计算 <br>python ocr_server.py --port 9898 --ocr<br># 开启ocr模块并使用旧模型计算<br>python ocr_server.py --port 9898 --ocr --old<br># 只开启目标检测模块<br>python ocr_server.py --port 9898 --det<br># 同时开启ocr模块以及目标检测模块<br>python ocr_server.py --port 9898 --ocr --det<br># 同时开启ocr模块并使用旧模型计算以及目标检测模块<br>python ocr_server.py --port 9898 --ocr --old --det<br></code></pre></td></tr></table></figure>
