@@ -16,12 +16,12 @@
   <meta name="author" content="Ustin1an">
   <meta name="keywords" content="">
   
-    <meta name="description" content="什么是 Shellcode**Shellcode** 为16进制机器码，以其经常让攻击者获得 Shell 而得名。Shellcode 常常使用机器语言编写。 可在暂存器 eip 溢出后，塞入一段可让 CPU 执行的 Shellcode 机器码，让电脑可以执行攻击者的任意指令。  Shellcode is a small piece of code used as the payload in th">
+    <meta name="description" content="什么是 ShellcodeShellcode 为16进制机器码，以其经常让攻击者获得 Shell 而得名。Shellcode 常常使用机器语言编写。 可在暂存器 eip 溢出后，塞入一段可让 CPU 执行的 Shellcode 机器码，让电脑可以执行攻击者的任意指令。  Shellcode is a small piece of code used as the payload in the ex">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Shellcode学习以及实现一个简易ShellcodeLoader">
 <meta property="og:url" content="https://52hertz.tech/2023/08/16/shellcode/index.html">
 <meta property="og:site_name" content="42">
-<meta property="og:description" content="什么是 Shellcode**Shellcode** 为16进制机器码，以其经常让攻击者获得 Shell 而得名。Shellcode 常常使用机器语言编写。 可在暂存器 eip 溢出后，塞入一段可让 CPU 执行的 Shellcode 机器码，让电脑可以执行攻击者的任意指令。  Shellcode is a small piece of code used as the payload in th">
+<meta property="og:description" content="什么是 ShellcodeShellcode 为16进制机器码，以其经常让攻击者获得 Shell 而得名。Shellcode 常常使用机器语言编写。 可在暂存器 eip 溢出后，塞入一段可让 CPU 执行的 Shellcode 机器码，让电脑可以执行攻击者的任意指令。  Shellcode is a small piece of code used as the payload in the ex">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/17726c50d5a8e8e7e579e455f42b4986">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/b6f8168b6141818a727d72e18ed827bb">
@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/adc88829664c251216836fce10fcedff">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/bd313e6b35090245174db9eed3b82ba5">
 <meta property="article:published_time" content="2023-08-16T15:23:45.000Z">
-<meta property="article:modified_time" content="2023-08-16T15:27:58.601Z">
+<meta property="article:modified_time" content="2023-08-16T15:31:37.378Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="Binary">
 <meta property="article:tag" content="Shellcode">
@@ -282,14 +282,14 @@
             
               <div class="markdown-body">
                 
-                <h2 id="什么是-Shellcode"><a href="#什么是-Shellcode" class="headerlink" title="什么是 Shellcode"></a>什么是 Shellcode</h2><p><code>**Shellcode**</code> 为16进制机器码，以其经常让攻击者获得 <code>Shell</code> 而得名。<strong>Shellcode</strong> 常常使用机器语言编写。 可在暂存器 <strong>eip</strong> 溢出后，塞入一段可让 CPU 执行的 <strong>Shellcode</strong> 机器码，让电脑可以执行攻击者的任意指令。</p>
+                <h2 id="什么是-Shellcode"><a href="#什么是-Shellcode" class="headerlink" title="什么是 Shellcode"></a>什么是 Shellcode</h2><p><code>Shellcode</code> 为16进制机器码，以其经常让攻击者获得 <code>Shell</code> 而得名。<strong>Shellcode</strong> 常常使用机器语言编写。 可在暂存器 <strong>eip</strong> 溢出后，塞入一段可让 CPU 执行的 <strong>Shellcode</strong> 机器码，让电脑可以执行攻击者的任意指令。</p>
 <blockquote>
 <p><strong>Shellcode</strong> is a small piece of code used as the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Payload_(computing)">payload</a> in the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Exploit_(computer_security)">exploitation</a> of a software <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Vulnerability_(computing)">vulnerability</a>. </p>
 </blockquote>
 <p>例如 <code>\x75</code> 代表两个十六进制数，它会被翻译成汇编语言；<br>又例如：<br><img src="https://img.tucang.cc/api/image/show/17726c50d5a8e8e7e579e455f42b4986" srcset="/img/loading.gif" lazyload><br>这里 <code>55</code> 被翻译成了 <code>push ebp</code><br><code>55</code>这 2 个 16 进制转换成 8 位二进制，然后告诉 CPU 执行，CPU 识别发现是代码就会执行 <code>push ebp</code></p>
 <h3 id="Local"><a href="#Local" class="headerlink" title="Local"></a>Local</h3><p>本地 <strong>Shellcode</strong> 被攻击者使用，攻击者对计算机的访问权限有限，但可以利用该计算机上更高权限进程中的漏洞，例如缓冲区溢出。如果成功执行，<strong>Shellcode</strong> 将为攻击者提供与目标进程相同的更高权限的机器访问权限。</p>
-<h3 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h3><p>远程 **Shellcode **执行成功，可被攻击者通过网络对计算机执行命令。</p>
-<h4 id="Download-and-Execute"><a href="#Download-and-Execute" class="headerlink" title="Download and Execute"></a>Download and Execute</h4><p>这类 <strong>Shellcode</strong> 不会产生 <strong>Shell</strong>，计算机执行 **Shellcode **后下载会产生 <strong>Shell</strong> 的软件&#x2F;代码&#x2F;脚本&#x2F;Shellcode 执行获得 Shell。</p>
+<h3 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h3><p>远程 <strong>Shellcode</strong> 执行成功，可被攻击者通过网络对计算机执行命令。</p>
+<h4 id="Download-and-Execute"><a href="#Download-and-Execute" class="headerlink" title="Download and Execute"></a>Download and Execute</h4><p>这类 <strong>Shellcode</strong> 不会产生 <strong>Shell</strong>，计算机执行 <strong>Shellcode</strong> 后下载会产生 <strong>Shell</strong> 的软件&#x2F;代码&#x2F;脚本&#x2F;Shellcode 执行获得 Shell。</p>
 <h4 id="Staged"><a href="#Staged" class="headerlink" title="Staged"></a>Staged</h4><blockquote>
 <p>When the amount of data that an attacker can inject into the target process is too limited to execute useful shellcode directly, it may be possible to execute it in stages. First, a small piece of shellcode (stage 1) is executed. This code then downloads a larger piece of shellcode (stage 2) into the process’s memory and executes it.</p>
 </blockquote>
