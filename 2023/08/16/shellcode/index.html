@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/adc88829664c251216836fce10fcedff">
 <meta property="og:image" content="https://img.tucang.cc/api/image/show/bd313e6b35090245174db9eed3b82ba5">
 <meta property="article:published_time" content="2023-08-16T15:23:45.000Z">
-<meta property="article:modified_time" content="2023-08-16T15:31:37.378Z">
+<meta property="article:modified_time" content="2023-08-16T15:33:44.076Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="Binary">
 <meta property="article:tag" content="Shellcode">
@@ -229,7 +229,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.5k 字
+          3.2k 字
         
       </span>
     
@@ -240,7 +240,7 @@
         
         
         
-          30 分钟
+          27 分钟
         
       </span>
     
@@ -322,18 +322,13 @@
 <li>calloc</li>
 <li>sbrk</li>
 </ul>
-<h2 id="执行内存空间-Shellcode-的-Api-或者方法："><a href="#执行内存空间-Shellcode-的-Api-或者方法：" class="headerlink" title="执行内存空间 Shellcode 的 Api 或者方法："></a>执行内存空间 Shellcode 的 Api 或者方法：</h2><ol>
-<li><strong>指针执行</strong></li>
-</ol>
-<p>最常见的一种加载 Shellcode 的方法，使用指针来执行函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> buf[] =<br>    <span class="hljs-string">&quot;你的shellcode&quot;</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> comment(linker, <span class="hljs-string">&quot;/subsystem:\&quot;Windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;</span>)</span><br><span class="hljs-comment">//windows控制台程序不出黑窗口</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br><br>    ((<span class="hljs-type">void</span>(*)(<span class="hljs-type">void</span>)) &amp; buf)();<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><strong>申请动态内存加载</strong></li>
-<li><strong>嵌入汇编加载</strong></li>
-<li><strong>强制类型转换</strong></li>
-<li><strong>汇编花指令</strong></li>
-</ol>
+<h2 id="执行内存空间-Shellcode-的-Api-或者方法"><a href="#执行内存空间-Shellcode-的-Api-或者方法" class="headerlink" title="执行内存空间 Shellcode 的 Api 或者方法"></a>执行内存空间 Shellcode 的 Api 或者方法</h2><ul>
+<li>指针执行</li>
+<li>申请动态内存加载</li>
+<li>嵌入汇编加载</li>
+<li>强制类型转换</li>
+<li>汇编花指令</li>
+</ul>
 <h2 id="什么是PE文件"><a href="#什么是PE文件" class="headerlink" title="什么是PE文件"></a>什么是PE文件</h2><blockquote>
 <p>PE，（Portable Executable）是一种用于<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6">可执行文件</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6">目标文件</a>和<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93">动态链接库</a>的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F">文件格式</a>，主要使用在32位和64位的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Microsoft_Windows">Windows</a><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">操作系统</a>上。Windows平台下的可执行文件的格式，我们称之为PE（Portable Executable）文件结构。</p>
 </blockquote>
