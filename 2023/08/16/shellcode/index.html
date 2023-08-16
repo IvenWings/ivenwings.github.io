@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ava.jpg">
+  <link rel="icon" href="/img/ava.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Ustin1an">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="什么是 Shellcode**Shellcode** 为16进制机器码，以其经常让攻击者获得 Shell 而得名。Shellcode 常常使用机器语言编写。 可在暂存器 eip 溢出后，塞入一段可让 CPU 执行的 Shellcode 机器码，让电脑可以执行攻击者的任意指令。  Shellcode is a small piece of code used as the payload in th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shellcode学习以及实现一个简易ShellcodeLoader">
+<meta property="og:url" content="https://52hertz.tech/2023/08/16/shellcode/index.html">
+<meta property="og:site_name" content="42">
+<meta property="og:description" content="什么是 Shellcode**Shellcode** 为16进制机器码，以其经常让攻击者获得 Shell 而得名。Shellcode 常常使用机器语言编写。 可在暂存器 eip 溢出后，塞入一段可让 CPU 执行的 Shellcode 机器码，让电脑可以执行攻击者的任意指令。  Shellcode is a small piece of code used as the payload in th">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/17726c50d5a8e8e7e579e455f42b4986">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/b6f8168b6141818a727d72e18ed827bb">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/7e33de9ff25e030a85bac493737b825a">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/765ef934cd6331778c979054c0423fb5">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/adc88829664c251216836fce10fcedff">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/bd313e6b35090245174db9eed3b82ba5">
+<meta property="article:published_time" content="2023-08-16T15:23:45.000Z">
+<meta property="article:modified_time" content="2023-08-16T15:27:58.601Z">
+<meta property="article:author" content="Ustin1an">
+<meta property="article:tag" content="Binary">
+<meta property="article:tag" content="Shellcode">
+<meta property="article:tag" content="CobaltStrike">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/17726c50d5a8e8e7e579e455f42b4986">
+  
+  
+  
+  <title>Shellcode学习以及实现一个简易ShellcodeLoader - 42</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"52hertz.tech","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Jerusalem</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Shellcode学习以及实现一个简易ShellcodeLoader"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-16 23:23" pubdate>
+          2023年8月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Shellcode学习以及实现一个简易ShellcodeLoader</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="什么是-Shellcode"><a href="#什么是-Shellcode" class="headerlink" title="什么是 Shellcode"></a>什么是 Shellcode</h2><p><code>**Shellcode**</code> 为16进制机器码，以其经常让攻击者获得 <code>Shell</code> 而得名。<strong>Shellcode</strong> 常常使用机器语言编写。 可在暂存器 <strong>eip</strong> 溢出后，塞入一段可让 CPU 执行的 <strong>Shellcode</strong> 机器码，让电脑可以执行攻击者的任意指令。</p>
+<blockquote>
+<p><strong>Shellcode</strong> is a small piece of code used as the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Payload_(computing)">payload</a> in the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Exploit_(computer_security)">exploitation</a> of a software <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Vulnerability_(computing)">vulnerability</a>. </p>
+</blockquote>
+<p>例如 <code>\x75</code> 代表两个十六进制数，它会被翻译成汇编语言；<br>又例如：<br><img src="https://img.tucang.cc/api/image/show/17726c50d5a8e8e7e579e455f42b4986" srcset="/img/loading.gif" lazyload><br>这里 <code>55</code> 被翻译成了 <code>push ebp</code><br><code>55</code>这 2 个 16 进制转换成 8 位二进制，然后告诉 CPU 执行，CPU 识别发现是代码就会执行 <code>push ebp</code></p>
+<h3 id="Local"><a href="#Local" class="headerlink" title="Local"></a>Local</h3><p>本地 <strong>Shellcode</strong> 被攻击者使用，攻击者对计算机的访问权限有限，但可以利用该计算机上更高权限进程中的漏洞，例如缓冲区溢出。如果成功执行，<strong>Shellcode</strong> 将为攻击者提供与目标进程相同的更高权限的机器访问权限。</p>
+<h3 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h3><p>远程 **Shellcode **执行成功，可被攻击者通过网络对计算机执行命令。</p>
+<h4 id="Download-and-Execute"><a href="#Download-and-Execute" class="headerlink" title="Download and Execute"></a>Download and Execute</h4><p>这类 <strong>Shellcode</strong> 不会产生 <strong>Shell</strong>，计算机执行 **Shellcode **后下载会产生 <strong>Shell</strong> 的软件&#x2F;代码&#x2F;脚本&#x2F;Shellcode 执行获得 Shell。</p>
+<h4 id="Staged"><a href="#Staged" class="headerlink" title="Staged"></a>Staged</h4><blockquote>
+<p>When the amount of data that an attacker can inject into the target process is too limited to execute useful shellcode directly, it may be possible to execute it in stages. First, a small piece of shellcode (stage 1) is executed. This code then downloads a larger piece of shellcode (stage 2) into the process’s memory and executes it.</p>
+</blockquote>
+<p>当注入的数据量有限制或者为了压缩体积时，采用分阶段的方法进行：</p>
+<ol>
+<li>先执行一小段 Shellcode（人称小马），作用是将完整功能的 Shellcode 下载下来并执行（人称大马）</li>
+<li>大马是具有完整功能的 Shellcode 或恶意程序，体积较大，功能较全</li>
+</ol>
+<p><img src="https://img.tucang.cc/api/image/show/b6f8168b6141818a727d72e18ed827bb" srcset="/img/loading.gif" lazyload alt="image.png"><br>在 CobaltStrike 中的 Staged Payload：</p>
+<blockquote>
+<p>使⽤ Wininet.dll 内函数通过 HTTP 接收 stage 然后反射加载</p>
+</blockquote>
+<h4 id="Stageless"><a href="#Stageless" class="headerlink" title="Stageless"></a>Stageless</h4><p>执行即有相对完整的功能，也就是不分阶段。<br>在 CobaltStrike 中的 Stageless Payload：</p>
+<blockquote>
+<p>不通过网络传输，直接加载 stage</p>
+</blockquote>
+<h3 id="无文件（内存马）和有文件"><a href="#无文件（内存马）和有文件" class="headerlink" title="无文件（内存马）和有文件"></a>无文件（内存马）和有文件</h3><blockquote>
+<p>可以直接在内存中运行，不依赖硬盘文件运行，我们称之为无文件运行</p>
+</blockquote>
+<p>比如利用 <code>msfvenom</code> 生成的 <code>Shellcode</code>，被翻译成汇编语言后，可以直接在内存中运行，生成的<code>Shellcode</code> 在成功运行后，我们在后续利用过程中可以做进程迁移，磁盘文件只是起到了一个触发作用，我们可以把这一段 <code>Shellcode</code> 迁移到其他进程上，此时触发文件可以直接删除，不会对木马进程造成影响。</p>
+<blockquote>
+<p>如果木马程序与磁盘中的文件关联我们需要依托文件运行，我们称之为有文件(程序运行时我们会无法删除文件，只有关闭进程才能删除文件)</p>
+</blockquote>
+<h2 id="什么是-Shellcode-加载器"><a href="#什么是-Shellcode-加载器" class="headerlink" title="什么是 Shellcode 加载器"></a>什么是 Shellcode 加载器</h2><p>纯 Shellcode 是无法直接执行的，只有在 data 段的时候，才会被 CPU 识别成是代码，才有机会运行。因此需要一个加载器对 Shellcode 进行加载，并提供一定运行权限才能运行。</p>
+<h2 id="申请内存的方法"><a href="#申请内存的方法" class="headerlink" title="申请内存的方法"></a>申请内存的方法</h2><p><strong>malloc 函数族：</strong></p>
+<ul>
+<li>virtualalloc</li>
+<li>virtualallocex</li>
+<li>realloc</li>
+<li>calloc</li>
+<li>sbrk</li>
+</ul>
+<h2 id="执行内存空间-Shellcode-的-Api-或者方法："><a href="#执行内存空间-Shellcode-的-Api-或者方法：" class="headerlink" title="执行内存空间 Shellcode 的 Api 或者方法："></a>执行内存空间 Shellcode 的 Api 或者方法：</h2><ol>
+<li><strong>指针执行</strong></li>
+</ol>
+<p>最常见的一种加载 Shellcode 的方法，使用指针来执行函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> buf[] =<br>    <span class="hljs-string">&quot;你的shellcode&quot;</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> comment(linker, <span class="hljs-string">&quot;/subsystem:\&quot;Windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;</span>)</span><br><span class="hljs-comment">//windows控制台程序不出黑窗口</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br><br>    ((<span class="hljs-type">void</span>(*)(<span class="hljs-type">void</span>)) &amp; buf)();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>申请动态内存加载</strong></li>
+<li><strong>嵌入汇编加载</strong></li>
+<li><strong>强制类型转换</strong></li>
+<li><strong>汇编花指令</strong></li>
+</ol>
+<h2 id="什么是PE文件"><a href="#什么是PE文件" class="headerlink" title="什么是PE文件"></a>什么是PE文件</h2><blockquote>
+<p>PE，（Portable Executable）是一种用于<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6">可执行文件</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6">目标文件</a>和<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93">动态链接库</a>的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F">文件格式</a>，主要使用在32位和64位的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Microsoft_Windows">Windows</a><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">操作系统</a>上。Windows平台下的可执行文件的格式，我们称之为PE（Portable Executable）文件结构。</p>
+</blockquote>
+<h3 id="识别-PE-文件"><a href="#识别-PE-文件" class="headerlink" title="识别 PE 文件"></a>识别 PE 文件</h3><p>你想要识别一个文件是不是PE文件，或者说是不是一个可执行文件，可以根据PE指纹来识别：首先你需要找到一个可以以16进制打开PE文件的工具（010 Editor），然后找到一个PE文件，用该工具打开PE文件，<strong>在文件的开始位置有一个0x5A4D(十进制：MZ)，接着在0x003C位置向后有一个0x100，接着我们再去寻找0x100位置就会出现一个0x4550(十进制：PE)<strong>，那么当你用这个方法可以顺利的</strong>走通整个流程找到PE</strong>，就表示这是一个PE文件，同样这也是一个<strong>PE指纹</strong>：<br><img src="https://img.tucang.cc/api/image/show/7e33de9ff25e030a85bac493737b825a" srcset="/img/loading.gif" lazyload alt="image-20230816232635680"><br>这里是Mac电脑看的，用的小端存储<br><img src="https://img.tucang.cc/api/image/show/765ef934cd6331778c979054c0423fb5" srcset="/img/loading.gif" lazyload alt="image.png"><br>如上示例中我使用的是 exe 后缀的文件，但即使不是 exe 后缀的文件，例如<code>.sys</code>、<code>.dll</code>后缀的文件，实际上你通过这种方式会发现它们也是PE文件，<strong>所以我们不要只看后缀名来认定是不是PE文件，而要具体去看文件中的指纹</strong>。<br>例如<code>.acm, .ax, .cpl, .dll, .drv, .efi, .exe, .mui, .ocx, .scr, .sys, .tsp</code>等后缀都是 PE 文件。</p>
+<h3 id="PE-文件的整体结构"><a href="#PE-文件的整体结构" class="headerlink" title="PE 文件的整体结构"></a>PE 文件的整体结构</h3><p><img src="https://img.tucang.cc/api/image/show/adc88829664c251216836fce10fcedff" srcset="/img/loading.gif" lazyload alt="image-20230816232612210"></p>
+<h2 id="实现一个-ShellCode-Loader"><a href="#实现一个-ShellCode-Loader" class="headerlink" title="实现一个 ShellCode Loader"></a>实现一个 ShellCode Loader</h2><h3 id="申请动态内存加载"><a href="#申请动态内存加载" class="headerlink" title="申请动态内存加载"></a>申请动态内存加载</h3><p>申请一段动态内存，然后把 Shellcode 放进去，随后强转为一个函数类型指针，最后调用这个函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">char</span> shellcode[] = <span class="hljs-string">&quot;你的shellcode&quot;</span>;<br><br>    <span class="hljs-type">void</span>* exec = VirtualAlloc(<span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span> shellcode, MEM_COMMIT, PAGE_EXECUTE_READWRITE);<br>    <span class="hljs-built_in">memcpy</span>(exec, shellcode, <span class="hljs-keyword">sizeof</span> shellcode);<br>    ((<span class="hljs-type">void</span>(*)())exec)();<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>VirtualAlloc是一个Windows API函数，该函数的功能是在调用进程的虚地址空间，预定或者提交一部分页。<br>简单点的意思就是<strong>申请内存空间</strong></p>
+</blockquote>
+<p><code>VirtualAlloc</code> 函数原形：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">LPVOID VirtualAlloc&#123;<br>    LPVOID lpAddress, <span class="hljs-comment">// 要分配的内存区域的地址</span><br>    DWORD dwSize, <span class="hljs-comment">// 分配的大小</span><br>    DWORD flAllocationType, <span class="hljs-comment">// 分配的类型</span><br>    DWORD flProtect <span class="hljs-comment">// 该内存的初始保护属性</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>LPVOID</code> 代表没有任何类型的指针。</li>
+<li><code>lpAddress</code>：指定内存块的起始地址。如果该参数为 <strong>NULL</strong>，则系统会<strong>自动选择一个合适的内存地址</strong>。</li>
+<li><code>dwSize</code>：指定要分配的内存块的大小（以<strong>字节</strong>为单位）。</li>
+<li><code>flAllocationType</code>：指定内存分配的类型。可以是下列值之一：<ul>
+<li>MEM_COMMIT：提交内存。</li>
+<li>MEM_RESERVE：保留内存。</li>
+<li>MEM_RESET：清除内存。</li>
+<li>MEM_RESET_UNDO：撤销清除内存。</li>
+<li>MEM_TOP_DOWN：从高地址向低地址分配内存。</li>
+</ul>
+</li>
+<li><code>flProtect</code>：指定内存块的保护属性。可以是下列值之一：<ul>
+<li>PAGE_EXECUTE：允许执行代码。</li>
+<li>PAGE_EXECUTE_READ：允许执行代码并读取数据。</li>
+<li>PAGE_EXECUTE_READWRITE：允许执行代码、读取和写入数据。</li>
+<li>PAGE_EXECUTE_WRITECOPY：允许执行代码、写入数据并复制。</li>
+<li>PAGE_NOACCESS：禁止访问。</li>
+<li>PAGE_READONLY：允许读取</li>
+</ul>
+</li>
+</ul>
+<p><code>memcpy</code>函数原形：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> *<span class="hljs-title function_">memcpy</span><span class="hljs-params">(<span class="hljs-type">void</span> *destin, <span class="hljs-type">void</span> *source, <span class="hljs-type">unsigned</span> n)</span>;<br></code></pre></td></tr></table></figure>
+<p>编译出来后执行 Shellcode 成功上线<br><img src="https://img.tucang.cc/api/image/show/bd313e6b35090245174db9eed3b82ba5" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>更多加载方法待补坑。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Binary/" class="category-chain-item">Binary</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Binary/" class="print-no-link">#Binary</a>
+      
+        <a href="/tags/Shellcode/" class="print-no-link">#Shellcode</a>
+      
+        <a href="/tags/CobaltStrike/" class="print-no-link">#CobaltStrike</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Shellcode学习以及实现一个简易ShellcodeLoader</div>
+      <div>https://52hertz.tech/2023/08/16/shellcode/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Ustin1an</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/03/OCR_Captcha/" title="OCR-验证码自动识别">
+                        <span class="hidden-mobile">OCR-验证码自动识别</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://52hertz.tech/2023/08/16/shellcode/';
+          this.page.identifier = '/2023/08/16/shellcode/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
