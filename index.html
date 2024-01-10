@@ -224,13 +224,74 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2024/01/08/CVE-2020-1472(Netlogon)%20/" target="_self">
+        <a href="/2024/01/09/CVE-2022-26923/" target="_self">
+          CVE-2022-26923 ADCS提权
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/09/CVE-2022-26923/" target="_self">
+        <div>
+          环境配置根据此文章进行配置 ADCS 1https://zhuanlan.zhihu.com/p/526293326 安装完后进行配置域控服务和域证书服务安装成功后，在服务管理器的仪表盘的工具菜单中选择 “Active Directory管理中心”，然后在 Users 分组下新建一个用户账号，输入密码和选择 “密码永不过期”，模拟加入域环境的普通用户账号。创建一个用户：testacc/Cxk@12
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-01-09 11:22" pubdate>
+              2024-01-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Web/">#Web</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/01/08/CVE-2020-1472/" target="_self">
           CVE-2020-1472 NetLogon 漏洞学习
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/08/CVE-2020-1472(Netlogon)%20/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/08/CVE-2020-1472/" target="_self">
         <div>
           相关项目、EXP https://github.com/mstxq17/cve-2020-1472  安装依赖 1python -m pip install -r requirement.txt  检测漏洞 1python zerologon_tester.py DCNAME DCIP  利用过程检测漏洞1python zerologon_tester.py dc01 192.168.214.20
         </div>
@@ -735,67 +796,6 @@
       <a class="index-excerpt index-excerpt__noimg" href="/2020/09/21/Shamir/" target="_self">
         <div>
           秘密分发我分为了两个模块，一个是分发，一个是恢复。 秘密分发1环境：Windows 10，Python 3.7.1  因为k，n都是整数，因此输入的时候进行一下强制类型转换，对于需要分发的秘密，示例是整数，但有可能是字符串，因此利用 libnum.s2n 将字符串转换成整数，再进行运算。 123D = input(&quot;Input your secret: &quot;)n = int(in
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-09-21 20:14" pubdate>
-              2020-09-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Crypto/" class="category-chain-item">Crypto</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Crypto/">#Crypto</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2020/09/21/crt/" target="_self">
-          中国剩余定理的 (k, n) 门限方案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2020/09/21/crt/" target="_self">
-        <div>
-          秘密分发秘密 D 输入，k，n的输入和 p 的获取和上面一样，这里不多说，获取完后，要生成一个集合 D，其中有 n 个 di，且满足条件  p &gt; D d1&lt;d2&lt;...&lt;dn p 与任意 di 互素 di 之间两两互素 最小的 k 个 di 的乘积 &gt; p 与 最大的 k-1 个 di 的乘积  这里采取的方法是  还是用 getPrime 函数，参数字节数为 ma
         </div>
       </a>
 
